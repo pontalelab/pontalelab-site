@@ -1,0 +1,788 @@
+/* ============================================================
+   Pontalelab — Main Stylesheet
+   Nature & Discovery theme for a family-oriented digital lab
+   ============================================================ */
+
+/* ===========================
+   1. CSS Variables
+   =========================== */
+:root {
+  /* Nature palette */
+  --sky:        #c8e8ff;
+  --forest-xlt: #e8f5ee;
+  --forest-lt:  #95d5b2;
+  --forest:     #52b788;
+  --forest-dk:  #2d6a4f;
+  --forest-xdk: #1b4332;
+
+  /* Warm accent (CTA buttons) */
+  --accent:     #e07800;
+  --accent-dk:  #c06200;
+  --accent-lt:  #fff3e0;
+
+  /* UI surfaces */
+  --bg:         #fafaf3;
+  --bg-card:    #ffffff;
+  --bg-tint:    #f0f7f3;
+  --text:       #1b4332;
+  --text-mid:   #3d6652;
+  --text-lt:    #6b9e82;
+  --border:     #c8e0d4;
+
+  /* Shadows */
+  --shadow-sm:  0 2px 8px  rgba(27, 67, 50, 0.08);
+  --shadow-md:  0 4px 20px rgba(27, 67, 50, 0.12);
+  --shadow-lg:  0 8px 32px rgba(27, 67, 50, 0.18);
+  --shadow-cta: 0 6px 20px rgba(224, 120, 0, 0.42);
+
+  /* Shape */
+  --r-sm:   10px;
+  --r-md:   18px;
+  --r-lg:   28px;
+  --r-pill: 999px;
+
+  /* Layout */
+  --max-w:      1100px;
+  --px:         clamp(16px, 5vw, 40px);
+  --section-py: clamp(48px, 8vw, 96px);
+
+  /* Typography */
+  --font: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'BIZ UDGothic',
+          Meiryo, 'Yu Gothic UI', system-ui, sans-serif;
+}
+
+/* ===========================
+   2. Reset & Base
+   =========================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 18px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+}
+
+img   { max-width: 100%; height: auto; display: block; }
+a     { color: inherit; text-decoration: none; }
+ul    { list-style: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ===========================
+   3. Layout Helpers
+   =========================== */
+.inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--px);
+}
+
+.section-title {
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 800;
+  color: var(--forest-xdk);
+  margin-bottom: clamp(24px, 4vw, 48px);
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  margin-top: 8px;
+}
+
+/* ===========================
+   4. Buttons
+   =========================== */
+
+/* Hero CTA — largest, most prominent */
+.btn-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 72px;
+  padding: 0 52px;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #fff;
+  background: var(--accent);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-cta), 0 2px 0 rgba(0,0,0,0.15);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-hero:hover {
+  background: var(--accent-dk);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(224,120,0,0.55), 0 2px 0 rgba(0,0,0,0.15);
+}
+.btn-hero:active { transform: translateY(0); }
+
+/* Game card Play button — large, full-width */
+.btn-play {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 64px;
+  width: 100%;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #fff;
+  background: var(--accent);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-cta);
+  transition: transform 0.15s, box-shadow 0.15s;
+  margin-top: 4px;
+}
+.btn-play:hover {
+  background: var(--accent-dk);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(224,120,0,0.55);
+}
+.btn-play:active { transform: scale(0.98); }
+
+/* Disabled state for coming-soon games */
+.btn-disabled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 64px;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-lt);
+  background: var(--bg-tint);
+  border: 2px solid var(--border);
+  border-radius: var(--r-pill);
+  cursor: default;
+  margin-top: 4px;
+}
+
+/* Standard button */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 28px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--r-pill);
+  transition: transform 0.15s, background 0.15s;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: var(--shadow-cta);
+}
+.btn-primary:hover { background: var(--accent-dk); transform: translateY(-2px); }
+
+/* ===========================
+   5. Header
+   =========================== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(250, 250, 243, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--border);
+}
+
+.header-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--px);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--forest-xdk);
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+}
+.logo-dot { color: var(--accent); }
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.nav-link {
+  padding: 8px 14px;
+  border-radius: var(--r-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-mid);
+  transition: background 0.15s, color 0.15s;
+}
+.nav-link:hover {
+  background: var(--bg-tint);
+  color: var(--forest-dk);
+}
+
+.lang-btn {
+  padding: 6px 18px;
+  border: 2px solid var(--forest);
+  border-radius: var(--r-pill);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--forest-dk);
+  background: transparent;
+  transition: background 0.15s, color 0.15s;
+  margin-left: 4px;
+}
+.lang-btn:hover {
+  background: var(--forest);
+  color: #fff;
+}
+
+@media (max-width: 560px) {
+  .nav-link.hide-sm { display: none; }
+}
+
+/* ===========================
+   6. Hero
+   =========================== */
+.hero {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  background: linear-gradient(165deg,
+    #c8e8ff 0%,
+    #a0d4b8 35%,
+    #52b788 65%,
+    #2d6a4f 100%
+  );
+}
+
+/* Decorative atmospheric circles */
+.hero-deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hero-deco span {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+}
+.hero-deco span:nth-child(1) { width: 420px; height: 420px; top: -160px; right: -100px; }
+.hero-deco span:nth-child(2) { width: 260px; height: 260px; bottom:  80px; left:  -80px; }
+.hero-deco span:nth-child(3) { width: 160px; height: 160px; top:  40%; right:  8%;  }
+.hero-deco span:nth-child(4) { width:  80px; height:  80px; top:  20%; left:  12%; }
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 80px var(--px) 150px;
+  max-width: 720px;
+  width: 100%;
+}
+
+.hero-title {
+  font-size: clamp(3rem, 11vw, 5.5rem);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.15);
+  margin-bottom: 20px;
+}
+
+.hero-tagline {
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  color: rgba(255,255,255,0.92);
+  font-weight: 500;
+  line-height: 1.65;
+  margin-bottom: 52px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.15);
+}
+
+/* SVG wave at hero bottom */
+.hero-wave {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  pointer-events: none;
+}
+.hero-wave svg {
+  display: block;
+  width: 100%;
+  height: 70px;
+  fill: var(--bg);
+}
+
+/* ===========================
+   7. Featured Games
+   =========================== */
+.sect-featured {
+  padding: var(--section-py) var(--px);
+  background: var(--bg);
+}
+
+.game-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 600px) {
+  .game-cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+.game-card {
+  background: var(--bg-card);
+  border-radius: var(--r-lg);
+  padding: clamp(24px, 4vw, 40px) clamp(20px, 3vw, 32px);
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.game-card-icon { font-size: 3.5rem; line-height: 1; }
+
+.game-card-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--forest-xdk);
+}
+
+.game-card-desc {
+  color: var(--text-mid);
+  font-size: 1rem;
+  flex: 1;
+}
+
+/* ===========================
+   8. Skills Section
+   =========================== */
+.sect-skills {
+  padding: var(--section-py) var(--px);
+  background: var(--bg-tint);
+}
+
+.skill-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 480px) {
+  .skill-cards { grid-template-columns: repeat(3, 1fr); }
+}
+
+.skill-card {
+  background: var(--bg-card);
+  border-radius: var(--r-md);
+  padding: 28px 20px;
+  text-align: center;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.skill-icon   { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+.skill-name   { font-size: 1.15rem; font-weight: 800; color: var(--forest-xdk); margin-bottom: 8px; }
+.skill-desc   { font-size: 0.88rem; color: var(--text-mid); line-height: 1.55; }
+
+/* ===========================
+   9. Parents Section
+   =========================== */
+.sect-parents {
+  padding: var(--section-py) var(--px);
+  background: var(--bg);
+}
+
+.parents-box {
+  background: var(--forest-xlt);
+  border-radius: var(--r-lg);
+  padding: clamp(28px, 5vw, 48px);
+  border: 2px solid var(--border);
+}
+
+.parents-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 480px) {
+  .parents-list { grid-template-columns: repeat(2, 1fr); }
+}
+
+.parents-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border-radius: var(--r-sm);
+  padding: 14px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--forest-xdk);
+  box-shadow: var(--shadow-sm);
+}
+
+.parents-check {
+  width: 30px;
+  height: 30px;
+  background: var(--forest);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+/* ===========================
+   10. Research Log
+   =========================== */
+.sect-log {
+  padding: var(--section-py) var(--px);
+  background: var(--bg-tint);
+}
+
+.log-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.log-entry {
+  background: var(--bg-card);
+  border-radius: var(--r-md);
+  padding: 20px 24px;
+  border-left: 4px solid var(--forest);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.log-date  { font-size: 0.78rem; color: var(--text-lt); font-weight: 600; }
+.log-title { font-size: 1rem;    font-weight: 700; color: var(--forest-xdk); }
+.log-text  { font-size: 0.9rem;  color: var(--text-mid); }
+
+/* ===========================
+   11. About Dark Section
+   =========================== */
+.sect-about-dark {
+  padding: var(--section-py) var(--px);
+  text-align: center;
+  background: linear-gradient(135deg, var(--forest-xdk) 0%, var(--forest-dk) 100%);
+  color: #fff;
+}
+
+.sect-about-dark .section-title {
+  color: #fff;
+}
+.sect-about-dark .section-title::after {
+  background: rgba(255,255,255,0.45);
+}
+
+.about-lead {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: rgba(255,255,255,0.88);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+/* ===========================
+   12. Footer
+   =========================== */
+.footer {
+  background: var(--forest-xdk);
+  color: rgba(255,255,255,0.82);
+  padding: clamp(32px, 6vw, 64px) var(--px) clamp(20px, 4vw, 36px);
+}
+
+.footer-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.footer-top {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 600px) {
+  .footer-top {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+.footer-logo    { font-size: 1.5rem; font-weight: 900; color: #fff; }
+.footer-tagline { font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 6px; }
+
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.footer-nav a {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.72);
+  transition: color 0.15s;
+}
+.footer-nav a:hover { color: #fff; }
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.14);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (min-width: 600px) {
+  .footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.footer-email a { color: var(--forest-lt); font-size: 0.9rem; }
+.footer-email a:hover { color: #fff; }
+.footer-copy    { font-size: 0.78rem; color: rgba(255,255,255,0.4); }
+
+/* ===========================
+   13. Sub-page Hero
+   =========================== */
+.page-hero {
+  background: linear-gradient(135deg, var(--forest-dk) 0%, var(--forest) 100%);
+  padding: clamp(48px, 8vw, 80px) var(--px);
+  text-align: center;
+  color: #fff;
+}
+
+.page-hero-title {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.page-hero-desc {
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  color: rgba(255,255,255,0.85);
+}
+
+/* ===========================
+   14. Games Grid (games page)
+   =========================== */
+.sect-games {
+  padding: var(--section-py) var(--px);
+  background: var(--bg);
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 560px) {
+  .games-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 860px) {
+  .games-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.game-card-full {
+  background: var(--bg-card);
+  border-radius: var(--r-lg);
+  padding: clamp(24px, 4vw, 40px) clamp(20px, 3vw, 32px);
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.game-card-full:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+.game-card-full.is-coming-soon { opacity: 0.8; }
+
+.badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--accent-lt);
+  color: var(--accent-dk);
+  border: 2px solid #f5c080;
+  border-radius: var(--r-pill);
+  padding: 3px 14px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+/* ===========================
+   15. Simple Pages (About / Privacy / Contact)
+   =========================== */
+.simple-page {
+  padding: var(--section-py) var(--px);
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.simple-page h1 {
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 900;
+  color: var(--forest-xdk);
+  margin-bottom: 12px;
+}
+
+.simple-page .lead {
+  font-size: 1.05rem;
+  color: var(--text-mid);
+  padding-bottom: 24px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 32px;
+}
+
+.simple-page h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--forest-dk);
+  margin-top: 36px;
+  margin-bottom: 10px;
+}
+
+.simple-page p     { color: var(--text-mid); margin-bottom: 14px; }
+.simple-page ul    { list-style: disc; padding-left: 24px; color: var(--text-mid); }
+.simple-page ul li { margin-bottom: 8px; }
+
+/* Contact form */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 32px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--forest-dk);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  border: 2px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 12px 16px;
+  font-family: var(--font);
+  font-size: 1rem;
+  color: var(--text);
+  background: #fff;
+  transition: border-color 0.15s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--forest);
+}
+
+.form-group textarea { min-height: 140px; resize: vertical; }
+
+.form-note {
+  font-size: 0.82rem;
+  color: var(--text-lt);
+  margin-top: -8px;
+}
+
+/* ===========================
+   16. Responsive Tweaks
+   =========================== */
+@media (max-width: 480px) {
+  .btn-hero   { height: 62px; font-size: 1.1rem; padding: 0 36px; }
+  .btn-play   { height: 58px; font-size: 1.1rem; }
+  .game-card-icon { font-size: 3rem; }
+}
+
+/* ===========================
+   17. Entrance Animation
+   =========================== */
+@media (prefers-reduced-motion: no-preference) {
+  .game-card,
+  .game-card-full,
+  .skill-card,
+  .log-entry {
+    animation: fade-up 0.45s ease both;
+  }
+  .game-cards    .game-card:nth-child(2),
+  .games-grid .game-card-full:nth-child(2) { animation-delay: 0.08s; }
+  .games-grid .game-card-full:nth-child(3) { animation-delay: 0.16s; }
+  .skill-cards   .skill-card:nth-child(2)  { animation-delay: 0.08s; }
+  .skill-cards   .skill-card:nth-child(3)  { animation-delay: 0.16s; }
+  .log-entries   .log-entry:nth-child(2)   { animation-delay: 0.08s; }
+  .log-entries   .log-entry:nth-child(3)   { animation-delay: 0.16s; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
