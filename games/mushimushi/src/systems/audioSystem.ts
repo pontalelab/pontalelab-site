@@ -2,8 +2,6 @@
 // Brown noise (filtered white noise) gives a natural wind/atmosphere feel.
 // All gains are very low; this is background texture, not music.
 
-type AudioCtx = AudioContext & { webkitAudioContext?: typeof AudioContext }
-
 const STAGE_WIND: Record<string, { filterHz: number; gain: number }> = {
   grass_day:       { filterHz: 500,  gain: 0.28 },
   forest_evening:  { filterHz: 320,  gain: 0.36 },

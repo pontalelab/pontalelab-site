@@ -10,25 +10,13 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-}
-
-/* ── Stage backgrounds ── */
-.grass_day {
-  background: url('/bg/grass_day.png') center center / cover no-repeat;
-}
-
-.forest_evening {
-  background: url('/bg/forest_evening.png') center center / cover no-repeat;
-}
-
-.night_field {
-  background: url('/bg/night_field.png') center center / cover no-repeat;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 /* Subtle dark overlay to keep bugs readable against bright backgrounds */
-.grass_day::before,
-.forest_evening::before,
-.night_field::before {
+.background::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -36,15 +24,9 @@
   pointer-events: none;
 }
 
-/* Night: slight star-twinkle overlay retained for atmosphere */
-.night_field::before {
+/* Night: slightly darker overlay */
+.background[data-bg="night_field"]::before {
   background: rgba(0, 0, 0, 0.12);
-  animation: starTwinkle 4s ease-in-out infinite;
-}
-
-@keyframes starTwinkle {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
 }
 
 /* ── HUD ── */

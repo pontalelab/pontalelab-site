@@ -92,9 +92,9 @@ export function StageScreen({ onNavigate }: Props) {
     <div className={styles.screen}>
       {/* Background */}
       <div
-        className={`${styles.background} ${
-          stage ? (styles[stage.background as keyof typeof styles] ?? '') : ''
-        }`}
+        className={styles.background}
+        data-bg={stage?.background}
+        style={stage ? { backgroundImage: `url('${import.meta.env.BASE_URL}bg/${stage.background}.png')` } : undefined}
       />
 
       {/* Ambient particles — night only */}
