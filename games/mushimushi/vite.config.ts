@@ -6,7 +6,7 @@ export default defineConfig({
   // './' makes all assets relative — works at any GitHub Pages subdirectory path
   base: './',
   build: {
-    // Increase chunk size warning threshold for emoji-heavy bundles
+    outDir: 'docs',
     chunkSizeWarningLimit: 600,
   },
 })
