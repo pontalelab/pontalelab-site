@@ -764,7 +764,32 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 /* ===========================
-   17. Entrance Animation
+   17. Ruby / Furigana
+   =========================== */
+ruby { ruby-align: center; }
+
+rt {
+  font-size: 0.38em;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+/* Logo furigana — slightly muted */
+.logo rt {
+  color: var(--text-lt);
+  font-size: 0.42em;
+}
+
+/* Hero title furigana — white with opacity */
+.hero-title rt {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* English mode: hide furigana entirely */
+html[lang="en"] rt { display: none; }
+
+/* ===========================
+   18. Entrance Animation
    =========================== */
 @media (prefers-reduced-motion: no-preference) {
   .game-card,
