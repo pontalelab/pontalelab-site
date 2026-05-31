@@ -12,6 +12,7 @@ export function useSpawnLoop() {
   const currentStageId = useGameStore((s) => s.currentStageId);
   const addActiveBug = useGameStore((s) => s.addActiveBug);
   const removeBug = useGameStore((s) => s.removeBug);
+  const despawnBug = useGameStore((s) => s.despawnBug);
   const activeBugs = useGameStore((s) => s.activeBugs);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export function useSpawnLoop() {
       const current = useGameStore.getState().activeBugs;
       const idleBugs = current.filter((b) => b.state === 'idle');
       if (idleBugs.length >= MAX_ACTIVE_BUGS) return;
-      addActiveBug(createActiveBug(stage.spawnTable));
+      addActiveBug(createActiveBug(stage.spawnTable, stage.zones));
     }, SPAWN_INTERVAL_MS);
 
     return () => clearInterval(spawnTimer);
@@ -34,7 +35,7 @@ export function useSpawnLoop() {
       const current = useGameStore.getState().activeBugs;
       for (const bug of current) {
         if (bug.state === 'idle' && now - bug.spawnedAt > DESPAWN_AFTER_MS) {
-          removeBug(bug.instanceId);
+          despawnBug(bug.instanceId);
         }
       }
     }, 1000);
@@ -47,7 +48,7 @@ export function useSpawnLoop() {
     const stage = stageMap.get(currentStageId);
     if (!stage) return;
     for (let i = 0; i < 3; i++) {
-      addActiveBug(createActiveBug(stage.spawnTable));
+      addActiveBug(createActiveBug(stage.spawnTable, stage.zones));
     }
   }, [currentStageId, addActiveBug]);
 

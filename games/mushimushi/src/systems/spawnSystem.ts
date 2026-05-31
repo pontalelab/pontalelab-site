@@ -1,4 +1,5 @@
-import type { SpawnEntry, ActiveBug } from '../types';
+import type { SpawnEntry, ActiveBug, ZoneArea, BugZone } from '../types';
+import { bugMap } from '../data/bugs';
 
 function weightedRandom(table: SpawnEntry[]): string {
   const total = table.reduce((sum, e) => sum + e.weight, 0);
@@ -10,14 +11,27 @@ function weightedRandom(table: SpawnEntry[]): string {
   return table[table.length - 1].bugId;
 }
 
-export function createActiveBug(spawnTable: SpawnEntry[]): ActiveBug {
+function pickPosition(areas: ZoneArea[]): { x: number; y: number } {
+  const area = areas[Math.floor(Math.random() * areas.length)];
+  return {
+    x: area.xMin + Math.random() * (area.xMax - area.xMin),
+    y: area.yMin + Math.random() * (area.yMax - area.yMin),
+  };
+}
+
+export function createActiveBug(
+  spawnTable: SpawnEntry[],
+  zones: Record<BugZone, ZoneArea[]>,
+): ActiveBug {
   const bugId = weightedRandom(spawnTable);
-  const margin = 10;
+  const master = bugMap.get(bugId);
+  const zone: BugZone = master?.zone ?? 'grass';
+  const { x, y } = pickPosition(zones[zone]);
   return {
     instanceId: `${Date.now()}-${Math.random()}`,
     bugId,
-    x: margin + Math.random() * (100 - margin * 2),
-    y: margin + Math.random() * (55 - margin * 2),
+    x,
+    y,
     spawnedAt: Date.now(),
     state: 'idle',
   };

@@ -62,8 +62,8 @@
 }
 
 .spriteWrap {
-  width: 88px;
-  height: 88px;
+  width: 120px;
+  height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,8 +73,9 @@
 }
 
 .sprite {
-  font-size: 3.2rem;
-  line-height: 1;
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
   filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.45));
 }
 

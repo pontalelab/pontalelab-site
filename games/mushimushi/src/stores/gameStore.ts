@@ -12,6 +12,7 @@ type GameState = {
   setStage: (stageId: string) => void
   addActiveBug: (bug: ActiveBug) => void
   removeBug: (instanceId: string) => void
+  despawnBug: (instanceId: string) => void
   captureBug: (instanceId: string) => void
   unlockStage: (stageId: string) => void
   loadFromSave: (unlockedStages: string[]) => void
@@ -33,6 +34,13 @@ export const useGameStore = create<GameState>((set) => ({
 
   removeBug: (instanceId) =>
     set((s) => ({ activeBugs: s.activeBugs.filter((b) => b.instanceId !== instanceId) })),
+
+  despawnBug: (instanceId) =>
+    set((s) => ({
+      activeBugs: s.activeBugs.map((b) =>
+        b.instanceId === instanceId ? { ...b, state: 'despawning' as const } : b
+      ),
+    })),
 
   captureBug: (instanceId) =>
     set((s) => ({

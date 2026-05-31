@@ -62,9 +62,12 @@ export function BugDetailScreen({ bugId, onNavigate }: Props) {
 
       <div className={styles.body}>
         <div className={styles.spriteWrap}>
-          <span className={`${styles.sprite} ${!isDiscovered ? styles.silhouette : ''}`}>
-            {master.sprite}
-          </span>
+          <img
+            className={`${styles.sprite} ${!isDiscovered ? styles.silhouette : ''}`}
+            src={`${import.meta.env.BASE_URL}bugs/${master.id}.png`}
+            alt={isDiscovered ? master.name : ''}
+            draggable={false}
+          />
         </div>
 
         {isDiscovered ? (

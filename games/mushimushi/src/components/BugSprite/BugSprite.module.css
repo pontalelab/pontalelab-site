@@ -1,7 +1,7 @@
 .bug {
   position: absolute;
-  width: 56px;
-  height: 56px;
+  width: 112px;
+  height: 112px;
   transform: translate(-50%, -50%);
   border: none;
   background: transparent;
@@ -11,8 +11,7 @@
   justify-content: center;
   border-radius: 50%;
   overflow: visible;
-  /* translateY float: GPU-composited, no layout cost */
-  animation: idle-float 3s ease-in-out infinite;
+  animation: idle-float 3s ease-in-out infinite, bug-spawn 0.7s ease-out forwards;
   will-change: transform, opacity;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -23,8 +22,9 @@
 }
 
 .sprite {
-  font-size: 2rem;
-  line-height: 1;
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
   display: block;
   animation: idle-wiggle 2.5s ease-in-out infinite;
@@ -41,6 +41,11 @@
   animation: none;
 }
 
+.despawning {
+  animation: idle-float 3s ease-in-out infinite, bug-despawn 0.9s ease-in forwards;
+  pointer-events: none;
+}
+
 /* ── Particles (rare) ── */
 .particle {
   position: absolute;
@@ -54,6 +59,16 @@
 }
 
 /* ── Keyframes (all use transform — no layout properties) ── */
+@keyframes bug-spawn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes bug-despawn {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
 @keyframes idle-float {
   0%, 100% { transform: translate(-50%, -50%) translateY(0); }
   50%       { transform: translate(-50%, -50%) translateY(-6px); }

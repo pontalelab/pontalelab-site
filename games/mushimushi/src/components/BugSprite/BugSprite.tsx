@@ -29,6 +29,7 @@ export const BugSprite = memo(function BugSprite({ bug, onCapture, onCaptureComp
   const [showParticles, setShowParticles] = useState(false)
   const master = bugMap.get(bug.bugId)
   const isCapturing = bug.state === 'captured'
+  const isDespawning = bug.state === 'despawning'
 
   useEffect(() => {
     if (isCapturing && master?.rarity === 'rare') {
@@ -48,7 +49,7 @@ export const BugSprite = memo(function BugSprite({ bug, onCapture, onCaptureComp
 
   return (
     <button
-      className={`${styles.bug} ${isCapturing ? styles.capturing : ''}`}
+      className={`${styles.bug} ${isCapturing ? styles.capturing : ''} ${isDespawning ? styles.despawning : ''}`}
       style={{
         left: `${bug.x}%`,
         top: `${bug.y}%`,
@@ -60,12 +61,17 @@ export const BugSprite = memo(function BugSprite({ bug, onCapture, onCaptureComp
         e.preventDefault()
         handleTap()
       }}
-      onAnimationEnd={isCapturing ? (e) => {
+      onAnimationEnd={(isCapturing || isDespawning) ? (e) => {
         if (e.target === e.currentTarget) onCaptureComplete(bug.instanceId)
       } : undefined}
       aria-label={master.name}
     >
-      <span className={styles.sprite}>{master.sprite}</span>
+      <img
+        className={styles.sprite}
+        src={`${import.meta.env.BASE_URL}bugs/${master.id}.png`}
+        alt={master.name}
+        draggable={false}
+      />
       {showParticles && PARTICLE_OFFSETS.map((offset, i) => (
         <span
           key={i}

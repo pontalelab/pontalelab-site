@@ -11,6 +11,10 @@ export type GamePhase =
   | 'next-stage'
   | 'run-finished'
 
+export type BugZone = 'sky' | 'tree' | 'grass' | 'ground'
+
+export type ZoneArea = { xMin: number; xMax: number; yMin: number; yMax: number }
+
 export type BugMaster = {
   id: string
   name: string
@@ -18,6 +22,7 @@ export type BugMaster = {
   sprite: string
   description: string
   stages: string[]
+  zone: BugZone
 }
 
 export type SpawnEntry = {
@@ -35,6 +40,7 @@ export type StageMaster = {
   ambientColor: string
   ambientText: string
   spawnTable: SpawnEntry[]
+  zones: Record<BugZone, ZoneArea[]>
 }
 
 export type SaveData = {

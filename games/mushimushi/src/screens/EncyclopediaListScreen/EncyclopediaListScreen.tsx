@@ -54,9 +54,12 @@ export function EncyclopediaListScreen({ onNavigate, onBugSelect }: Props) {
             >
               {isNew && <span className={styles.newBadge}>NEW</span>}
               <span className={styles.entryNo}>No.{String(index + 1).padStart(2, '0')}</span>
-              <span className={`${styles.cardSprite} ${!isDiscovered ? styles.silhouette : ''}`}>
-                {bug.sprite}
-              </span>
+              <img
+                className={`${styles.cardSprite} ${!isDiscovered ? styles.silhouette : ''}`}
+                src={`${import.meta.env.BASE_URL}bugs/${bug.id}.png`}
+                alt={isDiscovered ? bug.name : ''}
+                draggable={false}
+              />
               <span className={styles.cardName}>
                 {isDiscovered ? bug.name : '？？？'}
               </span>
