@@ -1,0 +1,50 @@
+import type { StageMaster } from '../../types'
+
+export const stageMasters: StageMaster[] = [
+  {
+    id: 'grass_day',
+    name: '草原（昼）',
+    shortName: '草原',
+    timeLabel: '昼',
+    timeOfDay: 'day',
+    background: 'grass_day',
+    ambientColor: '#87CEEB',
+    ambientText: '草がそよぎ、虫の声が聞こえてくる',
+    spawnTable: [
+      { bugId: 'nanahoshi_tentou', weight: 70 },
+      { bugId: 'monshirocho', weight: 70 },
+      { bugId: 'syouryou_batta', weight: 70 },
+      { bugId: 'oniyanma', weight: 8 },
+    ],
+  },
+  {
+    id: 'forest_evening',
+    name: '雑木林（夕方）',
+    shortName: '雑木林',
+    timeLabel: '夕方',
+    timeOfDay: 'evening',
+    background: 'forest_evening',
+    ambientColor: '#FF7043',
+    ambientText: '木々の間から、橙色の光が差し込んでいる',
+    spawnTable: [
+      { bugId: 'kabutomushi', weight: 20 },
+      { bugId: 'nokogiri_kuwagata', weight: 20 },
+    ],
+  },
+  {
+    id: 'night_field',
+    name: '水辺（夜）',
+    shortName: '水辺',
+    timeLabel: '夜',
+    timeOfDay: 'night',
+    background: 'night_field',
+    ambientColor: '#1A237E',
+    ambientText: '水の音と、かすかな光が揺れている',
+    spawnTable: [
+      { bugId: 'genji_botaru', weight: 20 },
+      { bugId: 'oniyanma', weight: 8 },
+    ],
+  },
+]
+
+export const stageMap = new Map(stageMasters.map((s) => [s.id, s]))

@@ -1,0 +1,209 @@
+.screen {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ── Stage backgrounds ── */
+.grass_day {
+  background: linear-gradient(
+    180deg,
+    #87CEEB 0%,
+    #a8d8a8 55%,
+    #6b9e5e 55%,
+    #4a7c42 70%,
+    #3d6636 100%
+  );
+}
+
+.grass_day::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 70% 20%, rgba(255, 255, 180, 0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.forest_evening {
+  background: linear-gradient(
+    180deg,
+    #FF6B35 0%,
+    #FF8C42 20%,
+    #c0735a 40%,
+    #3d2b1f 55%,
+    #2a1e14 70%,
+    #1a1208 100%
+  );
+}
+
+.forest_evening::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 30% 10%, rgba(255, 150, 50, 0.2) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 60% at 70% 0%, rgba(255, 100, 30, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.night_field {
+  background: linear-gradient(
+    180deg,
+    #0d1b2a 0%,
+    #1a2d3d 30%,
+    #0f2518 55%,
+    #0a1a10 70%,
+    #061009 100%
+  );
+}
+
+.night_field::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(100, 150, 255, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 30% at 50% 0%, rgba(150, 180, 255, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  animation: starTwinkle 4s ease-in-out infinite;
+}
+
+.night_field::after {
+  content: '✦ ✧ ✦ ✦ ✧ ✦ ✧';
+  position: absolute;
+  top: 4%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.5rem;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 1.5rem;
+  pointer-events: none;
+  animation: starTwinkle 3s ease-in-out infinite alternate;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ── HUD ── */
+.hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-start;
+  padding: calc(env(safe-area-inset-top) + var(--hud-padding)) var(--hud-padding) 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.hudCenter {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding-top: var(--space-xs);
+  pointer-events: none;
+}
+
+/* ── Screen-level capture effects ── */
+.screenEffect {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+}
+
+/* epic: 軽い暗転 */
+.darken {
+  background: rgba(0, 0, 0, 0.5);
+  animation: screen-darken 0.55s ease-in-out forwards;
+}
+
+/* legendary: 静かな特殊演出 */
+.special {
+  background: radial-gradient(circle at center, rgba(255, 200, 50, 0.18) 0%, transparent 65%);
+  animation: screen-special 0.9s ease-out forwards;
+}
+
+@keyframes screen-darken {
+  0%   { opacity: 0; }
+  28%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes screen-special {
+  0%   { opacity: 0; }
+  35%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ── Night ambient particles (firefly motes) ── */
+.particleLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mote1, .mote2, .mote3 {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(160, 255, 110, 0.8);
+  filter: blur(1.5px);
+  box-shadow: 0 0 5px rgba(160, 255, 110, 0.5);
+  will-change: transform, opacity;
+}
+
+.mote1 {
+  left: 22%;
+  top: 38%;
+  animation: mote-drift 16s ease-in-out infinite;
+}
+
+.mote2 {
+  left: 65%;
+  top: 52%;
+  animation: mote-drift 21s ease-in-out infinite 6s;
+}
+
+.mote3 {
+  left: 44%;
+  top: 28%;
+  animation: mote-drift 26s ease-in-out infinite 11s;
+}
+
+@keyframes mote-drift {
+  0%   { transform: translate(0,    0);    opacity: 0;   }
+  12%  { opacity: 0.75; }
+  38%  { transform: translate(14px, -20px); opacity: 0.55; }
+  58%  { transform: translate(-9px, -14px); opacity: 0.85; }
+  78%  { transform: translate(7px,   9px);  opacity: 0.4;  }
+  90%  { opacity: 0.65; }
+  100% { transform: translate(0,    0);    opacity: 0;   }
+}
+
+/* ── Spawn area ── */
+.spawnArea {
+  position: absolute;
+  inset: 0;
+  bottom: 30%;
+  z-index: 5;
+  touch-action: none; /* prevent scroll/pinch-zoom during bug interaction */
+}
+

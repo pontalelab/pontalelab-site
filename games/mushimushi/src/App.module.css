@@ -1,0 +1,32 @@
+.loading {
+  position: fixed;
+  inset: 0;
+  background: #0c0b09;
+}
+
+/* ── Screen transition fade ── */
+.fade {
+  position: fixed;
+  inset: 0;
+  background: #0c0b09;
+  z-index: 900;
+  pointer-events: none;
+}
+
+.fadeOut {
+  animation: screen-fade-out 0.24s ease-out forwards;
+}
+
+.fadeIn {
+  animation: screen-fade-in 0.28s ease-in forwards;
+}
+
+@keyframes screen-fade-out {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes screen-fade-in {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
