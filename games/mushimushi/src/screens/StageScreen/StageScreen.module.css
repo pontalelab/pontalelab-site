@@ -14,86 +14,36 @@
 
 /* ── Stage backgrounds ── */
 .grass_day {
-  background: linear-gradient(
-    180deg,
-    #87CEEB 0%,
-    #a8d8a8 55%,
-    #6b9e5e 55%,
-    #4a7c42 70%,
-    #3d6636 100%
-  );
-}
-
-.grass_day::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 60% 40% at 70% 20%, rgba(255, 255, 180, 0.15) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 30% at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-  pointer-events: none;
+  background: url('/bg/grass_day.png') center center / cover no-repeat;
 }
 
 .forest_evening {
-  background: linear-gradient(
-    180deg,
-    #FF6B35 0%,
-    #FF8C42 20%,
-    #c0735a 40%,
-    #3d2b1f 55%,
-    #2a1e14 70%,
-    #1a1208 100%
-  );
-}
-
-.forest_evening::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 80% 50% at 30% 10%, rgba(255, 150, 50, 0.2) 0%, transparent 60%),
-    radial-gradient(ellipse 100% 60% at 70% 0%, rgba(255, 100, 30, 0.15) 0%, transparent 50%);
-  pointer-events: none;
+  background: url('/bg/forest_evening.png') center center / cover no-repeat;
 }
 
 .night_field {
-  background: linear-gradient(
-    180deg,
-    #0d1b2a 0%,
-    #1a2d3d 30%,
-    #0f2518 55%,
-    #0a1a10 70%,
-    #061009 100%
-  );
+  background: url('/bg/night_field.png') center center / cover no-repeat;
 }
 
+/* Subtle dark overlay to keep bugs readable against bright backgrounds */
+.grass_day::before,
+.forest_evening::before,
 .night_field::before {
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(100, 150, 255, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 100% 30% at 50% 0%, rgba(150, 180, 255, 0.05) 0%, transparent 50%);
+  background: rgba(0, 0, 0, 0.08);
   pointer-events: none;
+}
+
+/* Night: slight star-twinkle overlay retained for atmosphere */
+.night_field::before {
+  background: rgba(0, 0, 0, 0.12);
   animation: starTwinkle 4s ease-in-out infinite;
 }
 
-.night_field::after {
-  content: '✦ ✧ ✦ ✦ ✧ ✦ ✧';
-  position: absolute;
-  top: 4%;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 0.5rem;
-  color: rgba(255, 255, 255, 0.3);
-  letter-spacing: 1.5rem;
-  pointer-events: none;
-  animation: starTwinkle 3s ease-in-out infinite alternate;
-}
-
 @keyframes starTwinkle {
-  0%, 100% { opacity: 0.4; }
+  0%, 100% { opacity: 0.8; }
   50% { opacity: 1; }
 }
 

@@ -116,7 +116,7 @@ export function StageScreen({ onNavigate }: Props) {
 
       {/* HUD */}
       <div className={styles.hud}>
-        <HudButton icon="←" label="もどる" onClick={() => onNavigate(SCREENS.STAGE_SELECT)} />
+        <HudButton icon="←" label="もどる" onClick={() => onNavigate(SCREENS.HOME)} />
         <div className={styles.hudCenter} />
         <HudButton icon="≡" label="図鑑" onClick={() => onNavigate(SCREENS.ENCYCLOPEDIA_LIST)} />
       </div>
