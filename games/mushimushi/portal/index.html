@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pontalelab - 親子向けデジタル研究所</title>
+  <meta name="description" content="生き物や音や発見をテーマにした親子向けデジタル研究所。会員登録不要・無料で遊べるブラウザゲーム。">
+  <meta property="og:title"       content="Pontalelab">
+  <meta property="og:description" content="遊びながら発見する親子向けデジタル研究所">
+  <meta property="og:type"        content="website">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="home">
+
+  <!-- ======================================================
+       HEADER
+       ====================================================== -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="Pontalelab トップページ">
+        <ruby>Pontale<span class="logo-dot">lab</span><rt>ぽんたーれらぼ</rt></ruby>
+      </a>
+      <nav class="header-nav" aria-label="メインナビゲーション">
+        <a href="games/"   class="nav-link hide-sm" data-i18n="nav:games">ゲーム一覧</a>
+        <a href="about/"   class="nav-link hide-sm" data-i18n="nav:about">について</a>
+        <a href="contact/" class="nav-link hide-sm" data-i18n="nav:contact">お問い合わせ</a>
+        <button class="lang-btn" aria-label="Switch language" data-i18n="lang:btn">English</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ======================================================
+         HERO
+         ====================================================== -->
+    <section class="hero" aria-label="ヒーローエリア">
+
+      <!-- Decorative background circles -->
+      <div class="hero-deco" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </div>
+
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <ruby>Pontalelab<rt>ぽんたーれらぼ</rt></ruby>
+        </h1>
+        <p  class="hero-tagline" data-i18n="hero:tagline">
+          遊びながら発見する、親子向けデジタル研究所
+        </p>
+        <a href="games/" class="btn-hero" data-i18n="hero:cta">
+          ゲーム一覧を見る →
+        </a>
+      </div>
+
+      <!-- Wave divider -->
+      <div class="hero-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 70" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,70 C360,0 1080,0 1440,70 L1440,70 L0,70 Z"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         FEATURED GAMES  ← most prominent content on page
+         ====================================================== -->
+    <section class="sect-featured" aria-labelledby="featured-heading">
+      <div class="inner">
+        <h2 class="section-title" id="featured-heading" data-i18n="featured:heading">
+          注目のゲーム
+        </h2>
+        <div class="game-cards">
+
+          <article class="game-card">
+            <div class="game-card-icon" aria-hidden="true">⚗️</div>
+            <h3 class="game-card-title" data-i18n="game1:name">まぜまぜ研究室</h3>
+            <p   class="game-card-desc"  data-i18n="game1:desc">
+              いろいろな素材を組み合わせて発見を楽しもう
+            </p>
+            <a href="games/mazemaze/" class="btn-play" data-i18n="game1:btn">遊ぶ →</a>
+          </article>
+
+          <article class="game-card">
+            <div class="game-card-icon" aria-hidden="true">🐛</div>
+            <h3 class="game-card-title" data-i18n="game2:name">むしむしゲーム</h3>
+            <p   class="game-card-desc"  data-i18n="game2:desc">
+              虫を探して図鑑を集めよう
+            </p>
+            <a href="games/mushimushi/" class="btn-play" data-i18n="game2:btn">遊ぶ →</a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         SKILLS
+         ====================================================== -->
+    <section class="sect-skills" aria-labelledby="skills-heading">
+      <div class="inner">
+        <h2 class="section-title" id="skills-heading" data-i18n="skills:heading">
+          遊びながら育つ力
+        </h2>
+        <div class="skill-cards">
+
+          <div class="skill-card">
+            <span class="skill-icon" aria-hidden="true">🔍</span>
+            <h3 class="skill-name" data-i18n="skill1:name">観察する</h3>
+            <p  class="skill-desc" data-i18n="skill1:desc">
+              自然の変化に気づき、ちがいを見つける力を育む
+            </p>
+          </div>
+
+          <div class="skill-card">
+            <span class="skill-icon" aria-hidden="true">💡</span>
+            <h3 class="skill-name" data-i18n="skill2:name">考える</h3>
+            <p  class="skill-desc" data-i18n="skill2:desc">
+              「なぜ？」「どうして？」を大切にする力を育む
+            </p>
+          </div>
+
+          <div class="skill-card">
+            <span class="skill-icon" aria-hidden="true">🎨</span>
+            <h3 class="skill-name" data-i18n="skill3:name">つくる</h3>
+            <p  class="skill-desc" data-i18n="skill3:desc">
+              アイデアをかたちにする力を育む
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         PARENTS
+         ====================================================== -->
+    <section class="sect-parents" aria-labelledby="parents-heading">
+      <div class="inner">
+        <h2 class="section-title" id="parents-heading" data-i18n="parents:heading">
+          保護者の方へ
+        </h2>
+        <div class="parents-box">
+          <ul class="parents-list">
+            <li class="parents-item">
+              <span class="parents-check" aria-hidden="true">✓</span>
+              <span data-i18n="parents:item1">会員登録不要</span>
+            </li>
+            <li class="parents-item">
+              <span class="parents-check" aria-hidden="true">✓</span>
+              <span data-i18n="parents:item2">個人情報入力不要</span>
+            </li>
+            <li class="parents-item">
+              <span class="parents-check" aria-hidden="true">✓</span>
+              <span data-i18n="parents:item3">課金なし</span>
+            </li>
+            <li class="parents-item">
+              <span class="parents-check" aria-hidden="true">✓</span>
+              <span data-i18n="parents:item4">チャット機能なし</span>
+            </li>
+            <li class="parents-item">
+              <span class="parents-check" aria-hidden="true">✓</span>
+              <span data-i18n="parents:item5">ブラウザだけで遊べる</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         RESEARCH LOG
+         ====================================================== -->
+    <section class="sect-log" aria-labelledby="log-heading">
+      <div class="inner">
+        <h2 class="section-title" id="log-heading" data-i18n="log:heading">研究記録</h2>
+        <div class="log-entries">
+
+          <article class="log-entry">
+            <time class="log-date"  data-i18n="log1:date">2025年05月20日</time>
+            <h3   class="log-title" data-i18n="log1:title">むしむしゲーム v1.0 公開</h3>
+            <p    class="log-text"  data-i18n="log1:text">
+              虫の図鑑収集ゲームの初版をリリースしました。10種類の虫を探して集めよう！
+            </p>
+          </article>
+
+          <article class="log-entry">
+            <time class="log-date"  data-i18n="log2:date">2025年04月15日</time>
+            <h3   class="log-title" data-i18n="log2:title">まぜまぜ研究室 ベータ版</h3>
+            <p    class="log-text"  data-i18n="log2:text">
+              素材を組み合わせる実験ゲームのベータ版を公開。新しい発見があるかも？
+            </p>
+          </article>
+
+          <article class="log-entry">
+            <time class="log-date"  data-i18n="log3:date">2025年04月01日</time>
+            <h3   class="log-title" data-i18n="log3:title">Pontalelab オープン！</h3>
+            <p    class="log-text"  data-i18n="log3:text">
+              親子向けデジタル研究所「Pontalelab」をオープンしました。これからもいろんなゲームを追加していきます！
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         ABOUT (dark band)
+         ====================================================== -->
+    <section class="sect-about-dark" aria-labelledby="about-heading">
+      <div class="inner">
+        <h2 class="section-title" id="about-heading" data-i18n="about:heading">
+          Pontalelabについて
+        </h2>
+        <p class="about-lead" data-i18n="about:text">
+          生き物や音や発見をテーマにした親子向けデジタル研究所です。子どもが自然に好奇心を持ち、親子で一緒に楽しめるゲームを作っています。
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================
+       FOOTER
+       ====================================================== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">Pontalelab</div>
+          <p class="footer-tagline" data-i18n="footer:tagline">親子で楽しむ、発見の研究所</p>
+        </div>
+        <nav class="footer-nav" aria-label="フッターナビゲーション">
+          <a href="games/"   data-i18n="footer:games">ゲーム一覧</a>
+          <a href="about/"   data-i18n="footer:about">Pontalelabについて</a>
+          <a href="privacy/" data-i18n="footer:privacy">プライバシーポリシー</a>
+          <a href="contact/" data-i18n="footer:contact">お問い合わせ</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-email">
+          <a href="mailto:pontalelab@gmail.com">pontalelab@gmail.com</a>
+        </p>
+        <p class="footer-copy" data-i18n="footer:copy">© 2025 Pontalelab</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

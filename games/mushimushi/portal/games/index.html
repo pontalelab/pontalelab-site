@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ゲーム一覧 | Pontalelab</title>
+  <meta name="description" content="親子で楽しめる無料ブラウザゲーム一覧。まぜまぜ研究室、むしむしゲームなど。">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-page="games">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../" class="logo" aria-label="Pontalelab トップページ">
+        Pontale<span class="logo-dot">lab</span>
+      </a>
+      <nav class="header-nav" aria-label="メインナビゲーション">
+        <a href="./"        class="nav-link hide-sm" data-i18n="nav:games">ゲーム一覧</a>
+        <a href="../about/" class="nav-link hide-sm" data-i18n="nav:about">について</a>
+        <a href="../contact/" class="nav-link hide-sm" data-i18n="nav:contact">お問い合わせ</a>
+        <button class="lang-btn" aria-label="Switch language" data-i18n="lang:btn">English</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Page Hero -->
+    <div class="page-hero">
+      <h1 class="page-hero-title" data-i18n="games:heading">ゲーム一覧</h1>
+      <p  class="page-hero-desc"  data-i18n="games:desc">親子で楽しめる無料ブラウザゲーム</p>
+    </div>
+
+    <!-- Games Grid -->
+    <section class="sect-games" aria-label="ゲーム一覧">
+      <div class="inner">
+        <div class="games-grid">
+
+          <!-- まぜまぜ研究室 -->
+          <article class="game-card-full">
+            <div class="game-card-icon" aria-hidden="true">⚗️</div>
+            <h2 class="game-card-title" data-i18n="game1:name">まぜまぜ研究室</h2>
+            <p  class="game-card-desc"  data-i18n="game1:desc">
+              いろいろな素材を組み合わせて発見を楽しもう
+            </p>
+            <a href="mazemaze/" class="btn-play" data-i18n="game1:btn">遊ぶ →</a>
+          </article>
+
+          <!-- むしむしゲーム -->
+          <article class="game-card-full">
+            <div class="game-card-icon" aria-hidden="true">🐛</div>
+            <h2 class="game-card-title" data-i18n="game2:name">むしむしゲーム</h2>
+            <p  class="game-card-desc"  data-i18n="game2:desc">
+              虫を探して図鑑を集めよう
+            </p>
+            <a href="mushimushi/" class="btn-play" data-i18n="game2:btn">遊ぶ →</a>
+          </article>
+
+          <!-- ポコポコ楽団 (開発中) -->
+          <article class="game-card-full is-coming-soon">
+            <span class="badge" data-i18n="game3:badge">開発中</span>
+            <div class="game-card-icon" aria-hidden="true">🥁</div>
+            <h2 class="game-card-title" data-i18n="game3:name">ポコポコ楽団</h2>
+            <p  class="game-card-desc"  data-i18n="game3:desc">
+              リズムに合わせて楽器を鳴らして音楽を楽しもう
+            </p>
+            <div class="btn-disabled" aria-disabled="true" data-i18n="game3:btn">
+              もうすぐ！
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">Pontalelab</div>
+          <p class="footer-tagline" data-i18n="footer:tagline">親子で楽しむ、発見の研究所</p>
+        </div>
+        <nav class="footer-nav" aria-label="フッターナビゲーション">
+          <a href="./"          data-i18n="footer:games">ゲーム一覧</a>
+          <a href="../about/"   data-i18n="footer:about">Pontalelabについて</a>
+          <a href="../privacy/" data-i18n="footer:privacy">プライバシーポリシー</a>
+          <a href="../contact/" data-i18n="footer:contact">お問い合わせ</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-email">
+          <a href="mailto:pontalelab@gmail.com">pontalelab@gmail.com</a>
+        </p>
+        <p class="footer-copy" data-i18n="footer:copy">© 2025 Pontalelab</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

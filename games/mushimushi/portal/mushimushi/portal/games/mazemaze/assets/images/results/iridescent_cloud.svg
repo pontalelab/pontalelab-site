@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="48" fill="#E8EAF6"/>
+  <defs>
+    <linearGradient id="irid" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#F48FB1"/>
+      <stop offset="33%"  stop-color="#CE93D8"/>
+      <stop offset="66%"  stop-color="#90CAF9"/>
+      <stop offset="100%" stop-color="#80DEEA"/>
+    </linearGradient>
+  </defs>
+  <path d="M72,58 C78,58 82,54 82,48 C82,42 78,38 72,38
+           C71,32 66,28 60,28 C56,28 53,30 51,33
+           C49,30 45,28 40,28 C32,28 26,34 26,42
+           C20,42 16,46 16,52 C16,58 20,62 26,62Z"
+        fill="url(#irid)" stroke="#CE93D8" stroke-width="1.5"/>
+  <circle cx="68" cy="28" r="12" fill="#FFF9C4" opacity="0.9"/>
+  <g stroke="#FFD600" stroke-width="2.5" stroke-linecap="round">
+    <line x1="68" y1="12" x2="68" y2="17"/>
+    <line x1="68" y1="39" x2="68" y2="44"/>
+    <line x1="52" y1="28" x2="57" y2="28"/>
+    <line x1="79" y1="28" x2="84" y2="28"/>
+    <line x1="57" y1="17" x2="61" y2="21"/>
+    <line x1="75" y1="35" x2="79" y2="39"/>
+  </g>
+</svg>

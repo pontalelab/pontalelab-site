@@ -1,0 +1,69 @@
+import type { BugMaster } from '../../types';
+
+export const bugMasters: BugMaster[] = [
+  {
+    id: 'nanahoshi_tentou',
+    name: 'ナナホシテントウ',
+    rarity: 'common',
+    sprite: '🐞',
+    description: '七つの黒い星を持つ赤いてんとうむし。草むらでよく見かける。',
+    stages: ['grass_day'],
+    zone: 'grass',
+  },
+  {
+    id: 'monshirocho',
+    name: 'モンシロチョウ',
+    rarity: 'common',
+    sprite: '🦋',
+    description: '白い翅に黒い紋様。菜の花畑を好んで飛ぶ。',
+    stages: ['grass_day'],
+    zone: 'sky',
+  },
+  {
+    id: 'syouryou_batta',
+    name: 'ショウリョウバッタ',
+    rarity: 'common',
+    sprite: '🦗',
+    description: '細長い体の大きなバッタ。草むらに潜んでいる。',
+    stages: ['grass_day'],
+    zone: 'grass',
+  },
+  {
+    id: 'kabutomushi',
+    name: 'カブトムシ',
+    rarity: 'uncommon',
+    sprite: '🪲',
+    description: '角を持つ昆虫の王様。子どもたちの憧れ。',
+    stages: ['forest_evening'],
+    zone: 'tree',
+  },
+  {
+    id: 'nokogiri_kuwagata',
+    name: 'ノコギリクワガタ',
+    rarity: 'uncommon',
+    sprite: '🦌',
+    description: 'ギザギザの大顎を持つクワガタムシ。',
+    stages: ['forest_evening'],
+    zone: 'tree',
+  },
+  {
+    id: 'oniyanma',
+    name: 'オニヤンマ',
+    rarity: 'rare',
+    sprite: '🪲',
+    description: '日本最大のトンボ。黄色と黒の縞模様が美しい。',
+    stages: ['grass_day', 'night_field'],
+    zone: 'sky',
+  },
+  {
+    id: 'genji_botaru',
+    name: 'ゲンジボタル',
+    rarity: 'uncommon',
+    sprite: '✨',
+    description: '川辺で光る日本最大のホタル。幻想的な光を放つ。',
+    stages: ['night_field'],
+    zone: 'sky',
+  },
+];
+
+export const bugMap = new Map(bugMasters.map((b) => [b.id, b]));

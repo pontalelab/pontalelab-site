@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#FF6B6B">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <title>AIまぜまぜ けんきゅうしつ</title>
+  <link rel="stylesheet" href="style.css?v=9">
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════ HOME ═══════════ -->
+  <section id="screen-home" class="screen screen--home">
+    <div class="home__deco" aria-hidden="true">🔬</div>
+    <h1  class="home__title"    data-i18n="home_title"></h1>
+    <p   class="home__subtitle" data-i18n="home_subtitle"></p>
+    <div class="home__actions">
+      <button id="btn-start"       class="btn btn--primary btn--large" data-i18n="home_start"></button>
+      <button id="btn-gallery-home" class="btn btn--secondary btn--large" data-i18n="home_gallery"></button>
+    </div>
+    <button id="btn-lang" class="btn btn--lang">
+      <span id="lang-label"></span>
+    </button>
+  </section>
+
+  <!-- ═══════════ EXPERIMENT ═══════════ -->
+  <section id="screen-experiment" class="screen screen--experiment hidden">
+    <p class="exp__instruction" data-i18n="exp_instruction"></p>
+
+    <div class="exp__materials">
+      <div id="slot-a" class="material-slot" data-slot="a" touch-action="none">
+        <img id="slot-a-img" class="material-slot__img" src="" alt="">
+        <span id="slot-a-name" class="material-slot__name"></span>
+      </div>
+      <div class="exp__arrow" aria-hidden="true">＋</div>
+      <div id="slot-b" class="material-slot" data-slot="b" touch-action="none">
+        <img id="slot-b-img" class="material-slot__img" src="" alt="">
+        <span id="slot-b-name" class="material-slot__name"></span>
+      </div>
+    </div>
+
+    <div class="mixbox-area">
+      <svg class="mixbox-ring" viewBox="0 0 160 160" aria-hidden="true">
+        <circle class="mixbox-ring__track" cx="80" cy="80" r="68"/>
+        <circle id="ring-fill" class="mixbox-ring__fill" cx="80" cy="80" r="68"/>
+      </svg>
+      <div id="mix-box" class="mixbox" touch-action="none">
+        <div id="mix-box-inner" class="mixbox__inner">
+          <span id="mixbox-icon-a" class="mixbox__icon"></span>
+          <span id="mixbox-icon-b" class="mixbox__icon"></span>
+        </div>
+      </div>
+    </div>
+
+    <p id="exp-hint" class="exp__hint"></p>
+
+    <!-- 光演出オーバーレイ -->
+    <div id="exp-glow-overlay" class="exp-glow-overlay" aria-hidden="true"></div>
+
+    <!-- 矢印オーバーレイ -->
+    <svg id="arrows-svg" class="arrows-svg" aria-hidden="true">
+      <defs>
+        <marker id="arrow-marker" markerWidth="10" markerHeight="7"
+                refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#FF9800"/>
+        </marker>
+      </defs>
+      <path id="arrow-a" class="arrow-path" marker-end="url(#arrow-marker)"/>
+      <path id="arrow-b" class="arrow-path" marker-end="url(#arrow-marker)"
+            style="animation-delay:-0.35s"/>
+    </svg>
+  </section>
+
+  <!-- ドラッグゴースト -->
+  <div id="drag-ghost" class="drag-ghost hidden" aria-hidden="true"></div>
+
+  <!-- ═══════════ RESULT ═══════════ -->
+  <section id="screen-result" class="screen screen--result hidden">
+    <div id="result-new-badge" class="result__badge hidden" data-i18n="result_new_badge"></div>
+    <h2  class="result__title" data-i18n="result_title"></h2>
+    <div class="result__image-wrap">
+      <img id="result-image" class="result__image" src="" alt="">
+    </div>
+    <p id="result-name" class="result__name"></p>
+    <div class="result__actions">
+      <button id="btn-next"       class="btn btn--primary btn--large" data-i18n="result_next"></button>
+      <button id="btn-to-gallery" class="btn btn--secondary"          data-i18n="result_to_gallery"></button>
+    </div>
+  </section>
+
+  <!-- ═══════════ GALLERY ═══════════ -->
+  <section id="screen-gallery" class="screen screen--gallery hidden">
+    <div class="gallery__header">
+      <button id="btn-gallery-back" class="btn btn--back" data-i18n="gallery_back"></button>
+      <h2 class="gallery__title" data-i18n="gallery_title"></h2>
+    </div>
+    <p id="gallery-progress" class="gallery__progress"></p>
+    <div id="gallery-grid" class="gallery__grid" role="list"></div>
+  </section>
+
+  <!-- ═══════════ CARD DETAIL ═══════════ -->
+  <section id="screen-carddetail" class="screen screen--carddetail hidden">
+
+    <!-- 上部：素材2つ -->
+    <div class="cd__materials">
+      <div class="cd__material">
+        <img id="cd-mat-a-img" class="cd__mat-img" src="" alt="">
+        <span id="cd-mat-a-name" class="cd__mat-name"></span>
+      </div>
+      <span class="cd__plus" aria-hidden="true">＋</span>
+      <div class="cd__material">
+        <img id="cd-mat-b-img" class="cd__mat-img" src="" alt="">
+        <span id="cd-mat-b-name" class="cd__mat-name"></span>
+      </div>
+    </div>
+
+    <!-- 中央：結果 -->
+    <div class="cd__result">
+      <div class="cd__result-img-wrap">
+        <img id="cd-result-img" class="cd__result-img" src="" alt="">
+      </div>
+      <p id="cd-result-name" class="cd__result-name"></p>
+    </div>
+
+    <!-- 下部：好奇心セリフ -->
+    <p id="cd-phrase" class="cd__phrase"></p>
+
+    <!-- 右下：ずかんにもどるボタン -->
+    <button id="btn-cd-back" class="btn btn--cd-back"
+            data-i18n="card_detail_back"></button>
+
+  </section>
+
+</div><!-- #app -->
+
+<!-- ロード順: StoragePort → Adapters → createStorage → domain → data → i18n → ui → app -->
+<script src="storage/StoragePort.js?v=9"></script>
+<script src="storage/StorageKeys.js?v=9"></script>
+<script src="storage/LocalStorageAdapter.js?v=9"></script>
+<script src="storage/MemoryStorageAdapter.js?v=9"></script>
+<script src="storage/createStorage.js?v=9"></script>
+<script src="domain/ResultSelector.js?v=9"></script>
+<script src="domain/GestureAnalyzer.js?v=9"></script>
+<script src="domain/GameEngine.js?v=9"></script>
+<script src="domain/GalleryLogic.js?v=9"></script>
+<script src="data/data.js?v=9"></script>
+<script src="audio.js?v=9"></script>
+<script src="i18n.js?v=9"></script>
+<script src="ui.js?v=9"></script>
+<script src="app.js?v=9"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+import type { StageMaster } from '../../types'
+
+export const stageMasters: StageMaster[] = [
+  {
+    id: 'grass_day',
+    name: '草原（昼）',
+    shortName: '草原',
+    timeLabel: '昼',
+    timeOfDay: 'day',
+    background: 'grass_day',
+    ambientColor: '#87CEEB',
+    ambientText: '草がそよぎ、虫の声が聞こえてくる',
+    spawnTable: [
+      { bugId: 'nanahoshi_tentou', weight: 70 },
+      { bugId: 'monshirocho', weight: 70 },
+      { bugId: 'syouryou_batta', weight: 70 },
+      { bugId: 'oniyanma', weight: 8 },
+    ],
+    // 画像構成: 上半分が青空、下半分が草原
+    zones: {
+      sky:    [{ xMin: 5,  xMax: 92, yMin: 3,  yMax: 40 }],
+      tree:   [{ xMin: 5,  xMax: 92, yMin: 35, yMax: 55 }], // 地平線付近（未使用）
+      grass:  [{ xMin: 5,  xMax: 92, yMin: 52, yMax: 85 }],
+      ground: [{ xMin: 5,  xMax: 92, yMin: 78, yMax: 90 }], // 未使用
+    },
+  },
+  {
+    id: 'forest_evening',
+    name: '雑木林（夕方）',
+    shortName: '雑木林',
+    timeLabel: '夕方',
+    timeOfDay: 'evening',
+    background: 'forest_evening',
+    ambientColor: '#FF7043',
+    ambientText: '木々の間から、橙色の光が差し込んでいる',
+    spawnTable: [
+      { bugId: 'kabutomushi', weight: 20 },
+      { bugId: 'nokogiri_kuwagata', weight: 20 },
+    ],
+    // 画像構成: 上部がオレンジ空、左右に木、中央下が草地
+    zones: {
+      sky:    [{ xMin: 18, xMax: 82, yMin: 3,  yMax: 22 }],
+      tree:   [
+        { xMin: 2,  xMax: 28, yMin: 10, yMax: 72 }, // 左の木
+        { xMin: 68, xMax: 95, yMin: 10, yMax: 72 }, // 右の木
+      ],
+      grass:  [{ xMin: 18, xMax: 78, yMin: 65, yMax: 87 }],
+      ground: [{ xMin: 10, xMax: 85, yMin: 80, yMax: 90 }], // 未使用
+    },
+  },
+  {
+    id: 'night_field',
+    name: '水辺（夜）',
+    shortName: '水辺',
+    timeLabel: '夜',
+    timeOfDay: 'night',
+    background: 'night_field',
+    ambientColor: '#1A237E',
+    ambientText: '水の音と、かすかな光が揺れている',
+    spawnTable: [
+      { bugId: 'genji_botaru', weight: 20 },
+      { bugId: 'oniyanma', weight: 8 },
+    ],
+    // 画像構成: 上部が月明かりの空、左右に木、中央下が林道
+    zones: {
+      sky:    [{ xMin: 8,  xMax: 90, yMin: 3,  yMax: 45 }],
+      tree:   [
+        { xMin: 2,  xMax: 25, yMin: 15, yMax: 80 }, // 左の木
+        { xMin: 72, xMax: 96, yMin: 15, yMax: 80 }, // 右の木
+      ],
+      grass:  [{ xMin: 8,  xMax: 88, yMin: 70, yMax: 88 }],
+      ground: [{ xMin: 5,  xMax: 92, yMin: 82, yMax: 90 }], // 未使用
+    },
+  },
+]
+
+export const stageMap = new Map(stageMasters.map((s) => [s.id, s]))
