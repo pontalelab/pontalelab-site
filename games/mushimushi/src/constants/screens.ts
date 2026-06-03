@@ -4,4 +4,5 @@ export const SCREENS = {
   STAGE: 'stage',
   ENCYCLOPEDIA_LIST: 'encyclopedia-list',
   BUG_DETAIL: 'bug-detail',
+  RUN_RESULT: 'run-result',
 } as const

@@ -17,10 +17,13 @@ export function HomeScreen({ onNavigate }: Props) {
   }
 
   return (
-    <div className={styles.screen}>
+    <div
+      className={styles.screen}
+      style={{ backgroundImage: `url('${import.meta.env.BASE_URL}home_bg.png')` }}
+    >
       <div className={styles.content}>
-        <h1 className={styles.title}>虫の記録</h1>
-        <p className={styles.subtitle}>自然の中で虫を探そう</p>
+        <h1 className={styles.title}>むしたん</h1>
+        <p className={styles.subtitle}>むしさがしの たんけんだ！</p>
       </div>
       <nav className={styles.nav}>
         <button className={styles.primaryBtn} onClick={startGame}>

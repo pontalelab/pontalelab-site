@@ -1,7 +1,7 @@
 .bug {
   position: absolute;
-  width: 112px;
-  height: 112px;
+  width: 84px;
+  height: 84px;
   transform: translate(-50%, -50%);
   border: none;
   background: transparent;
@@ -22,8 +22,8 @@
 }
 
 .sprite {
-  width: 96px;
-  height: 96px;
+  width: 72px;
+  height: 72px;
   object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
   display: block;
@@ -32,8 +32,30 @@
   will-change: transform;
 }
 
+/* ── Movement type overrides ── */
+.sway {
+  animation: bug-sway 5s ease-in-out infinite, bug-spawn 0.7s ease-out forwards;
+}
+
+.wander {
+  animation: bug-wander var(--wander-dur, 8s) linear forwards, bug-spawn 0.7s ease-out forwards;
+}
+
+@keyframes bug-sway {
+  0%   { transform: translate(-50%, -50%) translateX(0)    translateY(0); }
+  20%  { transform: translate(-50%, -50%) translateX(38px)  translateY(-5px); }
+  50%  { transform: translate(-50%, -50%) translateX(0)    translateY(0); }
+  75%  { transform: translate(-50%, -50%) translateX(-38px) translateY(5px); }
+  100% { transform: translate(-50%, -50%) translateX(0)    translateY(0); }
+}
+
+@keyframes bug-wander {
+  from { transform: translate(-50%, -50%) translateX(0) translateY(0); }
+  to   { transform: translate(-50%, -50%) translateX(var(--wander-dx, 300px)) translateY(var(--wander-dy, 0px)); }
+}
+
 .capturing {
-  animation: capture-scale 0.75s ease-out forwards;
+  animation: capture-fade 0.18s ease-out forwards;
   pointer-events: none;
 }
 
@@ -79,24 +101,9 @@
   50%       { transform: rotate(4deg); }
 }
 
-@keyframes capture-scale {
-  0% {
-    transform: translate(-50%, -50%) scale(1.3);
-    opacity: 1;
-    filter: brightness(2.5)
-            drop-shadow(0 0 14px var(--rarity-color))
-            drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
-  }
-  35% {
-    transform: translate(-50%, -50%) scale(0.9);
-    opacity: 0.9;
-    filter: brightness(1.3) drop-shadow(0 0 6px var(--rarity-color));
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0;
-    filter: none;
-  }
+@keyframes capture-fade {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 @keyframes particle-scatter {

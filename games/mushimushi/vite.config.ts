@@ -3,8 +3,10 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  // './' makes all assets relative — works at any GitHub Pages subdirectory path
   base: './',
+  server: {
+    host: true, // bind to 0.0.0.0 — allows LAN / smartphone access
+  },
   build: {
     outDir: 'docs',
     chunkSizeWarningLimit: 600,

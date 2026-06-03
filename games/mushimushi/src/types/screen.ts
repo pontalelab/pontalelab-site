@@ -4,3 +4,4 @@ export type ScreenName =
   | 'stage'
   | 'encyclopedia-list'
   | 'bug-detail'
+  | 'run-result'

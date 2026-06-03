@@ -37,6 +37,6 @@ export function createActiveBug(
   };
 }
 
-export const SPAWN_INTERVAL_MS = 3000;
+export const SPAWN_INTERVAL_MS = 9000;
 export const DESPAWN_AFTER_MS = 12000;
 export const MAX_ACTIVE_BUGS = 6;

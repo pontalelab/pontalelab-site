@@ -6,7 +6,16 @@
   justify-content: center;
   align-items: center;
   gap: var(--space-xl);
-  background: linear-gradient(to bottom, #0e1a10, #1a2a1a);
+  background-size: cover;
+  background-position: center center;
+}
+
+.screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  pointer-events: none;
 }
 
 .content {
@@ -15,19 +24,25 @@
   align-items: center;
   gap: var(--space-sm);
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 300;
-  letter-spacing: 0.2em;
-  color: var(--text-primary);
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #fff;
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(80, 200, 80, 0.3);
 }
 
 .subtitle {
   font-size: var(--font-sm);
-  color: var(--text-dim);
+  color: rgba(255, 255, 255, 0.75);
   letter-spacing: 0.12em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .nav {
@@ -36,6 +51,8 @@
   gap: var(--space-md);
   width: 100%;
   max-width: 240px;
+  position: relative;
+  z-index: 1;
 }
 
 .primaryBtn {

@@ -130,12 +130,41 @@
   100% { transform: translate(0,    0);    opacity: 0;   }
 }
 
+/* ── Catch net effect ── */
+.catchNet {
+  position: fixed;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 4px solid rgba(220, 185, 90, 0.95);
+  background:
+    repeating-linear-gradient(
+      0deg, transparent 0px, transparent 22px,
+      rgba(220, 185, 90, 0.22) 22px, rgba(220, 185, 90, 0.22) 24px
+    ),
+    repeating-linear-gradient(
+      90deg, transparent 0px, transparent 22px,
+      rgba(220, 185, 90, 0.22) 22px, rgba(220, 185, 90, 0.22) 24px
+    );
+  box-shadow: 0 0 18px rgba(220, 185, 90, 0.4);
+  pointer-events: none;
+  z-index: 8;
+  animation: net-swing 0.5s ease-out forwards;
+}
+
+@keyframes net-swing {
+  0%   { transform: translate(-50%, -110%) rotate(-45deg) scale(0.4); opacity: 0.8; }
+  50%  { transform: translate(-50%, -50%)  rotate(6deg)   scale(1.05); opacity: 1; }
+  78%  { transform: translate(-50%, -47%)  rotate(-2deg)  scale(0.97); opacity: 0.85; }
+  100% { transform: translate(-50%, -50%)  rotate(2deg)   scale(0.65); opacity: 0; }
+}
+
 /* ── Spawn area ── */
 .spawnArea {
   position: absolute;
   inset: 0;
-  bottom: 30%;
+  bottom: 25vh;
   z-index: 5;
-  touch-action: none; /* prevent scroll/pinch-zoom during bug interaction */
+  touch-action: none;
 }
 

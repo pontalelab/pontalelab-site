@@ -15,6 +15,8 @@ export type BugZone = 'sky' | 'tree' | 'grass' | 'ground'
 
 export type ZoneArea = { xMin: number; xMax: number; yMin: number; yMax: number }
 
+export type BugMovement = 'stationary' | 'sway' | 'wander'
+
 export type BugMaster = {
   id: string
   name: string
@@ -23,6 +25,7 @@ export type BugMaster = {
   description: string
   stages: string[]
   zone: BugZone
+  movement: BugMovement
 }
 
 export type SpawnEntry = {

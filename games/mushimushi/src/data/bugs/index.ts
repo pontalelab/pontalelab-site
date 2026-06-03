@@ -9,6 +9,7 @@ export const bugMasters: BugMaster[] = [
     description: '七つの黒い星を持つ赤いてんとうむし。草むらでよく見かける。',
     stages: ['grass_day'],
     zone: 'grass',
+    movement: 'stationary',
   },
   {
     id: 'monshirocho',
@@ -18,6 +19,7 @@ export const bugMasters: BugMaster[] = [
     description: '白い翅に黒い紋様。菜の花畑を好んで飛ぶ。',
     stages: ['grass_day'],
     zone: 'sky',
+    movement: 'wander',
   },
   {
     id: 'syouryou_batta',
@@ -27,6 +29,7 @@ export const bugMasters: BugMaster[] = [
     description: '細長い体の大きなバッタ。草むらに潜んでいる。',
     stages: ['grass_day'],
     zone: 'grass',
+    movement: 'sway',
   },
   {
     id: 'kabutomushi',
@@ -36,6 +39,7 @@ export const bugMasters: BugMaster[] = [
     description: '角を持つ昆虫の王様。子どもたちの憧れ。',
     stages: ['forest_evening'],
     zone: 'tree',
+    movement: 'stationary',
   },
   {
     id: 'nokogiri_kuwagata',
@@ -45,6 +49,7 @@ export const bugMasters: BugMaster[] = [
     description: 'ギザギザの大顎を持つクワガタムシ。',
     stages: ['forest_evening'],
     zone: 'tree',
+    movement: 'stationary',
   },
   {
     id: 'oniyanma',
@@ -54,6 +59,7 @@ export const bugMasters: BugMaster[] = [
     description: '日本最大のトンボ。黄色と黒の縞模様が美しい。',
     stages: ['grass_day', 'night_field'],
     zone: 'sky',
+    movement: 'wander',
   },
   {
     id: 'genji_botaru',
@@ -63,6 +69,7 @@ export const bugMasters: BugMaster[] = [
     description: '川辺で光る日本最大のホタル。幻想的な光を放つ。',
     stages: ['night_field'],
     zone: 'sky',
+    movement: 'wander',
   },
 ];
 

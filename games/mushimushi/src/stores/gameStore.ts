@@ -16,6 +16,8 @@ type GameState = {
   captureBug: (instanceId: string) => void
   unlockStage: (stageId: string) => void
   loadFromSave: (unlockedStages: string[]) => void
+  lastRunCaptures: string[]
+  setLastRunCaptures: (captures: string[]) => void
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -23,6 +25,7 @@ export const useGameStore = create<GameState>((set) => ({
   currentStageId: 'grass_day',
   activeBugs: [],
   unlockedStages: INITIAL_UNLOCKED,
+  lastRunCaptures: [],
 
   setPhase: (phase) => set({ phase }),
 
@@ -58,4 +61,7 @@ export const useGameStore = create<GameState>((set) => ({
 
   loadFromSave: (unlockedStages) =>
     set({ unlockedStages }),
+
+  setLastRunCaptures: (captures) =>
+    set({ lastRunCaptures: captures }),
 }))

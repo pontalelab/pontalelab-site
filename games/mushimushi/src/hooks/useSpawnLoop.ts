@@ -47,9 +47,7 @@ export function useSpawnLoop() {
   useEffect(() => {
     const stage = stageMap.get(currentStageId);
     if (!stage) return;
-    for (let i = 0; i < 3; i++) {
-      addActiveBug(createActiveBug(stage.spawnTable, stage.zones));
-    }
+    // no initial spawn — first bug appears after SPAWN_INTERVAL_MS
   }, [currentStageId, addActiveBug]);
 
   return activeBugs;

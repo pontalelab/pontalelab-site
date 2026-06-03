@@ -25,6 +25,9 @@ const EncyclopediaListScreen = lazy(() =>
 const BugDetailScreen = lazy(() =>
   import('./screens/BugDetailScreen/BugDetailScreen').then((m) => ({ default: m.BugDetailScreen }))
 )
+const RunResultScreen = lazy(() =>
+  import('./screens/RunResultScreen/RunResultScreen').then((m) => ({ default: m.RunResultScreen }))
+)
 
 type FadePhase = 'idle' | 'out' | 'in'
 type PendingNav = { screen: ScreenName; bugId?: string }
@@ -93,6 +96,8 @@ export default function App() {
         return <EncyclopediaListScreen onNavigate={navigate} onBugSelect={navigateToBugDetail} />
       case SCREENS.BUG_DETAIL:
         return <BugDetailScreen bugId={selectedBugId} onNavigate={navigate} />
+      case SCREENS.RUN_RESULT:
+        return <RunResultScreen onNavigate={navigate} />
       default:
         return <HomeScreen onNavigate={navigate} />
     }
