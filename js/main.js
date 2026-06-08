@@ -33,7 +33,7 @@ const i18n = {
     "game1:name": "まぜまぜ研究室",
     "game1:desc": "いろいろな素材を組み合わせて発見を楽しもう",
     "game1:btn":  "遊ぶ →",
-    "game2:name": "むしむしゲーム",
+    "game2:name": "むしたん",
     "game2:desc": "虫を探して図鑑を集めよう",
     "game2:btn":  "遊ぶ →",
 
@@ -56,13 +56,13 @@ const i18n = {
 
     /* --- Research Log --- */
     "log:heading": "研究記録",
-    "log1:date":  "2025年05月20日",
-    "log1:title": "むしむしゲーム v1.0 公開",
+    "log1:date":  "2026年05月20日",
+    "log1:title": "むしたん v1.0 公開",
     "log1:text":  "虫の図鑑収集ゲームの初版をリリースしました。10種類の虫を探して集めよう！",
-    "log2:date":  "2025年04月15日",
+    "log2:date":  "2026年04月15日",
     "log2:title": "まぜまぜ研究室 ベータ版",
     "log2:text":  "素材を組み合わせる実験ゲームのベータ版を公開。新しい発見があるかも？",
-    "log3:date":  "2025年04月01日",
+    "log3:date":  "2026年04月01日",
     "log3:title": "Pontalelab オープン！",
     "log3:text":  "親子向けデジタル研究所「Pontalelab」をオープンしました。これからもいろんなゲームを追加していきます！",
 
@@ -76,7 +76,7 @@ const i18n = {
     "footer:about":   "Pontalelabについて",
     "footer:privacy": "プライバシーポリシー",
     "footer:contact": "お問い合わせ",
-    "footer:copy":    "© 2025 Pontalelab",
+    "footer:copy":    "© 2026 Pontalelab",
 
     /* --- Games Page --- */
     "games:heading": "ゲーム一覧",
@@ -143,7 +143,7 @@ const i18n = {
     "game1:name": "Mix Mix Lab",
     "game1:desc": "Combine different materials and enjoy the thrill of discovery!",
     "game1:btn":  "Play →",
-    "game2:name": "Bug Hunt",
+    "game2:name": "Mushitan",
     "game2:desc": "Search for insects and build your field guide collection!",
     "game2:btn":  "Play →",
 
@@ -166,13 +166,13 @@ const i18n = {
 
     /* --- Research Log --- */
     "log:heading": "Research Log",
-    "log1:date":  "May 20, 2025",
-    "log1:title": "Bug Hunt v1.0 Released",
+    "log1:date":  "May 20, 2026",
+    "log1:title": "Mushitan v1.0 Released",
     "log1:text":  "The first version of Bug Hunt is live! Search and collect 10 different insects.",
-    "log2:date":  "April 15, 2025",
+    "log2:date":  "April 15, 2026",
     "log2:title": "Mix Mix Lab Beta",
     "log2:text":  "Beta release of our material-combining experiment game. What will you discover?",
-    "log3:date":  "April 1, 2025",
+    "log3:date":  "April 1, 2026",
     "log3:title": "Pontalelab is Open!",
     "log3:text":  "Welcome to Pontalelab, a digital lab for families! We'll keep adding new games.",
 
@@ -186,7 +186,7 @@ const i18n = {
     "footer:about":   "About",
     "footer:privacy": "Privacy Policy",
     "footer:contact": "Contact",
-    "footer:copy":    "© 2025 Pontalelab",
+    "footer:copy":    "© 2026 Pontalelab",
 
     /* --- Games Page --- */
     "games:heading": "Games",
