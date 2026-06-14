@@ -81,6 +81,9 @@ const i18n = {
     /* --- Games Page --- */
     "games:heading": "ゲーム一覧",
     "games:desc":    "親子で楽しめる無料ブラウザゲーム",
+    "game4:name":    "うみのひらがな",
+    "game4:desc":    "海の生き物と一緒にひらがなを学ぼう",
+    "game4:btn":     "遊ぶ →",
     "game3:name":    "ポコポコ楽団",
     "game3:desc":    "リズムに合わせて楽器を鳴らして音楽を楽しもう",
     "game3:badge":   "開発中",
@@ -191,6 +194,9 @@ const i18n = {
     /* --- Games Page --- */
     "games:heading": "Games",
     "games:desc":    "Free browser games for the whole family",
+    "game4:name":    "Umi no Hiragana",
+    "game4:desc":    "Learn hiragana with ocean creatures!",
+    "game4:btn":     "Play →",
     "game3:name":    "Pokopoko Band",
     "game3:desc":    "Play instruments to the rhythm and create your own music!",
     "game3:badge":   "Coming Soon",
