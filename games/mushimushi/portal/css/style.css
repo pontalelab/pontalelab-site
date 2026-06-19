@@ -355,12 +355,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .game-cards {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 480px));
   gap: 24px;
-}
-
-@media (min-width: 600px) {
-  .game-cards { grid-template-columns: repeat(2, 1fr); }
+  justify-content: center;
 }
 
 .game-card {

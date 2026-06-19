@@ -1,0 +1,358 @@
+/* ===== リセット & ベース ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #0a1628;
+  font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'ヒラギノ角ゴ ProN', 'メイリオ', sans-serif;
+  touch-action: none;
+  user-select: none;
+}
+
+#app { width: 100%; height: 100%; position: relative; }
+
+/* ===== 画面共通 ===== */
+.screen {
+  width: 100%; height: 100%;
+  position: absolute; top: 0; left: 0;
+  display: none;
+}
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== ボタン ===== */
+.btn-primary {
+  background: linear-gradient(135deg, #0af, #04f);
+  border: none; border-radius: 50px;
+  color: #fff; font-size: 1.4rem; font-weight: bold;
+  padding: 0.7rem 2.5rem; cursor: pointer; margin: 0.4rem;
+  box-shadow: 0 4px 15px rgba(0,150,255,0.4);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,150,255,0.6); }
+.btn-primary:active { transform: translateY(1px); }
+
+.btn-secondary {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50px; color: #cef;
+  font-size: 1.1rem; font-weight: bold;
+  padding: 0.6rem 2rem; cursor: pointer; margin: 0.4rem;
+  transition: background 0.2s;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.22); }
+
+.btn-danger {
+  background: rgba(180,40,40,0.18);
+  border: 1px solid rgba(255,100,100,0.35);
+  border-radius: 50px; color: #f99;
+  font-size: 0.85rem; padding: 0.4rem 1.4rem;
+  cursor: pointer; margin: 0.3rem;
+  transition: background 0.2s;
+}
+.btn-danger:hover { background: rgba(180,40,40,0.38); color: #fcc; }
+
+/* ===== ホーム画面 ===== */
+#screen-home {
+  background: linear-gradient(180deg, #080e1e 0%, #0d2450 50%, #1a4a8a 100%);
+}
+
+.home-title {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: bold; color: #fff;
+  text-shadow: 0 0 30px rgba(50,150,255,0.8), 0 0 60px rgba(0,100,255,0.4);
+  margin-bottom: 0.3rem; letter-spacing: 0.1em;
+}
+.home-subtitle { color: #8ac; font-size: 1rem; margin-bottom: 1.5rem; }
+
+.home-sea-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(100,200,255,0.25);
+  border-radius: 20px; padding: 1.5rem 2rem;
+  margin: 0.5rem; text-align: center; color: #cef;
+  width: min(90vw, 360px);
+}
+.sea-level-label { font-size: 0.85rem; color: #8ac; margin-bottom: 0.3rem; }
+.sea-level-name { font-size: 1.6rem; font-weight: bold; margin-bottom: 0.5rem; }
+.sea-emoji-row { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.sea-point-label { font-size: 0.8rem; color: #8ac; }
+.sea-point-value { font-size: 1.1rem; font-weight: bold; color: #0ff; margin: 0.2rem 0; }
+
+.home-point-bar-bg {
+  height: 10px; background: rgba(0,0,0,0.4);
+  border-radius: 5px; overflow: hidden; margin-top: 0.4rem;
+}
+.home-point-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0af, #0ff);
+  border-radius: 5px;
+  transition: width 0.6s ease;
+}
+
+.home-btn-wrap { display: flex; flex-direction: column; align-items: center; margin-top: 0.5rem; }
+
+/* ===== ゲーム画面 ===== */
+#screen-game {
+  background: #000;
+  /* ScreenManager が display:flex を inline で付与する */
+}
+
+/* canvas + HUD をひとまとめにしてアスペクト比 8:5 を保持 */
+#game-wrap {
+  position: relative;
+  /* 8:5 = 1.6 : dvh に対応していないブラウザ用の vh フォールバック */
+  width:  min(100vw, calc(100vh  * 1.6));
+  height: min(100vh,  calc(100vw / 1.6));
+  /* dvh 対応ブラウザ（iOS Safari 15.4+, Chrome 108+）はこちらが有効 */
+  width:  min(100dvw, calc(100dvh * 1.6));
+  height: min(100dvh, calc(100dvw / 1.6));
+  flex-shrink: 0;
+  /* container query でサイズに応じた HUD 調整を有効化 */
+  container-type: inline-size;
+  container-name: game;
+}
+
+#game-canvas {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  cursor: none;
+  touch-action: none;
+}
+
+#game-hud {
+  position: absolute; top: 0; left: 0; right: 0;
+  pointer-events: none; z-index: 10;
+}
+
+#hud-top {
+  display: flex; align-items: flex-start;
+  justify-content: space-between;
+  padding: 10px 14px;
+}
+
+#hud-left { display: flex; flex-direction: column; gap: 5px; }
+
+.badge {
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(100,200,255,0.35);
+  border-radius: 20px; padding: 3px 12px;
+  color: #dff; font-size: 0.82rem; font-weight: bold;
+  display: inline-block;
+}
+
+.point-wrap { display: flex; flex-direction: column; gap: 2px; }
+#sea-point-text { color: #cef; font-size: 0.78rem; font-weight: bold; }
+#sea-point-bar-bg {
+  width: 110px; height: 7px;
+  background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden;
+}
+#sea-point-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #0af, #0ff);
+  border-radius: 4px; width: 0%;
+  transition: width 0.5s ease;
+}
+
+#hud-center { display: flex; justify-content: center; }
+#timer-display {
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: bold; color: #fff;
+  text-shadow: 0 0 10px rgba(255,255,100,0.8);
+  background: rgba(0,0,0,0.45);
+  border-radius: 12px; padding: 2px 18px;
+  min-width: 80px; text-align: center;
+}
+#timer-display.urgent {
+  color: #f55;
+  text-shadow: 0 0 10px rgba(255,50,50,0.9);
+  animation: timerPulse 0.5s infinite alternate;
+}
+@keyframes timerPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+#hud-right { max-width: 130px; }
+#catch-feed { display: flex; flex-direction: column; gap: 3px; align-items: flex-end; }
+
+/* ===== スモール画面の HUD（container query） ===== */
+@container game (max-width: 480px) {
+  #hud-top { padding: 6px 8px; }
+  .badge { font-size: 0.6rem; padding: 2px 7px; }
+  #sea-point-text { font-size: 0.58rem; }
+  #sea-point-bar-bg { width: 72px; height: 5px; }
+  #timer-display {
+    font-size: 1.5rem;
+    padding: 1px 10px;
+    min-width: 52px;
+    border-radius: 8px;
+  }
+  .catch-feed-item { font-size: 0.58rem; padding: 2px 7px; }
+  #hud-right { max-width: 90px; }
+}
+.catch-feed-item {
+  background: rgba(0,0,0,0.65);
+  border-radius: 20px; padding: 3px 10px;
+  color: #fff; font-size: 0.72rem; white-space: nowrap;
+  animation: feedSlide 0.3s ease;
+}
+@keyframes feedSlide {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ===== リザルト画面 ===== */
+#screen-result {
+  background: linear-gradient(180deg, #080e1e 0%, #0d2450 100%);
+  overflow-y: auto;
+}
+.result-container {
+  width: min(92vw, 580px);
+  padding: 1.5rem; text-align: center; color: #fff;
+}
+.result-title {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-weight: bold; margin-bottom: 1.2rem;
+}
+.result-section {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(100,200,255,0.18);
+  border-radius: 16px; padding: 1rem 1.2rem;
+  margin: 0.6rem 0;
+}
+.result-section h3 { color: #adf; font-size: 0.9rem; margin-bottom: 0.7rem; }
+
+.caught-fish-grid {
+  display: flex; flex-wrap: wrap;
+  gap: 8px; justify-content: center;
+}
+.caught-fish-item {
+  display: flex; flex-direction: column; align-items: center;
+  background: rgba(255,255,255,0.09);
+  border-radius: 10px; padding: 8px 10px;
+}
+.caught-fish-emoji { font-size: 1.8rem; }
+.caught-fish-name { font-size: 0.72rem; color: #cef; margin-top: 2px; }
+.caught-fish-count { font-size: 0.7rem; color: #ff9; font-weight: bold; }
+
+.point-gained { font-size: 2rem; font-weight: bold; color: #0ff; }
+.trash-count { font-size: 1.1rem; color: #adf; }
+
+.level-progress-area { margin-top: 0.6rem; }
+.level-labels {
+  display: flex; justify-content: space-between;
+  font-size: 0.8rem; color: #8ac; margin-bottom: 4px;
+}
+.level-bar-bg { height: 14px; background: rgba(0,0,0,0.4); border-radius: 7px; overflow: hidden; }
+.level-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0af, #0ff);
+  border-radius: 7px;
+  transition: width 1.2s ease;
+}
+
+.levelup-badge {
+  font-size: 1.4rem; font-weight: bold; color: #ff0;
+  margin-top: 0.8rem;
+  animation: levelupGlow 1s infinite alternate;
+}
+@keyframes levelupGlow {
+  from { text-shadow: 0 0 5px #ff0; }
+  to   { text-shadow: 0 0 20px #ff0, 0 0 40px #fa0; }
+}
+
+.result-btn-wrap { margin-top: 1.2rem; }
+
+/* ===== 図鑑画面 ===== */
+#screen-book {
+  background: linear-gradient(180deg, #080e1e 0%, #0d2450 100%);
+  overflow-y: auto;
+}
+.book-container {
+  width: min(92vw, 680px);
+  padding: 1.5rem;
+}
+.book-title {
+  font-size: 1.8rem; font-weight: bold;
+  color: #fff; text-align: center; margin-bottom: 1.2rem;
+}
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+.book-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(100,200,255,0.18);
+  border-radius: 12px; padding: 1rem 0.8rem;
+  text-align: center; color: #fff;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.book-card:hover { background: rgba(255,255,255,0.14); transform: translateY(-2px); }
+.book-card.locked { opacity: 0.35; filter: grayscale(0.8); }
+.book-card-emoji { font-size: 2.2rem; margin-bottom: 0.4rem; }
+.book-card-name { font-size: 0.8rem; font-weight: bold; }
+.book-card-catch { font-size: 0.7rem; color: #8ac; margin-top: 2px; }
+.book-card-rarity { font-size: 0.65rem; margin-top: 3px; font-weight: bold; }
+.rarity-common    { color: #8af; }
+.rarity-uncommon  { color: #8f8; }
+.rarity-rare      { color: #ff8; }
+.rarity-superRare { color: #f8f; }
+
+.book-detail-modal {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.75);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 500;
+}
+.book-detail-box {
+  background: linear-gradient(135deg, #0a2040, #1a4080);
+  border: 2px solid rgba(100,200,255,0.35);
+  border-radius: 20px; padding: 2rem;
+  max-width: 340px; width: 88%;
+  text-align: center; color: #fff;
+}
+.book-detail-emoji { font-size: 4rem; margin-bottom: 0.5rem; }
+.book-detail-name { font-size: 1.4rem; font-weight: bold; margin-bottom: 0.2rem; }
+.book-detail-real { font-size: 0.85rem; color: #8ac; margin-bottom: 0.8rem; }
+.book-detail-desc { font-size: 0.9rem; color: #cef; line-height: 1.6; margin-bottom: 1rem; }
+.book-detail-catch-info { font-size: 0.8rem; color: #ff9; margin-bottom: 1rem; }
+
+.book-back-wrap { text-align: center; margin-bottom: 1rem; }
+
+/* ===== オーバーレイ共通 ===== */
+.overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.72);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+  animation: overlayFadeIn 0.3s ease;
+}
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.overlay.hidden { display: none; }
+.overlay-box {
+  background: linear-gradient(135deg, #0a2040, #1a4080);
+  border: 2px solid rgba(100,200,255,0.4);
+  border-radius: 20px; padding: 2rem 2.5rem;
+  text-align: center; color: #fff;
+  max-width: 380px; width: 88%;
+  box-shadow: 0 0 40px rgba(0,150,255,0.3);
+  animation: overlayPopIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes overlayPopIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.overlay-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+.overlay-box h2 { color: #cef; margin-bottom: 0.8rem; font-size: 1.3rem; }
+.overlay-box p  { color: #adf; line-height: 1.7; margin-bottom: 1.5rem; font-size: 0.95rem; }

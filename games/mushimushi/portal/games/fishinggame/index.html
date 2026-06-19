@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>魚とり</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- ホーム画面 -->
+    <div id="screen-home" class="screen active"></div>
+
+    <!-- ゲーム画面 -->
+    <div id="screen-game" class="screen">
+      <!-- game-wrap がアスペクト比を保ちながら画面にフィットする -->
+      <div id="game-wrap">
+        <canvas id="game-canvas"></canvas>
+        <div id="game-hud">
+          <div id="hud-top">
+            <div id="hud-left">
+              <span id="sea-level-badge" class="badge">🌊 Lv1</span>
+              <div class="point-wrap">
+                <span id="sea-point-text">0 pt</span>
+                <div id="sea-point-bar-bg"><div id="sea-point-bar"></div></div>
+              </div>
+            </div>
+            <div id="hud-center">
+              <div id="timer-display">60</div>
+            </div>
+            <div id="hud-right">
+              <div id="catch-feed"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- リザルト画面 -->
+    <div id="screen-result" class="screen"></div>
+
+    <!-- 図鑑画面 -->
+    <div id="screen-book" class="screen"></div>
+
+    <!-- メッセージボトル オーバーレイ -->
+    <div id="overlay-message" class="overlay hidden">
+      <div class="overlay-box">
+        <div class="overlay-icon">🍾</div>
+        <h2>海からのメッセージ</h2>
+        <p id="overlay-message-text"></p>
+        <button id="overlay-message-ok" class="btn-primary">わかった！</button>
+      </div>
+    </div>
+
+    <!-- レベルアップ オーバーレイ -->
+    <div id="overlay-levelup" class="overlay hidden">
+      <div class="overlay-box">
+        <div class="overlay-icon" id="levelup-icon">🌊</div>
+        <h2>海がきれいになった！</h2>
+        <p id="levelup-name"></p>
+        <button id="levelup-ok" class="btn-primary">やった！</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
