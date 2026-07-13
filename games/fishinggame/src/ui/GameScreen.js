@@ -295,29 +295,32 @@ function _drawParticles(ctx, particles) {
   ctx.restore();
 }
 
-/* ======= 網（右端固定・上下移動） ======= */
+/* ======= 網（右半分を自由移動） ======= */
 
 function _drawNet(ctx, pos, radius, t) {
   if (pos.y < 0) return;
   const { x, y } = pos;
+  const NET_MIN_X = CANVAS_W / 2; // 可動範囲左端（画面中央）
   ctx.save();
 
-  // 縦ガイドライン（右端の釣り糸ライン）
-  ctx.strokeStyle = "rgba(200,240,255,0.18)";
+  // 右半分の境界ライン（画面中央の薄い縦破線）
+  ctx.strokeStyle = "rgba(200,240,255,0.12)";
   ctx.lineWidth   = 1;
-  ctx.setLineDash([5, 7]);
+  ctx.setLineDash([4, 6]);
   ctx.beginPath();
-  ctx.moveTo(x, 0);
-  ctx.lineTo(x, CANVAS_H);
+  ctx.moveTo(NET_MIN_X, 0);
+  ctx.lineTo(NET_MIN_X, CANVAS_H);
   ctx.stroke();
   ctx.setLineDash([]);
 
-  // 上下の矢印ガイド
+  // 4方向の矢印ガイド
   const arrowAlpha = 0.3 + 0.2 * Math.sin(t * 2);
   ctx.globalAlpha = arrowAlpha;
   ctx.fillStyle   = "#8df";
-  _drawArrow(ctx, x, y - radius - 14, "up");
-  _drawArrow(ctx, x, y + radius + 14, "down");
+  _drawArrow(ctx, x,              y - radius - 14, "up");
+  _drawArrow(ctx, x,              y + radius + 14, "down");
+  _drawArrow(ctx, x - radius - 14, y,              "left");
+  _drawArrow(ctx, x + radius + 14, y,              "right");
   ctx.globalAlpha = 1;
 
   // 外縁リング（やや太め）
@@ -356,8 +359,12 @@ function _drawArrow(ctx, x, y, dir) {
   ctx.beginPath();
   if (dir === "up") {
     ctx.moveTo(x, y - s); ctx.lineTo(x - s, y + s); ctx.lineTo(x + s, y + s);
-  } else {
+  } else if (dir === "down") {
     ctx.moveTo(x, y + s); ctx.lineTo(x - s, y - s); ctx.lineTo(x + s, y - s);
+  } else if (dir === "left") {
+    ctx.moveTo(x - s, y); ctx.lineTo(x + s, y - s); ctx.lineTo(x + s, y + s);
+  } else {
+    ctx.moveTo(x + s, y); ctx.lineTo(x - s, y - s); ctx.lineTo(x - s, y + s);
   }
   ctx.closePath();
   ctx.fill();

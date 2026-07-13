@@ -7,7 +7,7 @@ import { processCatch, updateParticles } from "./Effects.js";
 import { stageMaster } from "../data/stageMaster.js";
 import { fishMaster }  from "../data/fishMaster.js";
 import { trashMaster } from "../data/trashMaster.js";
-import { CANVAS_W, NET_FIXED_X } from "./GameState.js";
+import { CANVAS_W, NET_MIN_X, NET_MAX_X } from "./GameState.js";
 
 export class GameLoop {
   constructor(state, renderer, audio, callbacks) {
@@ -34,9 +34,10 @@ export class GameLoop {
     this._audio.stopBgm();
   }
 
-  /** Y のみ更新。X は右端に固定 */
-  handleMouseMove(_canvasX, canvasY) {
-    this._state.netPosition = { x: NET_FIXED_X, y: canvasY };
+  /** X を右半分にクランプ、Y はそのまま */
+  handleMouseMove(canvasX, canvasY) {
+    const x = Math.max(NET_MIN_X, Math.min(NET_MAX_X, canvasX));
+    this._state.netPosition = { x, y: canvasY };
   }
 
   resumeFromPause() {

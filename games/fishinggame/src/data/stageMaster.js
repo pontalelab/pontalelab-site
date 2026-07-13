@@ -7,7 +7,7 @@ export const stageMaster = {
   levels: [
     {
       level: 1,
-      name: "汚い海",
+      name: "きたない うみ",
       emoji: "😢",
       description: "ゴミだらけで暗い海。きれいにしてあげよう！",
       requiredPoint: 0,
@@ -41,7 +41,7 @@ export const stageMaster = {
     },
     {
       level: 2,
-      name: "澄んだ海",
+      name: "すんだ うみ",
       emoji: "😊",
       description: "少しきれいになってきた！魚も増えてきたよ。",
       requiredPoint: 30,
@@ -80,7 +80,7 @@ export const stageMaster = {
     },
     {
       level: 3,
-      name: "美しい海",
+      name: "うつくしい うみ",
       emoji: "🌟",
       description: "とってもきれいな海！珍しい生き物も泳いでいるよ！",
       requiredPoint: 80,

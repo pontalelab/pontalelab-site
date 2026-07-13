@@ -2,12 +2,14 @@
 
 import { stageMaster } from "../data/stageMaster.js";
 
+const APP_VERSION = "0.0.1";
+
 /**
  * @param {HTMLElement} container
  * @param {object}      saveData
  * @param {Function}    onStart  - ゲーム開始
- * @param {Function}    onBook   - 図鑑
- * @param {Function}    onReset  - 海をリセット
+ * @param {Function}    onBook   - ずかん
+ * @param {Function}    onReset  - うみをリセット
  */
 export function renderHomeScreen(container, saveData, onStart, onBook, onReset) {
   const level       = saveData.currentSeaLevel;
@@ -24,27 +26,31 @@ export function renderHomeScreen(container, saveData, onStart, onBook, onReset) 
   const emoji       = levelEmojis[level] ?? "🌊";
 
   container.innerHTML = `
-    <div class="home-title">🎣 魚とり</div>
-    <div class="home-subtitle">海をきれいにしよう！</div>
+    <a href="https://pontalelab.com/games/" class="btn-back">← もどる</a>
+
+    <div class="home-title">🎣 あみあみ うみ</div>
+    <div class="home-subtitle">うみをきれいにして　おさかなをつかまえよう</div>
 
     <div class="home-sea-card">
-      <div class="sea-level-label">現在の海</div>
+      <div class="sea-level-label">いまの うみ</div>
       <div class="sea-level-name">Lv${level}：${levelConfig.name}</div>
       <div class="sea-emoji-row">${emoji}</div>
-      <div class="sea-point-label">海ポイント</div>
+      <div class="sea-point-label">うみぽいんと</div>
       <div class="sea-point-value">${points} pt${nextConfig ? ` / ${nextConfig.requiredPoint} pt` : " (MAX)"}</div>
       ${nextConfig ? `
         <div class="home-point-bar-bg">
           <div class="home-point-bar-fill" style="width:${progressPct}%"></div>
         </div>
-      ` : `<div style="color:#0ff;font-size:0.85rem;margin-top:0.4rem">✨ 最高レベル達成！</div>`}
+      ` : `<div style="color:#0ff;font-size:0.85rem;margin-top:0.4rem">✨ さいこうレベルたっせい！</div>`}
     </div>
 
     <div class="home-btn-wrap">
       <button id="btn-start" class="btn-primary">🎣 はじめる！</button>
-      <button id="btn-book"  class="btn-secondary">📖 図鑑をみる</button>
-      <button id="btn-reset" class="btn-danger">🔄 海をリセット</button>
+      <button id="btn-book"  class="btn-secondary">📖 ずかんをみる</button>
+      <button id="btn-reset" class="btn-danger">🔄 うみをリセット</button>
     </div>
+
+    <div class="home-version">v${APP_VERSION}</div>
   `;
 
   document.getElementById("btn-start").addEventListener("click", onStart);

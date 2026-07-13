@@ -2,8 +2,9 @@
 
 export const CANVAS_W   = 800;
 export const CANVAS_H   = 500;
-export const NET_RADIUS = 28;                           // 旧55の半分
-export const NET_FIXED_X = CANVAS_W - NET_RADIUS - 12; // 右端固定X = 760
+export const NET_RADIUS = 28;
+export const NET_MIN_X  = CANVAS_W / 2;                   // 可動範囲左端（画面中央）
+export const NET_MAX_X  = CANVAS_W - NET_RADIUS - 12;     // 可動範囲右端 = 760
 
 export function createGameState(saveData, levelConfig) {
   return {
@@ -21,8 +22,8 @@ export function createGameState(saveData, levelConfig) {
     activeFishList: [],
     activeTrashList: [],
 
-    // 網（X固定・Y のみプレイヤーが操作）
-    netPosition: { x: NET_FIXED_X, y: CANVAS_H / 2 },
+    // 網（右半分を自由に移動）
+    netPosition: { x: NET_MAX_X, y: CANVAS_H / 2 },
     netRadius: NET_RADIUS,
 
     // BGM/音

@@ -45,7 +45,7 @@ function goBook() {
 function resetSea() {
   // シンプルな確認（子供向けなのでシンプルに）
   const confirmed = confirm(
-    "海をリセットしますか？\n海レベルとポイントが最初に戻ります。\n図鑑は残ります。",
+    "うみをリセットしますか？\nうみレベルとぽいんとが さいしょに もどります。\nずかんは のこります。",
   );
   if (!confirmed) return;
 
