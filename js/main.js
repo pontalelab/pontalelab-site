@@ -36,6 +36,7 @@ const i18n = {
     "game2:name": "むしたん",
     "game2:desc": "虫を探して図鑑を集めよう",
     "game2:btn":  "遊ぶ →",
+    "game2:age":  "対象年齢の目安：3〜6歳",
 
     /* --- Skills --- */
     "skills:heading": "遊びながら育つ力",
@@ -84,9 +85,11 @@ const i18n = {
     "game4:name":    "うみのひらがな",
     "game4:desc":    "海の生き物と一緒にひらがなを学ぼう",
     "game4:btn":     "遊ぶ →",
+    "game4:age":     "対象年齢の目安：4〜7歳",
     "game5:name":    "あみあみうみ",
     "game5:desc":    "あみで魚をすくって図鑑を集めよう",
     "game5:btn":     "遊ぶ →",
+    "game5:age":     "対象年齢の目安：3〜6歳",
     "game3:name":    "ポコポコ楽団",
     "game3:desc":    "リズムに合わせて楽器を鳴らして音楽を楽しもう",
     "game3:badge":   "開発中",
@@ -152,6 +155,7 @@ const i18n = {
     "game2:name": "Mushitan",
     "game2:desc": "Search for insects and build your field guide collection!",
     "game2:btn":  "Play →",
+    "game2:age":  "Recommended age: 3–6",
 
     /* --- Skills --- */
     "skills:heading": "Skills Through Play",
@@ -200,9 +204,11 @@ const i18n = {
     "game4:name":    "Umi no Hiragana",
     "game4:desc":    "Learn hiragana with ocean creatures!",
     "game4:btn":     "Play →",
+    "game4:age":     "Recommended age: 4–7",
     "game5:name":    "Amiami Umi",
     "game5:desc":    "Scoop up fish with your net and collect them all!",
     "game5:btn":     "Play →",
+    "game5:age":     "Recommended age: 3–6",
     "game3:name":    "Pokopoko Band",
     "game3:desc":    "Play instruments to the rhythm and create your own music!",
     "game3:badge":   "Coming Soon",
