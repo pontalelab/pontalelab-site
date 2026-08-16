@@ -1,0 +1,16 @@
+name: 要望・アイデア
+description: 新しいゲームや機能のアイデアを提案する
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: 提案内容
+      description: どんなアイデアですか？
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: 背景・理由
+      description: なぜそれが必要だと思いますか？誰の役に立ちますか？

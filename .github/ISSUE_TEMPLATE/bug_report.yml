@@ -1,0 +1,31 @@
+name: 不具合報告
+description: サイトやゲームで気づいた不具合を報告する
+labels: ["bug"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: どこで発生しましたか？
+      placeholder: 例）むしたん / トップページ / お問い合わせフォーム
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 何が起きましたか？
+      description: 期待していた動作と、実際に起きたことを書いてください
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現手順
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+  - type: input
+    id: environment
+    attributes:
+      label: 環境（端末・ブラウザなど）
+      placeholder: 例）iPhone / Safari、Windows / Chrome
