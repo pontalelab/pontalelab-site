@@ -8,7 +8,10 @@ export default defineConfig({
     host: true, // bind to 0.0.0.0 — allows LAN / smartphone access
   },
   build: {
-    outDir: 'docs',
+    // CIがここからビルド成果物を games/mushimushi/ 直下（本番の配信場所）へ
+    // コピーする。'dist' はビルド時にのみ生成される一時フォルダで、
+    // .gitignore によりリポジトリにはコミットされない。
+    outDir: 'dist',
     chunkSizeWarningLimit: 600,
   },
 })

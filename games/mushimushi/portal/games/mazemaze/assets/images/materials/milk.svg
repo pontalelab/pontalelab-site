@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <circle cx="50" cy="50" r="48" fill="#F5F5F5"/>
-  <rect x="36" y="30" width="28" height="6" rx="2" fill="#90A4AE"/>
-  <path d="M34,36 L32,80 Q32,84 36,84 L64,84 Q68,84 68,80 L66,36Z" fill="white" stroke="#CFD8DC" stroke-width="2"/>
-  <rect x="34" y="36" width="32" height="8" fill="#ECEFF1"/>
-  <text x="50" y="68" text-anchor="middle" font-size="22" font-family="sans-serif" fill="#1565C0" font-weight="bold">MILK</text>
-</svg>
