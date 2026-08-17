@@ -1,0 +1,44 @@
+{
+  "id": "syouryou_batta",
+  "category": "mushi",
+  "name": "ショウリョウバッタ",
+  "reading": "しょうりょうばった",
+  "scientificName": "Acrida cinerea",
+  "classification": "バッタ目 バッタ科",
+  "oneLiner": "細長い体が特徴の、日本で一番大きいバッタの仲間",
+  "rarityInGame": "common",
+  "description": {
+    "what": "ショウリョウバッタは、体が細長い大きなバッタです。オスとメスで体の大きさがかなり違います。",
+    "where": "河原や公園、庭など、背の高い草が生えている場所で見つかります。",
+    "food": "イネ科の植物の葉を食べます。"
+  },
+  "funFacts": [
+    "メスはオスよりずっと大きく、2倍くらいの体長になることもあるよ。",
+    "オスが飛ぶとき「キチキチキチ」と音を立てるので、「キチキチバッタ」ともよばれるよ。",
+    "大きなうしろ足で、ぴょーんと遠くまでジャンプできるよ。",
+    "秋にたまごをうみ、たまごのすがたで冬をこすよ。"
+  ],
+  "ageRange": "3〜8歳",
+  "ageMin": 3,
+  "ageMax": 8,
+  "season": [
+    "夏",
+    "秋"
+  ],
+  "size": "大きい（オス4cm前後・メス8cm前後）",
+  "images": [
+    {
+      "url": "/games/mushimushi/bugs/syouryou_batta.png",
+      "source": "own-asset",
+      "credit": null,
+      "license": null,
+      "note": "むしたん用に制作したオリジナルイラストを流用"
+    }
+  ],
+  "relatedInsectIds": [
+    "nanahoshi_tentou",
+    "monshirocho"
+  ],
+  "relatedArticles": [],
+  "mushitanUrl": "https://pontalelab.com/games/mushimushi/"
+}

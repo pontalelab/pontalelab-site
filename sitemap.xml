@@ -26,6 +26,46 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://pontalelab.com/zukan/mushi/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pontalelab.com/zukan/mushi/kabutomushi/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pontalelab.com/zukan/mushi/nokogiri_kuwagata/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pontalelab.com/zukan/mushi/nanahoshi_tentou/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pontalelab.com/zukan/mushi/monshirocho/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pontalelab.com/zukan/mushi/syouryou_batta/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pontalelab.com/zukan/mushi/oniyanma/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://pontalelab.com/zukan/mushi/genji_botaru/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://pontalelab.com/about/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

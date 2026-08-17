@@ -1,0 +1,42 @@
+{
+  "id": "nanahoshi_tentou",
+  "category": "mushi",
+  "name": "ナナホシテントウ",
+  "reading": "ななほしてんとう",
+  "scientificName": "Coccinella septempunctata",
+  "classification": "コウチュウ目 テントウムシ科",
+  "oneLiner": "7つの黒い星もようが目印の、赤いてんとうむし",
+  "rarityInGame": "common",
+  "description": {
+    "what": "ナナホシテントウは、赤い背中に7つの黒い点があるまるい形の小さな虫です。春から夏によく見られます。",
+    "where": "草むらや畑など、アブラムシがいる植物の近くで見つかります。",
+    "food": "アブラムシという小さな虫を食べます。花のみつを少し食べることもあります。"
+  },
+  "funFacts": [
+    "びっくりすると、足の関節から黄色いにおいのする汁を出して身を守るよ。",
+    "1日にたくさんのアブラムシを食べてくれる、畑の味方だよ。",
+    "寒くなると、落ち葉の下などに集まって冬をこすよ。"
+  ],
+  "ageRange": "3〜8歳",
+  "ageMin": 3,
+  "ageMax": 8,
+  "season": [
+    "春",
+    "夏"
+  ],
+  "size": "小さい（5〜8mmほど）",
+  "images": [
+    {
+      "url": "/games/mushimushi/bugs/nanahoshi_tentou.png",
+      "source": "own-asset",
+      "credit": null,
+      "license": null,
+      "note": "むしたん用に制作したオリジナルイラストを流用"
+    }
+  ],
+  "relatedInsectIds": [
+    "syouryou_batta"
+  ],
+  "relatedArticles": [],
+  "mushitanUrl": "https://pontalelab.com/games/mushimushi/"
+}

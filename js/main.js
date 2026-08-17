@@ -20,6 +20,7 @@ const i18n = {
     /* --- Header / Nav --- */
     "lang:btn":     "English",
     "nav:games":    "ゲーム一覧",
+    "nav:zukan":    "昆虫図鑑",
     "nav:about":    "について",
     "nav:contact":  "お問い合わせ",
 
@@ -37,6 +38,7 @@ const i18n = {
     "game2:desc": "虫を探して図鑑を集めよう",
     "game2:btn":  "遊ぶ →",
     "game2:age":  "対象年齢の目安：3〜6歳",
+    "game2:zukanLink": "図鑑で虫をもっと知る →",
 
     /* --- Skills --- */
     "skills:heading": "遊びながら育つ力",
@@ -74,6 +76,7 @@ const i18n = {
     /* --- Footer --- */
     "footer:tagline": "親子で楽しむ、発見の研究所",
     "footer:games":   "ゲーム一覧",
+    "footer:zukan":   "昆虫図鑑",
     "footer:about":   "Pontalelabについて",
     "footer:privacy": "プライバシーポリシー",
     "footer:contact": "お問い合わせ",
@@ -139,6 +142,7 @@ const i18n = {
     /* --- Header / Nav --- */
     "lang:btn":    "日本語",
     "nav:games":   "Games",
+    "nav:zukan":   "Insect Encyclopedia",
     "nav:about":   "About",
     "nav:contact": "Contact",
 
@@ -156,6 +160,7 @@ const i18n = {
     "game2:desc": "Search for insects and build your field guide collection!",
     "game2:btn":  "Play →",
     "game2:age":  "Recommended age: 3–6",
+    "game2:zukanLink": "Learn more in the encyclopedia →",
 
     /* --- Skills --- */
     "skills:heading": "Skills Through Play",
@@ -193,6 +198,7 @@ const i18n = {
     /* --- Footer --- */
     "footer:tagline": "A Discovery Lab for Families",
     "footer:games":   "Games",
+    "footer:zukan":   "Insect Encyclopedia",
     "footer:about":   "About",
     "footer:privacy": "Privacy Policy",
     "footer:contact": "Contact",
