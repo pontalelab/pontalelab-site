@@ -4,7 +4,54 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ゲーム一覧 | Pontalelab</title>
-  <meta name="description" content="親子で楽しめる無料ブラウザゲーム一覧。まぜまぜ研究室、むしむしゲームなど。">
+  <meta name="description" content="親子で楽しめる無料ブラウザゲーム一覧。むしたん・うみのひらがな・あみあみうみなど。">
+  <meta property="og:title"       content="ゲーム一覧 | Pontalelab">
+  <meta property="og:description" content="親子で楽しめる無料ブラウザゲーム一覧。むしたん・うみのひらがな・あみあみうみなど。">
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://pontalelab.com/games/">
+  <meta property="og:image"       content="https://pontalelab.com/icons/icon-512.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@type": "Game",
+          "name": "むしたん",
+          "description": "虫を探して図鑑を集めよう",
+          "url": "https://pontalelab.com/games/mushimushi/",
+          "audience": { "@type": "PeopleAudience", "suggestedMinAge": 3, "suggestedMaxAge": 6 }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "item": {
+          "@type": "Game",
+          "name": "うみのひらがな",
+          "description": "海の生き物と一緒にひらがなを学ぼう",
+          "url": "https://pontalelab.com/games/pokopokosea/",
+          "audience": { "@type": "PeopleAudience", "suggestedMinAge": 4, "suggestedMaxAge": 7 }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@type": "Game",
+          "name": "あみあみうみ",
+          "description": "あみで魚をすくって図鑑を集めよう",
+          "url": "https://pontalelab.com/games/fishinggame/",
+          "audience": { "@type": "PeopleAudience", "suggestedMinAge": 3, "suggestedMaxAge": 6 }
+        }
+      }
+    ]
+  }
+  </script>
 
   <!-- Home screen icons -->
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
@@ -14,6 +61,7 @@
   <meta name="theme-color" content="#2d6a4f">
 
   <link rel="stylesheet" href="../css/style.css">
+  <script src="/js/analytics.js" defer></script>
 </head>
 <body data-page="games">
 
@@ -52,6 +100,7 @@
             <p  class="game-card-desc"  data-i18n="game2:desc">
               虫を探して図鑑を集めよう
             </p>
+            <p  class="game-card-age"   data-i18n="game2:age">対象年齢の目安：3〜6歳</p>
             <a href="mushimushi/" class="btn-play" data-i18n="game2:btn">遊ぶ →</a>
           </article>
 
@@ -62,6 +111,7 @@
             <p  class="game-card-desc"  data-i18n="game4:desc">
               海の生き物と一緒にひらがなを学ぼう
             </p>
+            <p  class="game-card-age"   data-i18n="game4:age">対象年齢の目安：4〜7歳</p>
             <a href="pokopokosea/" class="btn-play" data-i18n="game4:btn">遊ぶ →</a>
           </article>
 
@@ -72,6 +122,7 @@
             <p  class="game-card-desc"  data-i18n="game5:desc">
               あみで魚をすくって図鑑を集めよう
             </p>
+            <p  class="game-card-age"   data-i18n="game5:age">対象年齢の目安：3〜6歳</p>
             <a href="fishinggame/" class="btn-play" data-i18n="game5:btn">遊ぶ →</a>
           </article>
 
