@@ -68,7 +68,7 @@ function pageShell({ title, description, url, ogImage, bodyClass, jsonLd, main }
       <nav class="header-nav" aria-label="メインナビゲーション">
         <a href="/games/" class="nav-link hide-sm">ゲーム一覧</a>
         <a href="/zukan/mushi/" class="nav-link hide-sm">昆虫図鑑</a>
-        <a href="/about/" class="nav-link hide-sm">について</a>
+        <a href="/about/" class="nav-link hide-sm">Pontalelabについて</a>
         <a href="/contact/" class="nav-link hide-sm">お問い合わせ</a>
       </nav>
     </div>
