@@ -1,0 +1,42 @@
+{
+  "id": "kabutomushi",
+  "category": "mushi",
+  "name": "カブトムシ",
+  "reading": "かぶとむし",
+  "scientificName": "Trypoxylus dichotomus",
+  "classification": "コウチュウ目 コガネムシ科",
+  "oneLiner": "角を持つ昆虫の王様。夏の人気者！",
+  "rarityInGame": "uncommon",
+  "description": {
+    "what": "カブトムシは、夏によく見かける大きな昆虫です。オスには立派な角があり、力もとても強いです。",
+    "where": "クヌギやコナラなど、樹液が出る木がある雑木林で見つかります。",
+    "food": "木のみきから出る樹液をなめて食べます。幼虫は、土の中の腐った葉っぱを食べます。"
+  },
+  "funFacts": [
+    "角は、オスどうしが樹液の取り合いでケンカするときに使うよ。",
+    "夜行性で、昼間は木のかげや土の中でじっとしていることが多いよ。",
+    "幼虫のときは、1年近く土の中で育つよ。",
+    "自分の体重の何十倍もの重さを引っぱれるほど、力持ちだよ。"
+  ],
+  "ageRange": "3〜8歳",
+  "ageMin": 3,
+  "ageMax": 8,
+  "season": [
+    "夏"
+  ],
+  "size": "大きい（30〜54mmほど、角をのぞく）",
+  "images": [
+    {
+      "url": "/games/mushimushi/bugs/kabutomushi.png",
+      "source": "own-asset",
+      "credit": null,
+      "license": null,
+      "note": "むしたん用に制作したオリジナルイラストを流用"
+    }
+  ],
+  "relatedInsectIds": [
+    "nokogiri_kuwagata"
+  ],
+  "relatedArticles": [],
+  "mushitanUrl": "https://pontalelab.com/games/mushimushi/"
+}

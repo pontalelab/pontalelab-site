@@ -1,0 +1,43 @@
+{
+  "id": "monshirocho",
+  "category": "mushi",
+  "name": "モンシロチョウ",
+  "reading": "もんしろちょう",
+  "scientificName": "Pieris rapae",
+  "classification": "チョウ目 シロチョウ科",
+  "oneLiner": "白いはねに黒い紋がある、身近なちょうちょ",
+  "rarityInGame": "common",
+  "description": {
+    "what": "モンシロチョウは、白いはねに黒いもようがある、よく見かけるちょうちょです。ひらひらと飛ぶ姿でおなじみです。",
+    "where": "菜の花畑やキャベツ畑など、アブラナの仲間の植物があるところでよく見られます。",
+    "food": "成虫は花のみつを吸います。幼虫（アオムシ）はキャベツなどの葉を食べます。"
+  },
+  "funFacts": [
+    "幼虫のときは「アオムシ」とよばれる緑色の青虫だよ。",
+    "さなぎから出たばかりのはねはしわしわ。しばらく待つと、ぴんとのびるよ。",
+    "1年のあいだに何度も世代を交代しながら発生するよ。"
+  ],
+  "ageRange": "3〜8歳",
+  "ageMin": 3,
+  "ageMax": 8,
+  "season": [
+    "春",
+    "夏",
+    "秋"
+  ],
+  "size": "小さい（はねを広げて4〜5cmほど）",
+  "images": [
+    {
+      "url": "/games/mushimushi/bugs/monshirocho.png",
+      "source": "own-asset",
+      "credit": null,
+      "license": null,
+      "note": "むしたん用に制作したオリジナルイラストを流用"
+    }
+  ],
+  "relatedInsectIds": [
+    "syouryou_batta"
+  ],
+  "relatedArticles": [],
+  "mushitanUrl": "https://pontalelab.com/games/mushimushi/"
+}

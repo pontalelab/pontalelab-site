@@ -1,0 +1,45 @@
+{
+  "id": "genji_botaru",
+  "category": "mushi",
+  "name": "ゲンジボタル",
+  "reading": "げんじぼたる",
+  "scientificName": "Luciola cruciata",
+  "classification": "コウチュウ目 ホタル科",
+  "oneLiner": "暗やみに光る、日本を代表するホタル",
+  "rarityInGame": "uncommon",
+  "description": {
+    "what": "ゲンジボタルは、おしりから緑がかった光を出すホタルです。日本にいるホタルの中でも大きい種類です。",
+    "where": "きれいな水が流れる小川のそばで見られます。幼虫は水の中で育ちます。",
+    "food": "幼虫は、川にすむカワニナという小さな貝を食べます。成虫はほとんど何も食べません。"
+  },
+  "funFacts": [
+    "光るのは、暗い中でオスとメスがおたがいを見つけるためだよ。",
+    "体の中でルシフェリンという物質が反応して、あの光が生まれるよ。",
+    "幼虫のときは1年近く水の中で過ごし、成虫になれるのはたった2週間ほどだよ。",
+    "日がしずんでから2時間くらいが、いちばんよく光る時間だよ。"
+  ],
+  "ageRange": "3〜8歳",
+  "ageMin": 3,
+  "ageMax": 8,
+  "season": [
+    "初夏"
+  ],
+  "size": "中くらい（体長15mmほど）",
+  "images": [
+    {
+      "url": "/games/mushimushi/bugs/genji_botaru.png",
+      "source": "own-asset",
+      "credit": null,
+      "license": null,
+      "note": "むしたん用に制作したオリジナルイラストを流用"
+    }
+  ],
+  "relatedInsectIds": [
+    "oniyanma"
+  ],
+  "relatedArticles": [],
+  "mushitanUrl": "https://pontalelab.com/games/mushimushi/",
+  "sources": [
+    "https://www.honda.co.jp/kids/explore/firefly/"
+  ]
+}

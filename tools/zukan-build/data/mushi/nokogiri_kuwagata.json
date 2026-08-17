@@ -1,0 +1,42 @@
+{
+  "id": "nokogiri_kuwagata",
+  "category": "mushi",
+  "name": "ノコギリクワガタ",
+  "reading": "のこぎりくわがた",
+  "scientificName": "Prosopocoilus inclinatus",
+  "classification": "コウチュウ目 クワガタムシ科",
+  "oneLiner": "ギザギザの大きなアゴが目印のクワガタムシ",
+  "rarityInGame": "uncommon",
+  "description": {
+    "what": "ノコギリクワガタは、のこぎりのようにギザギザした大きなアゴを持つクワガタムシです。",
+    "where": "クヌギやコナラの樹液が出る木で、カブトムシと同じ場所によく現れます。",
+    "food": "木の樹液をなめて食べます。幼虫は、朽ちた木を食べて育ちます。"
+  },
+  "funFacts": [
+    "大きなアゴは、樹液の場所やメスをめぐるオスどうしの勝負に使うよ。",
+    "アゴの形は、1匹ずつ少しずつ違うよ。",
+    "幼虫は、朽ち木の中で1〜2年ほどかけてゆっくり育つよ。",
+    "カブトムシと同じ木に集まることが多く、いっしょに見つかることもあるよ。"
+  ],
+  "ageRange": "3〜8歳",
+  "ageMin": 3,
+  "ageMax": 8,
+  "season": [
+    "夏"
+  ],
+  "size": "中〜大（オスで25〜65mmほど）",
+  "images": [
+    {
+      "url": "/games/mushimushi/bugs/nokogiri_kuwagata.png",
+      "source": "own-asset",
+      "credit": null,
+      "license": null,
+      "note": "むしたん用に制作したオリジナルイラストを流用"
+    }
+  ],
+  "relatedInsectIds": [
+    "kabutomushi"
+  ],
+  "relatedArticles": [],
+  "mushitanUrl": "https://pontalelab.com/games/mushimushi/"
+}

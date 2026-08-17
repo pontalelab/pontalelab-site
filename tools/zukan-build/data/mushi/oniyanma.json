@@ -1,0 +1,45 @@
+{
+  "id": "oniyanma",
+  "category": "mushi",
+  "name": "オニヤンマ",
+  "reading": "おにやんま",
+  "scientificName": "Anotogaster sieboldii",
+  "classification": "トンボ目 オニヤンマ科",
+  "oneLiner": "日本最大、黄色と黒のしまもようが目印のトンボ",
+  "rarityInGame": "rare",
+  "description": {
+    "what": "オニヤンマは、日本にいるトンボの中でいちばん大きな種類です。黒と黄色のしまもようが特徴です。",
+    "where": "山あいのきれいな小川のそばで見られます。オスは同じコースを行ったり来たりパトロールする習性があります。",
+    "food": "飛びながら、ハエや蚊などの小さな虫をつかまえて食べます。"
+  },
+  "funFacts": [
+    "体の長さは9〜11cmほどで、日本最大のトンボだよ。",
+    "幼虫（ヤゴ）は、きれいな小川で3〜5年もかけてゆっくり育つよ。",
+    "強いアゴを持っているので、つかまえるときはかまれないように気をつけてね。",
+    "怖い顔と体のしまもようが「鬼」に似ていることから、この名前がついたよ。"
+  ],
+  "ageRange": "4〜9歳",
+  "ageMin": 4,
+  "ageMax": 9,
+  "season": [
+    "夏"
+  ],
+  "size": "とても大きい（9〜11cmほど）",
+  "images": [
+    {
+      "url": "/games/mushimushi/bugs/oniyanma.png",
+      "source": "own-asset",
+      "credit": null,
+      "license": null,
+      "note": "むしたん用に制作したオリジナルイラストを流用"
+    }
+  ],
+  "relatedInsectIds": [
+    "genji_botaru"
+  ],
+  "relatedArticles": [],
+  "mushitanUrl": "https://pontalelab.com/games/mushimushi/",
+  "sources": [
+    "https://www.honda.co.jp/outdoor/knowledge/adventure/picture-book/oniyanma/"
+  ]
+}
