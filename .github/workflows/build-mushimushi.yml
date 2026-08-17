@@ -1,0 +1,95 @@
+name: Build mushimushi (むしたん)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/mushimushi/src/**'
+      - 'games/mushimushi/public/**'
+      - 'games/mushimushi/index.dev.html'
+      - 'games/mushimushi/package.json'
+      - 'games/mushimushi/package-lock.json'
+      - 'games/mushimushi/vite.config.ts'
+      - 'games/mushimushi/tsconfig*.json'
+      - '.github/workflows/build-mushimushi.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/mushimushi/src/**'
+      - 'games/mushimushi/public/**'
+      - 'games/mushimushi/index.dev.html'
+      - 'games/mushimushi/package.json'
+      - 'games/mushimushi/package-lock.json'
+      - 'games/mushimushi/vite.config.ts'
+      - 'games/mushimushi/tsconfig*.json'
+      - '.github/workflows/build-mushimushi.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-mushimushi-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: games/mushimushi/package-lock.json
+
+      - name: Restore source index.html
+        # index.dev.html は常に正しいビルド入力（/src/main.tsx を参照する）。
+        # 直前のビルドで index.html が成果物で上書きされていても、ここで必ず復元する。
+        run: cp games/mushimushi/index.dev.html games/mushimushi/index.html
+
+      - name: Install dependencies
+        working-directory: games/mushimushi
+        run: npm ci
+
+      - name: Type check & build
+        working-directory: games/mushimushi
+        run: npm run build
+
+      - name: Sync build output into serving directory
+        # pull_request では検証のみ（ビルドが通るかどうかのCIチェック）。
+        # main への push のときだけ、実際に配信ディレクトリへ反映する。
+        if: github.event_name == 'push'
+        run: |
+          rsync -a --delete \
+            --exclude='src' \
+            --exclude='public' \
+            --exclude='node_modules' \
+            --exclude='dist' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            --exclude='vite.config.ts' \
+            --exclude='tsconfig.json' \
+            --exclude='tsconfig.app.json' \
+            --exclude='tsconfig.node.json' \
+            --exclude='eslint.config.js' \
+            --exclude='README.md' \
+            --exclude='index.dev.html' \
+            --exclude='.gitignore' \
+            games/mushimushi/dist/ games/mushimushi/
+
+      - name: Commit and push build output
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "pontalelab-bot"
+          git config user.email "actions@github.com"
+          git add games/mushimushi
+          if git diff --cached --quiet; then
+            echo "変更なし。コミットをスキップします。"
+          else
+            git commit -m "chore: むしたんを自動ビルド・デプロイ"
+            git push
+          fi
