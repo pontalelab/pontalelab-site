@@ -21,7 +21,7 @@ const i18n = {
     "lang:btn":     "English",
     "nav:games":    "ゲーム一覧",
     "nav:zukan":    "昆虫図鑑",
-    "nav:about":    "について",
+    "nav:about":    "Pontalelabについて",
     "nav:contact":  "お問い合わせ",
 
     /* --- Hero (top page) --- */
