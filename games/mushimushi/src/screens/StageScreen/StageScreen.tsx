@@ -44,16 +44,28 @@ interface RevealEntry {
   targetIndex: number
 }
 
+// Below this many px of downward pointer travel (with more vertical than
+// horizontal movement), the held-up reveal is sent to the bottom bar early.
+const SWIPE_DOWN_THRESHOLD_PX = 55
+// Extra vertical space reserved below the reveal image for the name text
+// AND the swipe-down hint that appears under it (must stay in sync between
+// the animation-target calc below and the initial-position calc used for
+// the JSX `top` styles, or the two will visually drift apart).
+const TEXT_AND_HINT_BLOCK_PX = 76
+const HINT_GAP_PX = 40
+
 function CaptureReveal({ bugId, bugName, rect, targetIndex, onComplete }: RevealEntry & { onComplete: () => void }) {
   const imgRef = useRef<HTMLImageElement>(null)
   const textRef = useRef<HTMLDivElement>(null)
   const backdropRef = useRef<HTMLDivElement>(null)
+  const hintRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const img = imgRef.current
     const txt = textRef.current
     const bg = backdropRef.current
-    if (!img || !txt || !bg) return
+    const hint = hintRef.current
+    if (!img || !txt || !bg || !hint) return
 
     // Reveal size: 88% of screen width, max 340px
     const revealSize = Math.min(340, Math.floor(window.innerWidth * 0.88))
@@ -76,7 +88,7 @@ function CaptureReveal({ bugId, bugName, rect, targetIndex, onComplete }: Reveal
     const cx = window.innerWidth / 2 - revealSize / 2
     const usableTop = 70
     const usableBottom = window.innerHeight - barHeight
-    const blockHeight = revealSize + 4 + 36
+    const blockHeight = revealSize + 4 + TEXT_AND_HINT_BLOCK_PX
     const cy = usableTop + Math.max(0, (usableBottom - usableTop - blockHeight) / 2)
 
     bg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, fill: 'forwards' })
@@ -95,29 +107,90 @@ function CaptureReveal({ bugId, bugName, rect, targetIndex, onComplete }: Reveal
       { opacity: 1, transform: 'translateY(0)' },
     ], { duration: 300, delay: 450, easing: 'ease-out', fill: 'forwards' })
 
-    phase1.onfinish = () => {
-      const holdTimer = setTimeout(() => {
-        bg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: 'forwards' })
-        txt.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: 'forwards' })
-        const phase3 = img.animate([
-          { transform: `translate(${cx}px, ${cy}px) scale(1)` },
-          { transform: `translate(${tx}px, ${ty}px) scale(${endScale})` },
-        ], { duration: 480, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' })
-        phase3.onfinish = onComplete
-      }, 2000)
-      return () => clearTimeout(holdTimer)
+    let finished = false
+    let holdTimer: ReturnType<typeof setTimeout> | null = null
+    let hintBounce: Animation | null = null
+    let tracking = false
+    let startX = 0
+    let startY = 0
+
+    const onPointerDown = (e: PointerEvent) => {
+      tracking = true
+      startX = e.clientX
+      startY = e.clientY
+    }
+    const onPointerMove = (e: PointerEvent) => {
+      if (!tracking) return
+      const dy = e.clientY - startY
+      const dx = Math.abs(e.clientX - startX)
+      // Mostly-downward swipe past the threshold: send it to the bar now.
+      if (dy > SWIPE_DOWN_THRESHOLD_PX && dy > dx) {
+        tracking = false
+        flyToBar()
+      }
+    }
+    const onPointerUp = () => { tracking = false }
+
+    const stopGestureListening = () => {
+      bg.removeEventListener('pointerdown', onPointerDown)
+      bg.removeEventListener('pointermove', onPointerMove)
+      bg.removeEventListener('pointerup', onPointerUp)
+      bg.removeEventListener('pointercancel', onPointerUp)
+      bg.style.pointerEvents = 'none'
+      bg.style.touchAction = ''
     }
 
-    return () => { phase1.cancel() }
+    const flyToBar = () => {
+      if (finished) return
+      finished = true
+      if (holdTimer) clearTimeout(holdTimer)
+      hintBounce?.cancel()
+      hint.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 150, fill: 'forwards' })
+      stopGestureListening()
+      bg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: 'forwards' })
+      txt.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: 'forwards' })
+      const phase3 = img.animate([
+        { transform: `translate(${cx}px, ${cy}px) scale(1)` },
+        { transform: `translate(${tx}px, ${ty}px) scale(${endScale})` },
+      ], { duration: 480, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' })
+      phase3.onfinish = onComplete
+    }
+
+    phase1.onfinish = () => {
+      // Once the bug has arrived at the center, let the child swipe it down
+      // to the bar right away instead of waiting out the full hold.
+      bg.style.pointerEvents = 'auto'
+      bg.style.touchAction = 'none'
+      bg.addEventListener('pointerdown', onPointerDown)
+      bg.addEventListener('pointermove', onPointerMove)
+      bg.addEventListener('pointerup', onPointerUp)
+      bg.addEventListener('pointercancel', onPointerUp)
+
+      hint.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: 300, fill: 'forwards' })
+      hintBounce = hint.animate(
+        [{ transform: 'translateY(0)' }, { transform: 'translateY(8px)' }, { transform: 'translateY(0)' }],
+        { duration: 900, delay: 600, easing: 'ease-in-out', iterations: Infinity }
+      )
+
+      holdTimer = setTimeout(flyToBar, 2000)
+    }
+
+    return () => {
+      phase1.cancel()
+      if (holdTimer) clearTimeout(holdTimer)
+      hintBounce?.cancel()
+      stopGestureListening()
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const _revealSize = Math.min(340, Math.floor(window.innerWidth * 0.88))
   const _barHeight = window.innerHeight * BAR_HEIGHT_VH
   const _usableTop = 70
-  const _blockHeight = _revealSize + 4 + 36
+  const _blockHeight = _revealSize + 4 + TEXT_AND_HINT_BLOCK_PX
   const _cy = _usableTop + Math.max(0, (window.innerHeight - _barHeight - _usableTop - _blockHeight) / 2)
   const textTop = _cy + _revealSize + 4
+  const hintTop = textTop + HINT_GAP_PX
 
   return (
     <>
@@ -152,6 +225,18 @@ function CaptureReveal({ bugId, bugName, rect, targetIndex, onComplete }: Reveal
         }}
       >
         {bugName}はっけん！
+      </div>
+      <div
+        ref={hintRef}
+        style={{
+          position: 'fixed', top: `${hintTop}px`, left: 0, right: 0,
+          textAlign: 'center', pointerEvents: 'none',
+          zIndex: 500, opacity: 0,
+          color: 'rgba(255,255,255,0.85)', fontSize: '1.6rem',
+          textShadow: '0 2px 10px rgba(0,0,0,0.7)',
+        }}
+      >
+        ⬇
       </div>
     </>
   )
