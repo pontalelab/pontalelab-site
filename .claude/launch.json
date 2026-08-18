@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "games/kenkenchizu", "run", "dev"],
       "port": 5173
+    },
+    {
+      "name": "mushimushi-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "games/mushimushi", "run", "dev", "--", "--port", "5174"],
+      "port": 5174
     }
   ]
 }
