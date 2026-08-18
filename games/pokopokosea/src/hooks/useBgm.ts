@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const BGM_SRC = '/bgm.mp3';
+const BGM_SRC = `${import.meta.env.BASE_URL}bgm.mp3`;
 const MUTE_KEY = 'pokopoko-sea-bgm-muted';
 
 function loadMuted(): boolean {

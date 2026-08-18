@@ -12,9 +12,9 @@ interface Props {
 }
 
 const SEA_STYLES: Record<string, { bg: string; image: string; label: string }> = {
-  sand:    { bg: '#C8E6F5', image: '/bg-sand.png',    label: 'すなはまのうみ' },
-  seaweed: { bg: '#68C777', image: '/bg-seaweed.png', label: 'わかめのうみ' },
-  coral:   { bg: '#29B5E8', image: '/bg-coral.png',   label: 'さんごのうみ' },
+  sand:    { bg: '#C8E6F5', image: `${import.meta.env.BASE_URL}bg-sand.png`,    label: 'すなはまのうみ' },
+  seaweed: { bg: '#68C777', image: `${import.meta.env.BASE_URL}bg-seaweed.png`, label: 'わかめのうみ' },
+  coral:   { bg: '#29B5E8', image: `${import.meta.env.BASE_URL}bg-coral.png`,   label: 'さんごのうみ' },
 };
 
 export function HomeScreen({ discoveredFishIds, onStartPlay, onFishClick, onReset }: Props) {
