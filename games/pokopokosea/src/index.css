@@ -152,6 +152,19 @@ body {
   transform: scale(1.3);
 }
 
+/* タップした瞬間、ふだんの上下揺れ(swim-bob)を一時的に上書きしてジャンプさせる。
+   アニメーション終了後（onAnimationEnd）にこのクラスを外し、swim-bobに戻す */
+.swimming-fish--jump {
+  animation: fishJump 0.45s ease;
+}
+
+@keyframes fishJump {
+  0%   { transform: translateY(0)     scale(1);    }
+  30%  { transform: translateY(-24px) scale(1.2);  }
+  55%  { transform: translateY(4px)   scale(0.94); }
+  100% { transform: translateY(0)     scale(1);    }
+}
+
 /* 左→右へ泳いで折り返す。端で scaleX を反転させて向きを変える */
 @keyframes swim-across {
   0%    { transform: translateX(-80px)  scaleX(1);  }
@@ -388,6 +401,19 @@ body {
   text-align: center;
 }
 
+/* 1文字正解するたびに、Reactのkey差し替えで再マウントさせてこのアニメーションを
+   都度再生する（魚が一緒に喜んでいるような小さなリアクション） */
+.fish-emoji-large--pulse {
+  animation: fishPulse 0.4s ease;
+}
+
+@keyframes fishPulse {
+  0%   { transform: scale(1) rotate(0deg); }
+  40%  { transform: scale(1.15) rotate(-4deg); }
+  70%  { transform: scale(0.97) rotate(2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
 /* 魚名ラベル（正解文字列を上に表示） */
 /* 入力スロット（タップするたびに埋まる） */
 .name-slots {
@@ -421,6 +447,7 @@ body {
   background: rgba(255, 255, 255, 0.95);
   border: 3px solid #1a9fd4;
   color: #0d2e4f;
+  animation: pop 0.35s ease;
 }
 
 /* 泡エリア */
@@ -430,6 +457,25 @@ body {
   gap: 16px;
   justify-content: center;
   padding: 4px 8px;
+}
+
+/* 泡ボタンのラッパー。待機中のふわふわアニメーションはこちらが担当し、
+   ボタン本体のtransform（押した時の縮小・正解/不正解の演出）と干渉しないようにする */
+.bubble-wrap {
+  display: inline-flex;
+}
+
+.bubble-wrap--float {
+  animation: bubbleFloat 2.6s ease-in-out infinite;
+}
+
+@keyframes bubbleFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-7px) scale(1.03); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble-wrap--float { animation: none; }
 }
 
 .bubble-button {
@@ -453,24 +499,36 @@ body {
   transform: scale(0.9);
 }
 
+/* 正解タップ：一瞬ふくらんでから、泡がはじけるように縮んで消える */
 .bubble-button--selected {
   background: linear-gradient(145deg, #b0bec5, #90a4ae);
   border-color: rgba(255, 255, 255, 0.4);
   opacity: 0.45;
   cursor: default;
   box-shadow: none;
+  animation: bubblePop 0.4s ease forwards;
 }
 
+@keyframes bubblePop {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.3); }
+  70%  { transform: scale(0.85); }
+  100% { transform: scale(0.94); }
+}
+
+/* 不正解タップ：怖くならないよう、シェイクにやわらかい「むにゅっ」とした
+   つぶれ感を混ぜる */
 .bubble-button--wrong {
-  animation: shake 0.4s ease;
+  animation: bubbleWrong 0.45s ease;
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%       { transform: translateX(-7px); }
-  40%       { transform: translateX(7px); }
-  60%       { transform: translateX(-4px); }
-  80%       { transform: translateX(4px); }
+@keyframes bubbleWrong {
+  0%   { transform: scale(1, 1) translateX(0); }
+  15%  { transform: scale(0.85, 1.12) translateX(-7px); }
+  35%  { transform: scale(1.08, 0.92) translateX(6px); }
+  55%  { transform: scale(0.94, 1.05) translateX(-4px); }
+  75%  { transform: scale(1.03, 0.98) translateX(3px); }
+  100% { transform: scale(1, 1) translateX(0); }
 }
 
 /* 正解オーバーレイ */
