@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { Fish } from '../types';
 
 interface Props {
@@ -12,6 +12,8 @@ function pseudoRandom(seed: number, n: number): number {
 }
 
 export function SwimmingFish({ fish, onClick }: Props) {
+  const [jumping, setJumping] = useState(false);
+
   const seed = useMemo(
     () => fish.id.split('').reduce((acc, c, i) => acc + c.charCodeAt(0) * (i + 1), 0),
     [fish.id],
@@ -23,6 +25,10 @@ export function SwimmingFish({ fish, onClick }: Props) {
   const fontSize    = 40 + pseudoRandom(seed, 4) * 18;      // 40〜58px
   const bobDuration = 2.5 + pseudoRandom(seed, 5) * 2.0;   // 上下揺れ 2.5〜4.5秒
 
+  const handleClick = () => {
+    setJumping(true);
+  };
+
   return (
     <div
       className="swimming-fish-wrapper"
@@ -33,12 +39,22 @@ export function SwimmingFish({ fish, onClick }: Props) {
       } as React.CSSProperties}
     >
       <button
-        className="swimming-fish"
+        className={['swimming-fish', jumping ? 'swimming-fish--jump' : ''].filter(Boolean).join(' ')}
         style={{
           '--bob-duration': `${bobDuration.toFixed(1)}s`,
           fontSize: `${Math.round(fontSize)}px`,
         } as React.CSSProperties}
-        onClick={onClick}
+        onClick={handleClick}
+        onAnimationEnd={(e) => {
+          // fishJump（ジャンプ演出）が終わったら通常のswim-bobに戻し、
+          // 演出が見えてから詳細画面を開く（先にonClickすると即座に
+          // アンマウントされ、ジャンプが再生されないまま消えてしまうため）。
+          // swim-bobは無限ループなのでonAnimationEndが呼ばれないため誤って消されない。
+          if (e.animationName === 'fishJump') {
+            setJumping(false);
+            onClick();
+          }
+        }}
         aria-label={`${fish.name}をみる`}
       >
         {fish.emoji ?? '🐟'}

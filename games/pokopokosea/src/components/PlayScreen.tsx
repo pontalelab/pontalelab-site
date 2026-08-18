@@ -85,7 +85,11 @@ export function PlayScreen({ fish, difficulty, onFishFound }: Props) {
       <h2 className="play-title">なんというさかな？</h2>
 
       <div className="fish-display">
-        <div className="fish-emoji-large">{fish.emoji ?? '🐟'}</div>
+        {/* keyをselectedLetters.lengthにすることで、1文字正解するたびに
+            要素を再マウントさせ、fishPulseアニメーションを毎回再生させる */}
+        <div key={selectedLetters.length} className="fish-emoji-large fish-emoji-large--pulse">
+          {fish.emoji ?? '🐟'}
+        </div>
       </div>
 
       <div className="name-slots">
@@ -100,19 +104,27 @@ export function PlayScreen({ fish, difficulty, onFishFound }: Props) {
       </div>
 
       <div className="bubble-area">
-        {bubbleLetters.map(bubble => (
-          <button
+        {bubbleLetters.map((bubble, i) => (
+          <span
             key={bubble.id}
-            className={[
-              'bubble-button',
-              bubble.selected ? 'bubble-button--selected' : '',
-              wrongId === bubble.id ? 'bubble-button--wrong' : '',
-            ].filter(Boolean).join(' ')}
-            onClick={() => handleLetterTap(bubble)}
-            disabled={bubble.selected}
+            className={['bubble-wrap', bubble.selected ? '' : 'bubble-wrap--float'].filter(Boolean).join(' ')}
+            style={{
+              animationDelay: `${(i % 5) * 0.3}s`,
+              animationDuration: `${2.2 + (i % 3) * 0.4}s`,
+            }}
           >
-            {bubble.letter}
-          </button>
+            <button
+              className={[
+                'bubble-button',
+                bubble.selected ? 'bubble-button--selected' : '',
+                wrongId === bubble.id ? 'bubble-button--wrong' : '',
+              ].filter(Boolean).join(' ')}
+              onClick={() => handleLetterTap(bubble)}
+              disabled={bubble.selected}
+            >
+              {bubble.letter}
+            </button>
+          </span>
         ))}
       </div>
 

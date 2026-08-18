@@ -20,6 +20,12 @@
       "port": 5176
     },
     {
+      "name": "pokopokosea-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "games/pokopokosea", "run", "dev", "--", "--port", "5177"],
+      "port": 5177
+    },
+    {
       "name": "site-static",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8099"],
