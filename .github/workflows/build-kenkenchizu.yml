@@ -1,0 +1,86 @@
+name: Build kenkenchizu (けんけんちず)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/kenkenchizu/src/**'
+      - 'games/kenkenchizu/public/**'
+      - 'games/kenkenchizu/index.dev.html'
+      - 'games/kenkenchizu/package.json'
+      - 'games/kenkenchizu/vite.config.js'
+      - '.github/workflows/build-kenkenchizu.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/kenkenchizu/src/**'
+      - 'games/kenkenchizu/public/**'
+      - 'games/kenkenchizu/index.dev.html'
+      - 'games/kenkenchizu/package.json'
+      - 'games/kenkenchizu/vite.config.js'
+      - '.github/workflows/build-kenkenchizu.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-kenkenchizu-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Restore source index.html
+        # index.dev.html は常に正しいビルド入力（/src/main.jsx を参照する）。
+        # 直前のビルドで index.html が成果物で上書きされていても、ここで必ず復元する。
+        run: cp games/kenkenchizu/index.dev.html games/kenkenchizu/index.html
+
+      - name: Install dependencies
+        # package-lock.json をまだコミットしていないため npm ci ではなく npm install を使う。
+        working-directory: games/kenkenchizu
+        run: npm install
+
+      - name: Build
+        working-directory: games/kenkenchizu
+        run: npm run build
+
+      - name: Sync build output into serving directory
+        # pull_request では検証のみ（ビルドが通るかどうかのCIチェック）。
+        # main への push のときだけ、実際に配信ディレクトリへ反映する。
+        if: github.event_name == 'push'
+        run: |
+          rsync -a --delete \
+            --exclude='src' \
+            --exclude='public' \
+            --exclude='node_modules' \
+            --exclude='dist' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            --exclude='vite.config.js' \
+            --exclude='.gitignore' \
+            --exclude='README.md' \
+            --exclude='index.dev.html' \
+            games/kenkenchizu/dist/ games/kenkenchizu/
+
+      - name: Commit and push build output
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "pontalelab-bot"
+          git config user.email "actions@github.com"
+          git add games/kenkenchizu
+          if git diff --cached --quiet; then
+            echo "変更なし。コミットをスキップします。"
+          else
+            git commit -m "chore: けんけんちずを自動ビルド・デプロイ"
+            git push
+          fi

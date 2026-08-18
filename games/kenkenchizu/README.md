@@ -1,0 +1,44 @@
+# けんけんちず
+
+Vite + React 製のブラウザゲーム。都道府県のシルエットを見てどこの県か当てるクイズです。対象年齢は未就学〜小学校低学年のため、画面表示はすべてひらがな・カタカナです。
+
+## 開発
+
+```bash
+npm install
+npm run dev        # ローカル開発サーバー
+npm run dev:host   # LAN上の他端末（スマホ等）からもアクセス可能にする
+```
+
+## ビルド・公開の仕組み（重要）
+
+このプロジェクトは **GitHub Actions（`.github/workflows/build-kenkenchizu.yml`）によって自動ビルド・自動公開** されています。仕組みは[むしたん](../mushimushi/README.md)と同じです。
+
+`src/`・`index.dev.html`・`package.json`・`vite.config.js` 等を変更して`main`にpushすると、CIが自動的に以下を行います。
+
+1. `index.dev.html` を `index.html` にコピー（正しいビルド元を保証する）
+2. `npm install && npm run build`（出力先は `dist/`）
+3. `dist/` の中身を、本番で実際に配信されているこのフォルダ直下（`games/kenkenchizu/`）へ同期コピー
+4. 変更があれば自動でコミット・push
+
+このため、**`games/kenkenchizu/`直下にある`index.html`・`assets/`はすべてビルド成果物（自動生成物）** です。手で直接編集しないでください。次のビルドで上書きされます。
+
+### 編集してよいファイル（ソース）
+
+- `src/` 以下（`SilhouetteQuiz.jsx`が本体）
+- `index.dev.html`（`<title>`・OGP・meta タグなどHTMLの`<head>`を変更したいとき）
+- `package.json` / `vite.config.js`
+
+`index.dev.html`は、Viteが本来必要とする`index.html`（`<script type="module" src="/src/main.jsx">`を含む、ビルドされていない状態のテンプレート）を、ビルド成果物によって上書きされないよう別名で永続的に保持しているファイルです（むしたんと同じ設計・同じ理由）。
+
+### package-lock.jsonについて
+
+現時点でこのプロジェクトにはpackage-lock.jsonをコミットしていません（開発環境からnpmレジストリにアクセスできず生成できなかったため）。CIでは`npm ci`ではなく`npm install`を使っています。
+
+### 残り35都道府県データの追加
+
+`tools/kenkenchizu-build/`を参照してください。
+
+## 都道府県データについて
+
+`src/SilhouetteQuiz.jsx`内の`QUESTIONS`配列に、都道府県ごとのシルエット（実際の地理データ由来のSVGパス）・ひらがな読み・「であえる いきもの」紹介文・4択の選択肢を持っています。現在12/47都道府県分のみ実装済みです。
