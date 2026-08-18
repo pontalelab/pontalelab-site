@@ -54,9 +54,10 @@
   font-size: var(--font-md);
   letter-spacing: 0.1em;
   color: var(--text-primary);
-  transition: background var(--transition-quick);
+  transition: background var(--transition-quick), transform var(--transition-quick);
 }
 
 .continueBtn:active {
   background: rgba(255, 255, 255, 0.15);
+  transform: scale(0.96);
 }
