@@ -26,7 +26,7 @@ manifest.json    PWA用マニフェスト
 | むしたん | `games/mushimushi/` | 公開中（GitHub Actionsで自動ビルド） | Vite + React + TypeScript + Zustand |
 | うみのひらがな | `games/pokopokosea/` | 公開中（手動ビルド。むしたんと同じCI化が未着手） | Vite + React + TypeScript |
 | あみあみうみ | `games/fishinggame/` | 公開中 | 素のJS/CSS（ビルド不要） |
-| けんけんちず | `games/kenkenchizu/` | 公開中・12/47都道府県のみ実装（GitHub Actionsで自動ビルド） | Vite + React |
+| けんけんちず | `games/kenkenchizu/` | 公開中・47都道府県すべて実装（GitHub Actionsで自動ビルド） | Vite + React |
 | まぜまぜ研究室 | `games/mazemaze/` | 実装あり・`games/index.html`未リンク（開発中扱い） | 素のJS/CSS（ビルド不要） |
 | ポコポコ楽団 | 未実装 | 開発中（「もうすぐ」表示のみ） | - |
 
