@@ -31,10 +31,6 @@ npm run dev:host   # LAN上の他端末（スマホ等）からもアクセス�
 
 `index.dev.html`は、Viteが本来必要とする`index.html`（`<script type="module" src="/src/main.jsx">`を含む、ビルドされていない状態のテンプレート）を、ビルド成果物によって上書きされないよう別名で永続的に保持しているファイルです（むしたんと同じ設計・同じ理由）。
 
-### package-lock.jsonについて
-
-現時点でこのプロジェクトにはpackage-lock.jsonをコミットしていません（開発環境からnpmレジストリにアクセスできず生成できなかったため）。CIでは`npm ci`ではなく`npm install`を使っています。
-
 ### 残り35都道府県データの追加
 
 `tools/kenkenchizu-build/`を参照してください。
