@@ -21,13 +21,21 @@ npm run dev:host   # LAN上の他端末（スマホ等）からもアクセス�
 3. `dist/` の中身を、本番で実際に配信されているこのフォルダ直下（`games/kenkenchizu/`）へ同期コピー
 4. 変更があれば自動でコミット・push
 
-このため、**`games/kenkenchizu/`直下にある`index.html`・`assets/`はすべてビルド成果物（自動生成物）** です。手で直接編集しないでください。次のビルドで上書きされます。
+このため、**`games/kenkenchizu/`直下にある`index.html`・`assets/`・`bgm/`はすべてビルド成果物（自動生成物）** です。手で直接編集しないでください。次のビルドで上書きされます。
 
 ### 編集してよいファイル（ソース）
 
 - `src/` 以下（`SilhouetteQuiz.jsx`が本体）
+- `public/` 以下（BGMなどの静的アセット。ビルド時にそのまま出力先へコピーされる）
 - `index.dev.html`（`<title>`・OGP・meta タグなどHTMLの`<head>`を変更したいとき）
 - `package.json` / `vite.config.js`
+
+## BGM
+
+`public/bgm/theme.mp3` をホーム画面〜クイズ画面〜結果画面を通してループ再生します。スマホの自動再生制限があるため、実際の再生開始はホーム画面の「はじめる」ボタンを押した瞬間（最初のユーザー操作）です。画面右上のボタンでいつでもミュート/解除でき、その状態は端末に保存されます。
+
+- 音源：「Funky droll street」（[DOVA-SYNDROME](https://dova-s.jp/)、作曲：蒲鉾さちこ）
+- ライセンス：DOVA-SYNDROMEの[利用規約](https://dova-s.jp/help/articles/terms/)・[ライセンス](https://dova-s.jp/help/articles/license/)に準拠（商用利用可・クレジット表記任意・大幅な改変や再配布は禁止）
 
 `index.dev.html`は、Viteが本来必要とする`index.html`（`<script type="module" src="/src/main.jsx">`を含む、ビルドされていない状態のテンプレート）を、ビルド成果物によって上書きされないよう別名で永続的に保持しているファイルです（むしたんと同じ設計・同じ理由）。
 

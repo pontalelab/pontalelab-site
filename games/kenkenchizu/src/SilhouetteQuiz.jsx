@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 
 // 実際の地理データ(GeoJSON)を簡略化して生成した都道府県シルエットです
 const QUESTIONS = [
@@ -555,6 +555,11 @@ const CANDY = ["#ff8fab", "#ffd166", "#06d6a0", "#4cc9f0"];
 
 const FLOATERS = ["⭐️", "🌈", "🎈", "✨", "🍭", "🦄"];
 
+// ---------- BGM ----------
+const BGM_URL = `${import.meta.env.BASE_URL}bgm/theme.mp3`;
+const BGM_VOLUME = 0.35;
+const BGM_MUTE_KEY = "kenkenchizu-bgm-muted";
+
 export default function SilhouetteQuiz() {
   const [screen, setScreen] = useState("home"); // "home" | "difficulty" | "quiz"
   const [difficulty, setDifficulty] = useState("normal"); // "normal" | "hard"
@@ -568,6 +573,87 @@ export default function SilhouetteQuiz() {
 
   const q = order.length ? QUESTIONS[order[step]] : null;
   const choices = useMemo(() => (q ? shuffle(q.choices) : []), [q]);
+
+  // ---------- BGM さいせい ----------
+  const audioRef = useRef(null);
+  const [muted, setMuted] = useState(() => {
+    try {
+      return localStorage.getItem(BGM_MUTE_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
+
+  // モバイルの自動再生制限があるため、ユーザーの最初のタップ（「はじめる」ボタン）で再生を開始する
+  function startBgm() {
+    if (!audioRef.current) {
+      const audio = new Audio(BGM_URL);
+      audio.loop = true;
+      audio.volume = BGM_VOLUME;
+      audio.muted = muted;
+      audioRef.current = audio;
+    }
+    audioRef.current.play().catch(() => {});
+  }
+
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.muted = muted;
+    try {
+      localStorage.setItem(BGM_MUTE_KEY, muted ? "1" : "0");
+    } catch {
+      // localStorageが使えない環境でも無視して続行
+    }
+  }, [muted]);
+
+  // タブが非表示になったら一時停止し、バッテリー・通信量に配慮する
+  useEffect(() => {
+    function handleVisibility() {
+      const audio = audioRef.current;
+      if (!audio) return;
+      if (document.hidden) {
+        audio.pause();
+      } else if (!muted) {
+        audio.play().catch(() => {});
+      }
+    }
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [muted]);
+
+  function toggleMuted() {
+    setMuted((m) => !m);
+  }
+
+  function MuteButton() {
+    return (
+      <button
+        type="button"
+        onClick={toggleMuted}
+        className="bounce-btn"
+        aria-label={muted ? "おんがくを ならす" : "おんがくを けす"}
+        style={{
+          position: "absolute",
+          top: 16,
+          right: 16,
+          zIndex: 2,
+          width: 44,
+          height: 44,
+          borderRadius: "50%",
+          border: "none",
+          background: "#ffffff",
+          boxShadow: "0 4px 0 rgba(120,90,160,0.25), 0 6px 14px rgba(120,90,160,0.18)",
+          fontSize: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          fontFamily: "inherit",
+        }}
+      >
+        {muted ? "🔇" : "🔊"}
+      </button>
+    );
+  }
 
   function startQuiz(level) {
     setDifficulty(level);
@@ -699,6 +785,7 @@ export default function SilhouetteQuiz() {
     return (
       <div style={shellStyle}>
         {sharedStyleTag}
+        <MuteButton />
         <Floaters count={7} />
         <div
           style={{
@@ -750,7 +837,10 @@ export default function SilhouetteQuiz() {
           </div>
           <button
             className="bounce-btn"
-            onClick={() => setScreen("difficulty")}
+            onClick={() => {
+              startBgm();
+              setScreen("difficulty");
+            }}
             style={{
               background: "#ff8fab",
               border: "none",
@@ -791,6 +881,7 @@ export default function SilhouetteQuiz() {
     return (
       <div style={shellStyle}>
         {sharedStyleTag}
+        <MuteButton />
         <Floaters count={6} />
         <div
           style={{
@@ -891,6 +982,7 @@ export default function SilhouetteQuiz() {
     return (
       <div style={shellStyle}>
         {sharedStyleTag}
+        <MuteButton />
         <Floaters count={6} />
         <div
           style={{
@@ -1003,6 +1095,7 @@ export default function SilhouetteQuiz() {
   return (
     <div style={shellStyle}>
       {sharedStyleTag}
+      <MuteButton />
 
       {feedback && (
         <div
