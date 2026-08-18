@@ -23,26 +23,39 @@ manifest.json    PWA用マニフェスト
 
 | 表示名 | フォルダ | ステータス | 技術構成 |
 |---|---|---|---|
-| むしたん | `games/mushimushi/` | 公開中 | Vite + React + TypeScript + Zustand |
-| うみのひらがな | `games/pokopokosea/` | 公開中 | Vite + React + TypeScript |
+| むしたん | `games/mushimushi/` | 公開中（GitHub Actionsで自動ビルド） | Vite + React + TypeScript + Zustand |
+| うみのひらがな | `games/pokopokosea/` | 公開中（手動ビルド。むしたんと同じCI化が未着手） | Vite + React + TypeScript |
 | あみあみうみ | `games/fishinggame/` | 公開中 | 素のJS/CSS（ビルド不要） |
+| けんけんちず | `games/kenkenchizu/` | 公開中・12/47都道府県のみ実装（GitHub Actionsで自動ビルド） | Vite + React |
 | まぜまぜ研究室 | `games/mazemaze/` | 実装あり・`games/index.html`未リンク（開発中扱い） | 素のJS/CSS（ビルド不要） |
 | ポコポコ楽団 | 未実装 | 開発中（「もうすぐ」表示のみ） | - |
+
+昆虫図鑑（`/zukan/mushi/`）は`tools/zukan-build/`のNode.jsスクリプトで生成する静的ページです。
 
 > **フォルダ名と表示名が一致しないゲームがあります。** 例えば `games/pokopokosea/` は現在「うみのひらがな」として公開されています。ゲームを探すときは `games/index.html` 内の `href` で実際のリンク先を確認してください。
 
 ## ローカルでの開発
 
-### Vite製のゲーム（むしたん / うみのひらがな）
+### Vite製・CI自動ビルドのゲーム（むしたん / けんけんちず）
 
 ```bash
-cd games/mushimushi   # または games/pokopokosea
+cd games/mushimushi   # または games/kenkenchizu
+npm install
+npm run dev            # 開発サーバー起動
+```
+
+`src/`・`index.dev.html`等を変更して`main`にpushすると、GitHub Actionsが自動的にビルドして配信ディレクトリへ反映します（詳細は各ゲームのREADME.mdを参照）。手元で`npm run build`やビルド成果物のコミットをする必要はありません。
+
+### Vite製・手動ビルドのゲーム（うみのひらがな）
+
+```bash
+cd games/pokopokosea
 npm install
 npm run dev            # 開発サーバー起動
 npm run build           # dist/ に本番ビルドを生成
 ```
 
-`dist/`（ビルド成果物）は**ソースと一緒にリポジトリにコミットされ、そのまま本番で配信されます**。ビルドを実行するCIパイプラインは現状このリポジトリ内には無いため、コードを変更したら手元で `npm run build` を実行し、`dist/` の差分も含めてコミット・pushしてください。
+`dist/`（ビルド成果物）は**ソースと一緒にリポジトリにコミットされ、そのまま本番で配信されます**。むしたん・けんけんちずと違いCI化されていないため、コードを変更したら手元で `npm run build` を実行し、`dist/` の差分も含めてコミット・pushしてください。
 
 ### 素のJS/CSSのゲーム（あみあみうみ / まぜまぜ研究室）
 
