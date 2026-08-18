@@ -28,9 +28,9 @@ JIS prefecture codes (1-47), for reference:
 36 徳島県  37 香川県  38 愛媛県  39 高知県  40 福岡県  41 佐賀県  42 長崎県
 43 熊本県  44 大分県  45 宮崎県  46 鹿児島県 47 沖縄県
 
-Already implemented in silhouette-quiz.jsx (do NOT redo unless refining):
-  1 北海道, 12 千葉県, 30 和歌山県, 39 高知県, 46 鹿児島県, 47 沖縄県,
-  17 石川県, 23 愛知県, 18 福井県, 2 青森県, 22 静岡県, 26 京都府
+All 47 prefectures are already implemented in silhouette-quiz.jsx.
+Re-run this script for a given code only if you need to regenerate/refine
+that prefecture's silhouette path.
 """
 
 import json
@@ -91,7 +91,13 @@ def extract_svg_paths(feature, area_keep_ratio=0.008, max_rings=6, simplify_divi
          with north mapped to smaller y (so it renders right-side up
          with no extra CSS flipping needed).
     """
-    polys = feature["geometry"]["coordinates"]  # MultiPolygon
+    # 海に面していない内陸県(栃木・群馬・埼玉・山梨・長野・岐阜・滋賀・奈良など)は
+    # 島がないため GeoJSON の geometry.type が Polygon になっており、
+    # MultiPolygon(複数ポリゴンのリスト)とは座標構造が1段浅い。ここで揃える。
+    if feature["geometry"]["type"] == "Polygon":
+        polys = [feature["geometry"]["coordinates"]]
+    else:
+        polys = feature["geometry"]["coordinates"]  # MultiPolygon
     rings_with_area = []
     for poly in polys:
         outer = poly[0]
