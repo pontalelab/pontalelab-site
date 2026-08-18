@@ -12,6 +12,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "games/mushimushi", "run", "dev", "--", "--port", "5174"],
       "port": 5174
+    },
+    {
+      "name": "pokopokosea-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "games/pokopokosea", "run", "preview", "--", "--port", "5176"],
+      "port": 5176
     }
   ]
 }

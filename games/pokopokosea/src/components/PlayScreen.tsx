@@ -55,7 +55,7 @@ export function PlayScreen({ fish, difficulty, onFishFound }: Props) {
   const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
   const [wrongId, setWrongId] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
-  const playFoundSound = useSoundEffect('/se-mitsuketa.wav');
+  const playFoundSound = useSoundEffect(`${import.meta.env.BASE_URL}se-mitsuketa.wav`);
 
   const handleLetterTap = (tapped: BubbleLetter) => {
     if (tapped.selected || isSuccess) return;
