@@ -64,11 +64,12 @@
   font-size: var(--font-base);
   letter-spacing: 0.1em;
   color: var(--text-primary);
-  transition: background var(--transition-quick);
+  transition: background var(--transition-quick), transform var(--transition-quick);
 }
 
 .primaryBtn:active {
   background: rgba(255, 255, 255, 0.18);
+  transform: scale(0.96);
 }
 
 .secondaryBtn {
@@ -80,9 +81,10 @@
   font-size: var(--font-md);
   letter-spacing: 0.08em;
   color: var(--text-secondary);
-  transition: background var(--transition-quick);
+  transition: background var(--transition-quick), transform var(--transition-quick);
 }
 
 .secondaryBtn:active {
   background: rgba(255, 255, 255, 0.08);
+  transform: scale(0.96);
 }

@@ -104,7 +104,18 @@
   animation: eval-appear 0.5s ease-out 1.8s forwards;
 }
 
-/* ── Home button ── */
+/* ── Home button ──
+   The entrance animation (fade + rise, fill-mode forwards) lives on a
+   wrapper element, not the button itself — an animation with
+   fill-mode:forwards permanently pins its final transform value, which
+   would otherwise silently block the :active press-scale below (CSS
+   animations take priority over normal cascade declarations for the
+   same property, even under a pseudo-class). */
+.homeBtnWrap {
+  opacity: 0;
+  animation: eval-appear 0.5s ease-out 2.2s forwards;
+}
+
 .homeBtn {
   padding: 14px 48px;
   background: rgba(255,255,255,0.1);
@@ -113,13 +124,12 @@
   color: #e8e4de;
   font-size: 1rem;
   letter-spacing: 0.1em;
-  opacity: 0;
-  animation: eval-appear 0.5s ease-out 2.2s forwards;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.2s;
 }
 
 .homeBtn:active {
   background: rgba(255,255,255,0.18);
+  transform: scale(0.96);
 }
 
 /* ── Keyframes ── */

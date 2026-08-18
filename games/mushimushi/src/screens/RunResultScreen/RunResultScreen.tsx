@@ -89,9 +89,11 @@ export function RunResultScreen({ onNavigate }: Props) {
 
       <p className={styles.evaluation}>{evaluationRef.current}</p>
 
-      <button className={styles.homeBtn} onClick={() => onNavigate(SCREENS.HOME)}>
-        ホームへ
-      </button>
+      <div className={styles.homeBtnWrap}>
+        <button className={styles.homeBtn} onClick={() => onNavigate(SCREENS.HOME)}>
+          ホームへ
+        </button>
+      </div>
     </div>
   )
 }

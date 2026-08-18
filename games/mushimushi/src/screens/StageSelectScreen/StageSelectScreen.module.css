@@ -49,11 +49,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background var(--transition-quick);
+  transition: background var(--transition-quick), transform var(--transition-quick);
 }
 
 .stageBtn:active:not(:disabled) {
   background: rgba(255, 255, 255, 0.1);
+  transform: scale(0.97);
 }
 
 .active {

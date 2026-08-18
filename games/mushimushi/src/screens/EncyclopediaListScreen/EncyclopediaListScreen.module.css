@@ -32,11 +32,12 @@
   color: var(--text-secondary);
   font-size: var(--font-md);
   flex-shrink: 0;
-  transition: background var(--transition-quick);
+  transition: background var(--transition-quick), transform var(--transition-quick);
 }
 
 .backBtn:active {
   background: rgba(255, 255, 255, 0.1);
+  transform: scale(0.9);
 }
 
 .headerCenter {

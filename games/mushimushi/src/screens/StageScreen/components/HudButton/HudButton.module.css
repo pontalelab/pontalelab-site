@@ -13,9 +13,10 @@
   color: rgba(255, 255, 255, 0.85);
   opacity: var(--hud-opacity-idle);
   pointer-events: all;
-  transition: opacity var(--transition-quick);
+  transition: opacity var(--transition-quick), transform var(--transition-quick);
 }
 
 .button:active {
   opacity: var(--hud-opacity-active);
+  transform: scale(0.9);
 }
