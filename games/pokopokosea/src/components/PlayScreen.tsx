@@ -87,9 +87,12 @@ export function PlayScreen({ fish, difficulty, onFishFound }: Props) {
       <div className="fish-display">
         {/* keyをselectedLetters.lengthにすることで、1文字正解するたびに
             要素を再マウントさせ、fishPulseアニメーションを毎回再生させる */}
-        <div key={selectedLetters.length} className="fish-emoji-large fish-emoji-large--pulse">
-          {fish.emoji ?? '🐟'}
-        </div>
+        <img
+          key={selectedLetters.length}
+          className="fish-emoji-large fish-emoji-large--pulse"
+          src={`${import.meta.env.BASE_URL}${fish.image}`}
+          alt={fish.name}
+        />
       </div>
 
       <div className="name-slots">
