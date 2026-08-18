@@ -366,6 +366,20 @@ export default function SilhouetteQuiz() {
           >
             はじめる！
           </button>
+          <div style={{ marginTop: 22 }}>
+            <a
+              href="../"
+              style={{
+                color: "#8b7fae",
+                fontSize: 14,
+                fontWeight: 700,
+                fontFamily: "inherit",
+                textDecoration: "underline",
+              }}
+            >
+              🎮 ゲームいちらんに もどる
+            </a>
+          </div>
         </div>
       </div>
     );
