@@ -172,6 +172,16 @@ body {
   background: rgba(255, 255, 255, 0.2);
 }
 
+.version-label {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 11px;
+  color: #0d2e4f73;
+  pointer-events: none;
+  letter-spacing: 0.04em;
+}
+
 /* === BGMミュートボタン（全画面共通・左上固定） === */
 .bgm-button {
   position: absolute;
