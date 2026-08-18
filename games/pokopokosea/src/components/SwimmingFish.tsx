@@ -27,7 +27,6 @@ export function SwimmingFish({ fish, onClick }: Props) {
 
   const handleClick = () => {
     setJumping(true);
-    onClick();
   };
 
   return (
@@ -47,9 +46,14 @@ export function SwimmingFish({ fish, onClick }: Props) {
         } as React.CSSProperties}
         onClick={handleClick}
         onAnimationEnd={(e) => {
-          // fishJump（ジャンプ演出）が終わったら通常のswim-bobに戻す。
+          // fishJump（ジャンプ演出）が終わったら通常のswim-bobに戻し、
+          // 演出が見えてから詳細画面を開く（先にonClickすると即座に
+          // アンマウントされ、ジャンプが再生されないまま消えてしまうため）。
           // swim-bobは無限ループなのでonAnimationEndが呼ばれないため誤って消されない。
-          if (e.animationName === 'fishJump') setJumping(false);
+          if (e.animationName === 'fishJump') {
+            setJumping(false);
+            onClick();
+          }
         }}
         aria-label={`${fish.name}をみる`}
       >
