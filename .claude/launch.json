@@ -18,6 +18,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "games/pokopokosea", "run", "preview", "--", "--port", "5176"],
       "port": 5176
+    },
+    {
+      "name": "site-static",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8099"],
+      "port": 8099
     }
   ]
 }

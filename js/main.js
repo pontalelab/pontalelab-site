@@ -113,7 +113,8 @@ const i18n = {
     "about-page:h2-3":  "安心して使えるサイト",
     "about-page:p4":    "会員登録・個人情報の入力・課金・チャット機能はすべてありません。ブラウザだけで、すぐに遊べます。",
     "about-page:h2-4":  "お問い合わせ",
-    "about-page:p5":    "ご意見・ご要望は pontalelab@gmail.com までお気軽にどうぞ。",
+    "about-page:p5":    "ご意見・ご要望はお気軽にお問い合わせフォームからご連絡ください。",
+    "about-page:contactLink": "お問い合わせフォームを開く →",
 
     /* --- Privacy Page --- */
     "privacy:h1":   "プライバシーポリシー",
@@ -239,7 +240,8 @@ const i18n = {
     "about-page:h2-3":  "A Safe Site for Families",
     "about-page:p4":    "No sign-ups, no personal data, no payments, no chat. Everything runs in your browser — play begins instantly.",
     "about-page:h2-4":  "Get in Touch",
-    "about-page:p5":    "Questions and ideas are welcome at pontalelab@gmail.com.",
+    "about-page:p5":    "Questions and ideas are always welcome — please use our contact form.",
+    "about-page:contactLink": "Open the contact form →",
 
     /* --- Privacy Page --- */
     "privacy:h1":   "Privacy Policy",
@@ -293,6 +295,28 @@ function applyLang(lang) {
 }
 
 /* ===========================
+   Obfuscated contact email
+   （生のメールアドレスをHTMLソース・JSソースに残さないための難読化。
+   スパム収集ボットの多くはHTML/JSを単純に文字列検索するだけなので、
+   分割して組み立てることで収集対象から外れやすくなる）
+   =========================== */
+function getContactEmail() {
+  const user   = ["p", "o", "n", "t", "a", "l", "e", "l", "a", "b"].join("");
+  const domain = ["g", "m", "a", "i", "l", ".", "c", "o", "m"].join("");
+  return `${user}@${domain}`;
+}
+
+function renderObfuscatedEmails() {
+  document.querySelectorAll(".js-email").forEach(el => {
+    const addr = getContactEmail();
+    el.href = `mailto:${addr}`;
+    if (el.dataset.showAddress !== "false") {
+      el.textContent = addr;
+    }
+  });
+}
+
+/* ===========================
    Contact Form → mailto
    =========================== */
 function initContactForm() {
@@ -317,7 +341,7 @@ function initContactForm() {
         : `Name: ${name}\nEmail: ${email}\n\n${message}`
     );
 
-    window.location.href = `mailto:pontalelab@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${getContactEmail()}?subject=${subject}&body=${body}`;
   });
 }
 
@@ -334,4 +358,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   initContactForm();
+  renderObfuscatedEmails();
 });

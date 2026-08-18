@@ -92,7 +92,6 @@ ${main}
         </nav>
       </div>
       <div class="footer-bottom">
-        <p class="footer-email"><a href="mailto:pontalelab@gmail.com">pontalelab@gmail.com</a></p>
         <p class="footer-copy">© 2026 Pontalelab</p>
       </div>
     </div>
