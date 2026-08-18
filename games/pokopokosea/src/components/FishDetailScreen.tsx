@@ -19,7 +19,7 @@ export function FishDetailScreen({ fish, onBack }: Props) {
       </header>
 
       <div className="detail-content">
-        <div className="detail-emoji">{fish.emoji ?? '🐟'}</div>
+        <img className="detail-emoji" src={`${import.meta.env.BASE_URL}${fish.image}`} alt={fish.name} />
 
         <div className="detail-names">
           <p className="detail-display-name">{fish.displayName}</p>

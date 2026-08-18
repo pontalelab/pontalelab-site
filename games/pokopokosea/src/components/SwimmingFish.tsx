@@ -42,7 +42,6 @@ export function SwimmingFish({ fish, onClick }: Props) {
         className={['swimming-fish', jumping ? 'swimming-fish--jump' : ''].filter(Boolean).join(' ')}
         style={{
           '--bob-duration': `${bobDuration.toFixed(1)}s`,
-          fontSize: `${Math.round(fontSize)}px`,
         } as React.CSSProperties}
         onClick={handleClick}
         onAnimationEnd={(e) => {
@@ -57,7 +56,12 @@ export function SwimmingFish({ fish, onClick }: Props) {
         }}
         aria-label={`${fish.name}をみる`}
       >
-        {fish.emoji ?? '🐟'}
+        <img
+          src={`${import.meta.env.BASE_URL}${fish.image}`}
+          alt={fish.name}
+          className="swimming-fish-img"
+          style={{ width: `${Math.round(fontSize)}px` }}
+        />
       </button>
     </div>
   );

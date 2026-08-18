@@ -14,7 +14,7 @@ export function FoundScreen({ fish, isNewDiscovery, onPlayAgain, onGoHome }: Pro
   return (
     <div className="screen found-screen">
       <div className="found-content">
-        <div className="found-emoji">{fish.emoji ?? '🐟'}</div>
+        <img className="found-emoji" src={`${import.meta.env.BASE_URL}${fish.image}`} alt={fish.name} />
         <h2 className="found-fish-name">{fish.name}</h2>
         {isNewDiscovery ? (
           <>
