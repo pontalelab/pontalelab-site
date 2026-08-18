@@ -38,7 +38,7 @@ export function HomeScreen({ discoveredFishIds, onStartPlay, onFishClick, onRese
       }}
     >
       <header className="home-header">
-        <h1 className="home-title">ポコポコ海の図鑑</h1>
+        <h1 className="home-title">おさかなひらがな</h1>
         <p className="sea-label">{seaStyle.label}</p>
         <p className="species-count">
           <span className="count-num">{discoveredFishIds.length}</span>
@@ -72,6 +72,8 @@ export function HomeScreen({ discoveredFishIds, onStartPlay, onFishClick, onRese
           🔍 さかなを さがす！
         </button>
       </footer>
+
+      <span className="version-label">v0.0.1</span>
 
       {showResetConfirm && (
         <div className="reset-overlay" onClick={() => setShowResetConfirm(false)}>
