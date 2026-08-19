@@ -131,9 +131,11 @@ const i18n = {
     "contact:type:bug":     "不具合の報告",
     "contact:type:request": "ご要望・アイデア",
     "contact:type:other":   "その他",
-    "contact:submit":       "メールで送信する",
-    "contact:note":         "送信後、お使いのメールアプリが開きます。",
-    "contact:alt":          "または直接メールでご連絡ください：",
+    "contact:submit":       "送信する",
+    "contact:note":         "いただいた内容は、運営者へ直接メールでお送りします。",
+    "contact:sending":      "送信中…",
+    "contact:success":      "お問い合わせを送信しました。ありがとうございました。",
+    "contact:error":        "送信に失敗しました。しばらくしてから、もう一度お試しください。",
   },
 
   en: {
@@ -258,9 +260,11 @@ const i18n = {
     "contact:type:bug":     "Bug Report",
     "contact:type:request": "Feature Request",
     "contact:type:other":   "Other",
-    "contact:submit":       "Send via Email",
-    "contact:note":         "Clicking submit will open your email app.",
-    "contact:alt":          "Or email us directly at:",
+    "contact:submit":       "Send",
+    "contact:note":         "Your message will be sent directly to us by email.",
+    "contact:sending":      "Sending…",
+    "contact:success":      "Your message has been sent. Thank you!",
+    "contact:error":        "Something went wrong. Please try again in a moment.",
   }
 };
 
@@ -295,53 +299,57 @@ function applyLang(lang) {
 }
 
 /* ===========================
-   Obfuscated contact email
-   （生のメールアドレスをHTMLソース・JSソースに残さないための難読化。
-   スパム収集ボットの多くはHTML/JSを単純に文字列検索するだけなので、
-   分割して組み立てることで収集対象から外れやすくなる）
+   Contact Form → Supabase Edge Function
+   （受信先メールアドレス・送信用APIキーはSupabase側の環境変数にのみ存在し、
+   このリポジトリ・フロントエンドのコードには一切含まれない）
    =========================== */
-function getContactEmail() {
-  const user   = ["p", "o", "n", "t", "a", "l", "e", "l", "a", "b"].join("");
-  const domain = ["g", "m", "a", "i", "l", ".", "c", "o", "m"].join("");
-  return `${user}@${domain}`;
-}
 
-function renderObfuscatedEmails() {
-  document.querySelectorAll(".js-email").forEach(el => {
-    const addr = getContactEmail();
-    el.href = `mailto:${addr}`;
-    if (el.dataset.showAddress !== "false") {
-      el.textContent = addr;
-    }
-  });
-}
+const CONTACT_FUNCTION_URL = "https://gzkzsxumeffesfvydfac.supabase.co/functions/v1/contact-form";
 
-/* ===========================
-   Contact Form → mailto
-   =========================== */
 function initContactForm() {
-  const form = document.getElementById("contact-form");
+  const form   = document.getElementById("contact-form");
+  const status = document.getElementById("cf-status");
   if (!form) return;
 
-  form.addEventListener("submit", e => {
+  const setStatus = (key, variant) => {
+    if (!status) return;
+    status.textContent = i18n[currentLang]?.[key] ?? "";
+    status.className = `form-status is-visible form-status--${variant}`;
+  };
+
+  form.addEventListener("submit", async e => {
     e.preventDefault();
-    const name    = (document.getElementById("cf-name")?.value    || "").trim();
-    const email   = (document.getElementById("cf-email")?.value   || "").trim();
-    const type    = (document.getElementById("cf-type")?.value    || "");
-    const message = (document.getElementById("cf-message")?.value || "").trim();
 
-    const subject = encodeURIComponent(
-      currentLang === "ja"
-        ? `[Pontalelab] お問い合わせ (${type})`
-        : `[Pontalelab] Contact (${type})`
-    );
-    const body = encodeURIComponent(
-      currentLang === "ja"
-        ? `お名前: ${name}\nメール: ${email}\n\n${message}`
-        : `Name: ${name}\nEmail: ${email}\n\n${message}`
-    );
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const name      = (document.getElementById("cf-name")?.value    || "").trim();
+    const email     = (document.getElementById("cf-email")?.value   || "").trim();
+    const type      = (document.getElementById("cf-type")?.value    || "");
+    const message   = (document.getElementById("cf-message")?.value || "").trim();
+    const website   = (document.getElementById("cf-website")?.value || ""); // honeypot
 
-    window.location.href = `mailto:${getContactEmail()}?subject=${subject}&body=${body}`;
+    if (submitBtn) submitBtn.disabled = true;
+    setStatus("contact:sending", "success");
+
+    try {
+      const res = await fetch(CONTACT_FUNCTION_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, type, message, website }),
+      });
+
+      if (!res.ok) throw new Error(`request failed: ${res.status}`);
+
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || "unknown error");
+
+      setStatus("contact:success", "success");
+      form.reset();
+    } catch (err) {
+      console.error("Contact form submission failed:", err);
+      setStatus("contact:error", "error");
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
   });
 }
 
@@ -358,5 +366,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   initContactForm();
-  renderObfuscatedEmails();
 });
