@@ -11,6 +11,8 @@ GitHub Pagesでホスティングされており、`main`ブランチの内容�
 /                トップページ
 /games/          ゲーム一覧
 /games/<name>/   各ゲーム本体
+/parents/        おうちの人へ（保護者向けページ）
+/support/        ぽんたーれらぼを応援する（応援ページ、決済手段は準備中）
 /about/          Pontalelabについて
 /contact/        お問い合わせ（mailto形式）
 /privacy/        プライバシーポリシー
