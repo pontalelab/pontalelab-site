@@ -304,9 +304,7 @@ function applyLang(lang) {
    このリポジトリ・フロントエンドのコードには一切含まれない）
    =========================== */
 
-/* TODO: Supabaseプロジェクトのデプロイ後、実際の関数URLに置き換えてください
-   （例: https://xxxxxxxxxxxx.supabase.co/functions/v1/contact-form） */
-const CONTACT_FUNCTION_URL = "https://YOUR-PROJECT-REF.supabase.co/functions/v1/contact-form";
+const CONTACT_FUNCTION_URL = "https://gzkzsxumeffesfvydfac.supabase.co/functions/v1/contact-form";
 
 function initContactForm() {
   const form   = document.getElementById("contact-form");
