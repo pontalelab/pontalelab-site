@@ -86,6 +86,8 @@ ${main}
         <nav class="footer-nav" aria-label="フッターナビゲーション">
           <a href="/games/">ゲーム一覧</a>
           <a href="/zukan/mushi/">昆虫図鑑</a>
+          <a href="/parents/">おうちの人へ</a>
+          <a href="/support/">応援する</a>
           <a href="/about/">Pontalelabについて</a>
           <a href="/privacy/">プライバシーポリシー</a>
           <a href="/contact/">お問い合わせ</a>
@@ -181,6 +183,11 @@ function renderDetailPage(insect, all) {
       <ul style="padding-left:1.2em;">
         ${insect.relatedArticles.map((a) => `<li><a href="${esc(a.url)}" style="color:var(--forest-dk);">${esc(a.title)}</a></li>`).join("\n        ")}
       </ul>` : ""}
+
+      <p style="margin-top:32px;">
+        <a href="/parents/" style="color:var(--forest-dk);text-decoration:underline;font-weight:700;"
+           data-ga-event="cta_click" data-ga-cta="parents_page" data-ga-location="zukan_detail">おうちの人へ →</a>
+      </p>
     </div>
   `;
 
