@@ -83,22 +83,24 @@
                     placeholder="お問い合わせ内容をご記入ください"></textarea>
         </div>
 
+        <!-- ハニーポット：人間の目には見えない項目。ボット対策のため、
+             値が入っていた場合は送信処理をスキップする（js/main.js参照） -->
+        <div class="form-honeypot" aria-hidden="true">
+          <label for="cf-website">Website</label>
+          <input type="text" id="cf-website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
         <p class="form-note" data-i18n="contact:note">
-          送信後、お使いのメールアプリが開きます。
+          いただいた内容は、運営者へ直接メールでお送りします。
         </p>
 
         <button type="submit" class="btn btn-primary" data-i18n="contact:submit">
-          メールで送信する
+          送信する
         </button>
 
-      </form>
+        <p id="cf-status" class="form-status" role="status" aria-live="polite"></p>
 
-      <p style="margin-top:32px;color:var(--text-mid);font-size:0.95rem;">
-        <span data-i18n="contact:alt">または直接メールでご連絡ください：</span><br>
-        <a href="#" class="js-email"
-           style="color:var(--forest-dk);text-decoration:underline;font-weight:700;">
-        </a>
-      </p>
+      </form>
 
     </div>
   </main>
