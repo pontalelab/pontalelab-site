@@ -28,6 +28,7 @@ const i18n = {
     "hero:title":   "Pontalelab",
     "hero:tagline": "遊びながら発見する、親子向けデジタル研究所",
     "hero:cta":     "ゲーム一覧を見る →",
+    "home:parentsCta": "おうちの人へ、詳しくはこちら →",
 
     /* --- Featured Games --- */
     "featured:heading": "注目のゲーム",
@@ -79,6 +80,7 @@ const i18n = {
     "footer:zukan":   "昆虫図鑑",
     "footer:parents": "おうちの人へ",
     "footer:support": "応援する",
+    "cta:parentsLink": "おうちの人へ →",
     "footer:about":   "Pontalelabについて",
     "footer:privacy": "プライバシーポリシー",
     "footer:contact": "お問い合わせ",
@@ -197,6 +199,7 @@ const i18n = {
     "hero:title":   "Pontalelab",
     "hero:tagline": "Play, Discover, and Explore — A Digital Lab for Families",
     "hero:cta":     "See All Games →",
+    "home:parentsCta": "For Parents, learn more →",
 
     /* --- Featured Games --- */
     "featured:heading": "Featured Games",
@@ -248,6 +251,7 @@ const i18n = {
     "footer:zukan":   "Insect Encyclopedia",
     "footer:parents": "For Parents",
     "footer:support": "Support Us",
+    "cta:parentsLink": "For Parents →",
     "footer:about":   "About",
     "footer:privacy": "Privacy Policy",
     "footer:contact": "Contact",
