@@ -47,6 +47,29 @@ npm run dev:host   # LAN上の他端末（スマホ等）からもアクセス�
 
 `src/SilhouetteQuiz.jsx`内の`QUESTIONS`配列に、都道府県ごとのシルエット（実際の地理データ由来のSVGパス）・ひらがな読み・「であえる いきもの」紹介文・4択の選択肢を持っています。47都道府県すべて実装済みです。
 
+## いきものの写真（正解時に表示）
+
+正解画面では、`QUESTIONS`の各エントリに紐づく写真を「であえる いきもの」の紹介文の上に表示します。1エントリにつき以下の3フィールドを持ちます。
+
+```js
+image: "東京都_タヌキ.jpg",       // public/photos/ 内のファイル名
+imageLicense: "CC BY-SA 2.0",     // ライセンス表記
+imageCreditUrl: "https://commons.wikimedia.org/wiki/File:...", // 出典（Wikimedia Commons）
+```
+
+- 画像の実体は `public/photos/` に置きます（BGMと同じVite publicの仕組みで、ビルド時にそのまま出力先へコピーされます）
+- 写真の下に小さく「📷 Wikimedia Commons」というリンクを表示し、タップすると`imageCreditUrl`（出典ページ）を新しいタブで開きます。CC BY / CC BY-SA画像の著作者表示を、ゲームの雰囲気を崩さない最小限の形で満たすためのものです
+- `image`が未設定（空文字 or フィールドなし）のエントリは、写真エリアが自動的に非表示になります（レイアウトは崩れません）
+
+### 画像の入れ替え方
+
+1. 新しい画像を `public/photos/` に追加（またはファイル名を変更して既存ファイルを上書き）
+2. 元画像が大きい場合は、先に縮小・圧縮しておく（目安：長辺700px程度、JPEG quality 80。フルサイズのWikimedia Commons画像は数MB〜20MB超あるため、そのまま使うとページが重くなります）
+3. 対象の都道府県エントリの`image`・`imageLicense`・`imageCreditUrl`を新しい画像の情報に更新
+4. 元の`public/photos/`内の古い画像ファイルが不要になった場合は削除
+
+現在の47枚はすべてWikimedia Commons由来（CC BY-SA / CC BY / CC0 / Public Domainのいずれか）です。ライセンス・出典の一覧は画像収集時の作業フォルダ（このリポジトリ外）の`クレジット一覧.txt`を参照してください。
+
 ## クイズの出題形式
 
 1回のクイズは、47都道府県の中からランダムに選ばれた5問で構成されます（`QUESTIONS_PER_QUIZ`定数で変更可能）。
