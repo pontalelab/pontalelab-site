@@ -24,25 +24,31 @@
 
 /* ============================================================
    カスタムイベント：CTAクリック計測
-   「おうちの人へ」「応援する」への導線がどこから、どれだけ
-   クリックされているかを把握するための汎用トラッキング。
+   「おうちの人へ」「応援する」への導線や、「今日のなんで」の
+   選択肢クリックなど、どこでどれだけクリックされているかを
+   把握するための汎用トラッキング。
    main.js を読み込まないページ（図鑑ページ等）でも動くよう、
    全ページ共通のこのファイルに実装する。
+
+   要素にaddEventListenerする方式ではなく、documentへの
+   イベント委譲（クリック時にclosest()で祖先をたどる）にしている。
+   これにより、ページ読み込み後にJavaScriptで動的に追加された
+   要素（例：js/why.jsがSupabaseから取得して描画するボタン）でも、
+   追加のバインド処理なしでそのまま計測対象になる。
 
    使い方：計測したい要素に以下の data 属性を付与する
      data-ga-event    : 送信するイベント名（例: "cta_click"）
      data-ga-cta       : （任意）cta パラメータの値
      data-ga-location  : （任意）location パラメータの値
    ============================================================ */
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll("[data-ga-event]").forEach((el) => {
-    el.addEventListener("click", () => {
-      if (typeof window.gtag !== "function") return;
-      const eventName = el.dataset.gaEvent;
-      const params = {};
-      if (el.dataset.gaCta)      params.cta = el.dataset.gaCta;
-      if (el.dataset.gaLocation) params.location = el.dataset.gaLocation;
-      window.gtag("event", eventName, params);
-    });
-  });
+document.addEventListener("click", (event) => {
+  const el = event.target.closest("[data-ga-event]");
+  if (!el) return;
+  if (typeof window.gtag !== "function") return;
+
+  const eventName = el.dataset.gaEvent;
+  const params = {};
+  if (el.dataset.gaCta)      params.cta = el.dataset.gaCta;
+  if (el.dataset.gaLocation) params.location = el.dataset.gaLocation;
+  window.gtag("event", eventName, params);
 });

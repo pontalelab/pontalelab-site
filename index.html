@@ -96,6 +96,18 @@
     </section>
 
     <!-- ======================================================
+         TODAY'S NANDE（今日のなんで）
+         Supabaseから取得したデータをjs/why.jsが描画する。
+         データが無い/取得失敗時はhiddenのまま非表示になる。
+         ====================================================== -->
+    <section class="sect-nande" id="nande-section" aria-labelledby="nande-heading" hidden>
+      <div class="inner">
+        <h2 class="section-title" id="nande-heading">⭐ 今日のなんで</h2>
+        <div class="nande-card" id="nande-card"></div>
+      </div>
+    </section>
+
+    <!-- ======================================================
          FEATURED GAMES  ← most prominent content on page
          ====================================================== -->
     <section class="sect-featured" aria-labelledby="featured-heading">
@@ -278,5 +290,6 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script src="js/why.js" defer></script>
 </body>
 </html>
