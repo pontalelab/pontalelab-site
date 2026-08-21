@@ -15,8 +15,8 @@
   // TODO: 実際のSupabaseプロジェクトの値に差し替えてください。
   // どちらも「公開されて問題ない」鍵です（Supabaseのanon keyは
   // RLSと組み合わせて使う前提の公開鍵で、service role keyとは別物です）。
-  const SUPABASE_URL = "https://YOUR-PROJECT-REF.supabase.co";
-  const SUPABASE_ANON_KEY = "YOUR-SUPABASE-ANON-KEY";
+  const SUPABASE_URL = "https://gzkzsxumeffesfvydfac.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_GHQsYencRTcOuk-XWTJTRw_PRQKi5bx";
 
   /**
    * 日本時間の「今日の日付文字列（YYYY-MM-DD）」から、決定的に
