@@ -173,8 +173,10 @@ export class CleanupLoop {
   }
 
   /**
-   * 魚を捕まえたときの処理。魚自体は消えず、そのまま泳ぎ続ける
-   * （うみがきれいになるほど魚が増える、という体験を邪魔しないため）。
+   * 魚を捕まえたときの処理。タップした魚はその場で捕まって画面から消える
+   * （さかなつりモードと同じ「捕まえる」体験にするため）。
+   * 消えた分は updateCleanupFishSpawner がステージの上限に応じてしばらくすると新しく泳がせてくれるので、
+   * 「うみがきれいになるほど魚が増える」という体験自体は引き続き成立する。
    * 同じ魚を連続で捕まえるたびに、ドレミファソ…と音階が1段ずつ上がっていく。
    */
   _handleFishCatch(fish) {
@@ -201,6 +203,11 @@ export class CleanupLoop {
       spawnComboParticles(state, ex, ey, false);
       state.bestComboStep = Math.max(state.bestComboStep, state.comboStep);
     }
+
+    // 魚を捕まえる：その場で消える（新しい魚はしばらくすると自動的に泳いでくる）
+    fish.active = false;
+    state.activeFishList = state.activeFishList.filter((f) => f.active);
+    state.caughtFishCount += 1;
 
     this._callbacks.onFishCatch?.(state.comboStep);
   }

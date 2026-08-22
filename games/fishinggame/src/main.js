@@ -216,9 +216,10 @@ function showCleanupTimeUpOverlay(state) {
   const homeBtn   = document.getElementById("cleanup-timeup-home");
 
   const best = state?.bestComboStep ?? 0;
-  summary.textContent = best > 0
-    ? `いまの うみ：${state.stage.name}／さいこうコンボ：${best}`
-    : `いまの うみ：${state.stage.name}`;
+  const caught = state?.caughtFishCount ?? 0;
+  const parts = [`いまの うみ：${state.stage.name}`, `つかまえた おさかな：${caught}匹`];
+  if (best > 0) parts.push(`さいこうコンボ：${best}`);
+  summary.textContent = parts.join("／");
   overlay.classList.remove("hidden");
 
   const onReplay = () => {

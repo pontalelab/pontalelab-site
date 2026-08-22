@@ -39,6 +39,9 @@ export function createCleanupState() {
     lastCaughtFishId: null,
     comboStep: 0,
     bestComboStep: 0,
+
+    // このプレイで捕まえた魚の総数（タップで消えた魚の数。終了画面の表示に使う）
+    caughtFishCount: 0,
   };
 }
 
