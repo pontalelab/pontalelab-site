@@ -51,6 +51,31 @@ function spawnComboParticles(state, x, y, special) {
   }
 }
 
+/**
+ * タップした場所に一時的な文字演出を出す（例：コンボの段数）。
+ * 画面の固定位置に居座るバッジではなく、その場で浮かび上がって消えるだけなので、
+ * 遊んでいる本人の視界やHUDを邪魔しない。
+ */
+function spawnFloatingText(state, x, y, text, opts = {}) {
+  state.floatingTexts.push({
+    x, y,
+    text,
+    color: opts.color ?? "#ffe27a",
+    fontSize: opts.fontSize ?? 22,
+    vy: -55,
+    life: opts.life ?? 0.9,
+    maxLife: opts.life ?? 0.9,
+  });
+}
+
+function updateFloatingTexts(state, dt) {
+  for (const t of state.floatingTexts) {
+    t.y += t.vy * dt;
+    t.life -= dt;
+  }
+  state.floatingTexts = state.floatingTexts.filter((t) => t.life > 0);
+}
+
 function spawnClearParticles(state, x, y) {
   for (let i = 0; i < 14; i++) {
     const angle = (Math.PI * 2 * i) / 14;
@@ -191,16 +216,19 @@ export class CleanupLoop {
 
     const ex = fish.x + fish.size.width / 2;
     const ey = fish.y + fish.size.height / 2;
+    const displayedStep = state.comboStep; // リセット前の段数を演出表示用に控えておく
 
     if (state.comboStep >= CLEANUP_COMBO_MAX) {
       this._audio.playComboComplete();
       spawnComboParticles(state, ex, ey, true);
+      spawnFloatingText(state, ex, ey, `✨🎶 ${displayedStep}！`, { color: "#fff59d", fontSize: 28, life: 1.3 });
       state.bestComboStep = Math.max(state.bestComboStep, state.comboStep);
       state.comboStep = 0;
       state.lastCaughtFishId = null;
     } else {
       this._audio.playComboStep(state.comboStep);
       spawnComboParticles(state, ex, ey, false);
+      spawnFloatingText(state, ex, ey, `🎵 ${displayedStep}`);
       state.bestComboStep = Math.max(state.bestComboStep, state.comboStep);
     }
 
@@ -259,6 +287,7 @@ export class CleanupLoop {
 
     removeOffscreenFish(state);
     updateParticles(state, dt);
+    updateFloatingTexts(state, dt);
 
     if (state.clearToastTimer > 0) {
       state.clearToastTimer -= dt;

@@ -117,8 +117,12 @@ function _drawGradientBg(ctx, levelConfig, t) {
   grad.addColorStop(0,   c.top);
   grad.addColorStop(0.5, c.mid);
   grad.addColorStop(1,   c.bottom);
+  // save/restoreで囲み、この暗い背景色のfillStyleが以降の描画（魚・ゴミの絵文字など）に
+  // 引き継がれないようにする（背景画像の読み込みが終わるまでの間だけ通るフォールバック経路）
+  ctx.save();
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+  ctx.restore();
 }
 
 /** 海面の波ライン */
@@ -163,6 +167,8 @@ function _drawSeaFloor(ctx, level, t) {
   const sandGrad = ctx.createLinearGradient(0, floorY, 0, CANVAS_H);
   sandGrad.addColorStop(0, topClr);
   sandGrad.addColorStop(1, btmClr);
+  // save/restoreで囲み、この暗い砂地の色が以降の描画（魚・ゴミの絵文字など）に引き継がれないようにする
+  ctx.save();
   ctx.fillStyle = sandGrad;
   ctx.beginPath();
   ctx.moveTo(0, floorY);
@@ -173,6 +179,7 @@ function _drawSeaFloor(ctx, level, t) {
   ctx.lineTo(0, CANVAS_H);
   ctx.closePath();
   ctx.fill();
+  ctx.restore();
 
   if (level >= 2) {
     [60, 200, 380, 520, 680, 760].forEach(cx => _drawCoralSilhouette(ctx, cx, floorY, level, t));
@@ -251,6 +258,9 @@ function _drawEntity(ctx, entity, t) {
   ctx.font          = `${fontSize}px serif`;
   ctx.textAlign     = "center";
   ctx.textBaseline  = "middle";
+  // 背景描画（フォールバック時）などで書き換わったfillStyleを引き継がないよう、明示的に指定する
+  // （環境によっては色絵文字フォントが使えず単色にフォールバックすることがあるため）
+  ctx.fillStyle = "#fff";
   ctx.fillText(entity.emoji, cx, cy);
   ctx.shadowBlur = 0;
 
