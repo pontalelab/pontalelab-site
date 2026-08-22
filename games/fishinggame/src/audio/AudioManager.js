@@ -74,6 +74,30 @@ export class AudioManager {
     notes.forEach((f, i) => this._beep(ctx, f, t + i * 0.12, 0.25, "sine", 0.3));
   }
 
+  // 同じ魚を連続で捕まえたときの「ドレミファソ…」の音階（うみそうじモード）
+  // C4→E5 の10音（1オクターブ＋αぶん、だんだん高くなっていく）
+  static COMBO_NOTES = [262, 294, 330, 349, 392, 440, 494, 523, 587, 659];
+
+  /** step は1〜10。同じ魚を連続で捕まえるたびに1段ずつ高い音を鳴らす */
+  playComboStep(step) {
+    try {
+      const ctx = this._getCtx();
+      const idx = Math.max(1, Math.min(AudioManager.COMBO_NOTES.length, step)) - 1;
+      const freq = AudioManager.COMBO_NOTES[idx];
+      this._beep(ctx, freq, ctx.currentTime, 0.18, "sine", 0.32);
+    } catch { /* ignore */ }
+  }
+
+  /** 音階が10段まで上がりきったときの、特別なファンファーレ */
+  playComboComplete() {
+    try {
+      const ctx = this._getCtx();
+      const t = ctx.currentTime;
+      const notes = [659, 784, 988, 1319];
+      notes.forEach((f, i) => this._beep(ctx, f, t + i * 0.1, 0.22, "triangle", 0.35));
+    } catch { /* ignore */ }
+  }
+
   /** BGMを開始する */
   startBgm(type) {
     this._currentBgm = type;
@@ -104,9 +128,21 @@ export class AudioManager {
   }
 
   _startBgmLoop(type) {
-    const notes = type === "special"
-      ? [523, 659, 784, 659, 523, 440, 523, 0]
+    // うみそうじモード用の段階別メロディ（きたない→かんぺきに向かって、音数・明るさが増していく）
+    const CLEANUP_NOTE_TABLES = {
+      stage1: [220, 0, 220, 0, 196, 0, 220, 0],
+      stage2: [220, 261, 220, 196, 220, 261, 220, 0],
+      stage3: [261, 329, 392, 329, 261, 293, 329, 0],
+      stage4: [329, 392, 440, 523, 440, 392, 440, 523],
+      clear: [523, 659, 784, 1047, 880, 784, 659, 784],
+    };
+
+    const notes =
+      type === "special" ? [523, 659, 784, 659, 523, 440, 523, 0]
+      : CLEANUP_NOTE_TABLES[type] ? CLEANUP_NOTE_TABLES[type]
       : [261, 329, 392, 329, 261, 220, 261, 0];
+
+    const interval = type === "clear" ? 340 : 500;
 
     let i = 0;
     const playNext = () => {
@@ -130,7 +166,7 @@ export class AudioManager {
     };
 
     playNext();
-    this._bgmInterval = setInterval(playNext, 500);
+    this._bgmInterval = setInterval(playNext, interval);
   }
 
   setBgmVolume(v)  { this._bgmVolume = Math.max(0, Math.min(1, v)); }

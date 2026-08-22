@@ -43,6 +43,28 @@
       </div>
     </div>
 
+    <!-- うみそうじ画面 -->
+    <div id="screen-cleanup" class="screen">
+      <a href="javascript:void(0)" id="cleanup-back" class="btn-back">← もどる</a>
+      <div id="cleanup-wrap">
+        <canvas id="cleanup-canvas"></canvas>
+        <div id="cleanup-hud">
+          <div id="cleanup-hud-top">
+            <div id="cleanup-hud-left">
+              <span id="cleanup-remaining-badge" class="badge">🗑️ のこり 20 こ</span>
+              <span id="cleanup-stage-badge" class="badge">🌊 きたない うみ</span>
+            </div>
+            <div id="cleanup-timer-display">90</div>
+          </div>
+          <div id="cleanup-progress-bar-bg"><div id="cleanup-progress-bar"></div></div>
+          <p id="cleanup-hint">ゴミをタップ！ おさかなタップで音がなるよ🎵</p>
+          <p id="cleanup-combo-badge"></p>
+        </div>
+        <!-- ゴミ0個になった瞬間だけ出る、一時的なお祝いトースト（ゲームは止まらない） -->
+        <div id="cleanup-clear-toast">🎉 うみが きれいに なったよ！</div>
+      </div>
+    </div>
+
     <!-- リザルト画面 -->
     <div id="screen-result" class="screen"></div>
 
@@ -68,6 +90,18 @@
         <button id="levelup-ok" class="btn-primary">やった！</button>
       </div>
     </div>
+
+    <!-- うみそうじ：じかんです オーバーレイ -->
+    <div id="overlay-cleanup-timeup" class="overlay hidden">
+      <div class="overlay-box">
+        <div class="overlay-icon">⏰</div>
+        <h2>じかんですよ！</h2>
+        <p id="cleanup-timeup-summary"></p>
+        <button id="cleanup-timeup-replay" class="btn-secondary">🔄 もういちど あそぶ</button>
+        <button id="cleanup-timeup-home"   class="btn-primary">🏠 ホームへ</button>
+      </div>
+    </div>
+
   </div>
 
   <script type="module" src="src/main.js"></script>

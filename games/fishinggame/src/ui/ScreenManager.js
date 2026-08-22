@@ -1,6 +1,6 @@
 /** 画面切り替え管理 */
 
-const SCREENS = ["screen-home", "screen-game", "screen-result", "screen-book"];
+const SCREENS = ["screen-home", "screen-game", "screen-result", "screen-book", "screen-cleanup"];
 
 export function showScreen(screenId) {
   for (const id of SCREENS) {
