@@ -99,6 +99,9 @@ function startGame() {
 
   gameLoop.start();
   _bindInputEvents(canvas);
+
+  // QA/自動テスト用のデバッグフック（ゲームプレイには影響しない）
+  window.__gameDebug = { state: gameState, loop: gameLoop };
 }
 
 function _bindInputEvents(canvas) {

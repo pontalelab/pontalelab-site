@@ -508,40 +508,10 @@ body {
   #cleanup-clear-toast { font-size: 0.75rem; padding: 8px 14px; bottom: 14px; }
 }
 
-/* ===== スマホ縦持ち時の「横にしてね」オーバーレイ =====
-   あみあみうみ全体（ホーム／さかなつり／うみそうじ／図鑑／リザルト）に共通で適用。
-   スマホでの向きロックAPIはiOS Safariが未対応なため、CSSのみで確実に案内する方式にしている。 */
-#orientation-lock-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.2rem;
-  background: #0a1628;
-  text-align: center;
-  padding: 2rem;
-}
-#orientation-lock-overlay .rotate-icon {
-  font-size: 4rem;
-  display: inline-block;
-  animation: orientationRotateHint 1.6s ease-in-out infinite;
-}
-#orientation-lock-overlay p {
-  color: #cef;
-  font-size: 1.15rem;
-  font-weight: bold;
-  line-height: 1.6;
-  max-width: 20em;
-}
-@keyframes orientationRotateHint {
-  0%, 100% { transform: rotate(0deg); }
-  50%      { transform: rotate(-90deg); }
-}
-
-/* スマホの縦持ちのときだけ表示する。max-widthでタブレットの縦持ちは対象外にしている */
-@media (orientation: portrait) and (max-width: 768px) {
-  #orientation-lock-overlay { display: flex; }
-}
+/* ===== スマホ縦持ち時の表示について =====
+   あみあみうみは横長（8:5）のキャンバスで作られているが、#game-wrap / #cleanup-wrap の
+   サイズ計算（min(100vw, calc(100vh*1.6)) など）はそもそも縦持ちの狭い画面でも正しく機能する
+   ようにできている。縦持ちのときは画面の横幅いっぱいに収まる分だけ小さく表示され
+   （上下に余白ができる）、文字や絵はいつも正しい向きのまま表示される。
+   （CSSで画面全体を90度回転させて常時横向き表示にする方式も試作したが、
+   その場合スマホを縦に持ったまま見ると文字が横倒しに見えてしまうため採用しなかった） */
