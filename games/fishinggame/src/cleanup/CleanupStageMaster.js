@@ -15,8 +15,8 @@ export const cleanupStages = [
     name: "きたない うみ",
     minRemaining: 16, // 16〜20個
     bgLevel: 1,
-    maxFishCount: 2,
-    fishSpawnInterval: 3.2,
+    maxFishCount: 4,
+    fishSpawnInterval: 2.6,
     fishPool: ["sardine"],
     bgmKey: "stage1",
   },
@@ -25,8 +25,8 @@ export const cleanupStages = [
     name: "すこし きれい",
     minRemaining: 11, // 11〜15個
     bgLevel: 1,
-    maxFishCount: 4,
-    fishSpawnInterval: 2.4,
+    maxFishCount: 7,
+    fishSpawnInterval: 2.0,
     fishPool: ["sardine", "horse_mackerel"],
     bgmKey: "stage2",
   },
@@ -35,8 +35,8 @@ export const cleanupStages = [
     name: "きれいな うみ",
     minRemaining: 6, // 6〜10個
     bgLevel: 2,
-    maxFishCount: 6,
-    fishSpawnInterval: 1.8,
+    maxFishCount: 10,
+    fishSpawnInterval: 1.5,
     fishPool: ["sardine", "horse_mackerel", "clownfish", "butterflyfish"],
     bgmKey: "stage3",
   },
@@ -45,8 +45,8 @@ export const cleanupStages = [
     name: "とても きれい",
     minRemaining: 1, // 1〜5個
     bgLevel: 3,
-    maxFishCount: 8,
-    fishSpawnInterval: 1.3,
+    maxFishCount: 13,
+    fishSpawnInterval: 1.1,
     fishPool: ["sardine", "horse_mackerel", "clownfish", "butterflyfish", "squid", "pufferfish"],
     bgmKey: "stage4",
   },
@@ -55,8 +55,8 @@ export const cleanupStages = [
     name: "かんぺきな うみ",
     minRemaining: 0, // 0個
     bgLevel: 3,
-    maxFishCount: 10,
-    fishSpawnInterval: 1.0,
+    maxFishCount: 16,
+    fishSpawnInterval: 0.85,
     fishPool: [
       "sardine", "horse_mackerel", "clownfish", "butterflyfish",
       "squid", "pufferfish", "tuna", "sea_turtle", "napoleonfish",

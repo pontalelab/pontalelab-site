@@ -493,3 +493,41 @@ body {
 @container cleanup (max-width: 480px) {
   #cleanup-clear-toast { font-size: 0.75rem; padding: 8px 14px; bottom: 14px; }
 }
+
+/* ===== スマホ縦持ち時の「横にしてね」オーバーレイ =====
+   あみあみうみ全体（ホーム／さかなつり／うみそうじ／図鑑／リザルト）に共通で適用。
+   スマホでの向きロックAPIはiOS Safariが未対応なため、CSSのみで確実に案内する方式にしている。 */
+#orientation-lock-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  background: #0a1628;
+  text-align: center;
+  padding: 2rem;
+}
+#orientation-lock-overlay .rotate-icon {
+  font-size: 4rem;
+  display: inline-block;
+  animation: orientationRotateHint 1.6s ease-in-out infinite;
+}
+#orientation-lock-overlay p {
+  color: #cef;
+  font-size: 1.15rem;
+  font-weight: bold;
+  line-height: 1.6;
+  max-width: 20em;
+}
+@keyframes orientationRotateHint {
+  0%, 100% { transform: rotate(0deg); }
+  50%      { transform: rotate(-90deg); }
+}
+
+/* スマホの縦持ちのときだけ表示する。max-widthでタブレットの縦持ちは対象外にしている */
+@media (orientation: portrait) and (max-width: 768px) {
+  #orientation-lock-overlay { display: flex; }
+}

@@ -57,7 +57,7 @@
             <div id="cleanup-timer-display">90</div>
           </div>
           <div id="cleanup-progress-bar-bg"><div id="cleanup-progress-bar"></div></div>
-          <p id="cleanup-hint">ゴミをタップ！ おさかなタップで音がなるよ🎵</p>
+          <p id="cleanup-hint">ゴミも おさかなも タップして つかまえよう🎵</p>
           <p id="cleanup-combo-badge"></p>
         </div>
         <!-- ゴミ0個になった瞬間だけ出る、一時的なお祝いトースト（ゲームは止まらない） -->
@@ -102,6 +102,12 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- スマホを縦持ちしたときに表示する「横にしてね」オーバーレイ。CSSのみで判定・表示するのでJS不要 -->
+  <div id="orientation-lock-overlay" aria-hidden="true">
+    <div class="rotate-icon">📱</div>
+    <p>スマホを よこに して あそんでね！</p>
   </div>
 
   <script type="module" src="src/main.js"></script>
