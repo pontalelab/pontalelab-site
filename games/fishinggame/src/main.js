@@ -168,7 +168,17 @@ function startCleanup() {
   window.__cleanupDebug = { state: cleanupState, loop: cleanupLoop };
 }
 
+let _cleanupInputBound = false;
+
+// #cleanup-canvas はモード再入場（リプレイ／ホーム経由の再開始）のたびに
+// startCleanup() から呼ばれるが、DOM要素自体は使い回されるため、毎回bindすると
+// クリックリスナーが多重登録され、1回のタップでhandleTapが複数回走ってしまう。
+// そのため、bindは初回の1回だけに限定する（cleanupLoop/cleanupScreenは
+// モジュール変数として都度最新の値を参照するので、これで問題ない）。
 function _bindCleanupInputEvents(canvas) {
+  if (_cleanupInputBound) return;
+  _cleanupInputBound = true;
+
   canvas.addEventListener("click", (e) => {
     if (!cleanupLoop) return;
     const pos = cleanupScreen.toCanvasCoords(e.clientX, e.clientY);
