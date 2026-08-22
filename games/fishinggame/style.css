@@ -378,3 +378,118 @@ body {
 .overlay-icon { font-size: 3rem; margin-bottom: 0.5rem; }
 .overlay-box h2 { color: #cef; margin-bottom: 0.8rem; font-size: 1.3rem; }
 .overlay-box p  { color: #adf; line-height: 1.7; margin-bottom: 1.5rem; font-size: 0.95rem; }
+
+/* ===== ホーム画面：うみそうじボタン ===== */
+.btn-cleanup {
+  background: linear-gradient(135deg, #1cb87a, #0a8a5c);
+  border: none; border-radius: 50px;
+  color: #fff; font-size: 1.05rem; font-weight: bold;
+  padding: 0.55rem 1.8rem; cursor: pointer; margin: 0.4rem;
+  box-shadow: 0 4px 15px rgba(20,180,120,0.35);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.btn-cleanup:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(20,180,120,0.55); }
+.btn-cleanup:active { transform: translateY(1px); }
+
+/* ===== うみそうじ画面 ===== */
+#screen-cleanup { background: #000; }
+
+#cleanup-wrap {
+  position: relative;
+  width:  min(100vw, calc(100vh  * 1.6));
+  height: min(100vh,  calc(100vw / 1.6));
+  width:  min(100dvw, calc(100dvh * 1.6));
+  height: min(100dvh, calc(100dvw / 1.6));
+  flex-shrink: 0;
+  container-type: inline-size;
+  container-name: cleanup;
+}
+
+#cleanup-canvas {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  touch-action: none;
+}
+
+#cleanup-hud {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 10px 14px;
+  pointer-events: none; z-index: 10;
+}
+#cleanup-hud-top { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; }
+#cleanup-hud-left { display: flex; flex-direction: column; gap: 5px; }
+#cleanup-progress-bar-bg {
+  margin-top: 6px; width: 100%; max-width: 260px;
+  height: 8px; background: rgba(0,0,0,0.45);
+  border-radius: 4px; overflow: hidden;
+}
+#cleanup-progress-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #1cb87a, #7dffb0);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+#cleanup-hint {
+  margin-top: 8px; color: #dff; font-size: 0.8rem;
+  background: rgba(0,0,0,0.4); display: inline-block;
+  max-width: min(90%, 420px); white-space: normal;
+  padding: 3px 10px; border-radius: 20px;
+}
+
+#cleanup-timer-display {
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: bold; color: #fff;
+  text-shadow: 0 0 10px rgba(255,255,100,0.8);
+  background: rgba(0,0,0,0.45);
+  border-radius: 12px; padding: 2px 16px;
+  min-width: 60px; text-align: center;
+}
+#cleanup-timer-display.urgent {
+  color: #f55;
+  text-shadow: 0 0 10px rgba(255,50,50,0.9);
+  animation: timerPulse 0.5s infinite alternate;
+}
+
+#cleanup-combo-badge {
+  margin-top: 6px; display: none;
+  color: #1a1a1a; font-weight: bold; font-size: 0.8rem;
+  background: linear-gradient(90deg, #ffe27a, #ffb84d);
+  padding: 3px 12px; border-radius: 20px;
+  width: fit-content;
+}
+#cleanup-combo-badge.show { display: block; }
+
+@container cleanup (max-width: 480px) {
+  #cleanup-hud-top .badge { font-size: 0.62rem; padding: 2px 8px; }
+  #cleanup-hint { font-size: 0.62rem; }
+  #cleanup-progress-bar-bg { max-width: 180px; }
+  #cleanup-timer-display { font-size: 1.3rem; padding: 1px 10px; min-width: 44px; border-radius: 8px; }
+  #cleanup-combo-badge { font-size: 0.65rem; }
+}
+
+/* ゴミ0個になった瞬間だけ出る一時的なトースト（モーダルではないのでゲームは止まらない） */
+#cleanup-clear-toast {
+  position: absolute;
+  left: 50%; bottom: 24px;
+  transform: translate(-50%, 12px);
+  background: rgba(10,40,30,0.85);
+  border: 1px solid rgba(140,255,190,0.4);
+  border-radius: 20px;
+  padding: 10px 20px;
+  color: #dfffe8;
+  font-size: 0.95rem;
+  font-weight: bold;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  z-index: 20;
+}
+#cleanup-clear-toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@container cleanup (max-width: 480px) {
+  #cleanup-clear-toast { font-size: 0.75rem; padding: 8px 14px; bottom: 14px; }
+}

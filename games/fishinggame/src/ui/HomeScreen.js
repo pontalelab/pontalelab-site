@@ -7,11 +7,12 @@ const APP_VERSION = "0.0.1";
 /**
  * @param {HTMLElement} container
  * @param {object}      saveData
- * @param {Function}    onStart  - ゲーム開始
- * @param {Function}    onBook   - ずかん
- * @param {Function}    onReset  - うみをリセット
+ * @param {Function}    onStart   - ゲーム開始
+ * @param {Function}    onBook    - ずかん
+ * @param {Function}    onReset   - うみをリセット
+ * @param {Function}    onCleanup - うみをそうじする（新モード）
  */
-export function renderHomeScreen(container, saveData, onStart, onBook, onReset) {
+export function renderHomeScreen(container, saveData, onStart, onBook, onReset, onCleanup) {
   const level       = saveData.currentSeaLevel;
   const points      = saveData.seaPoint;
   const levelConfig = stageMaster.levels.find(l => l.level === level) ?? stageMaster.levels[0];
@@ -45,15 +46,17 @@ export function renderHomeScreen(container, saveData, onStart, onBook, onReset) 
     </div>
 
     <div class="home-btn-wrap">
-      <button id="btn-start" class="btn-primary">🎣 はじめる！</button>
-      <button id="btn-book"  class="btn-secondary">📖 ずかんをみる</button>
-      <button id="btn-reset" class="btn-danger">🔄 うみをリセット</button>
+      <button id="btn-start"   class="btn-primary">🎣 はじめる！</button>
+      <button id="btn-cleanup" class="btn-cleanup">🧹 うみをそうじする</button>
+      <button id="btn-book"    class="btn-secondary">📖 ずかんをみる</button>
+      <button id="btn-reset"   class="btn-danger">🔄 うみをリセット</button>
     </div>
 
     <div class="home-version">v${APP_VERSION}</div>
   `;
 
   document.getElementById("btn-start").addEventListener("click", onStart);
+  document.getElementById("btn-cleanup").addEventListener("click", onCleanup);
   document.getElementById("btn-book").addEventListener("click", onBook);
   document.getElementById("btn-reset").addEventListener("click", onReset);
 }
