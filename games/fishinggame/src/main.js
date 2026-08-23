@@ -99,6 +99,9 @@ function startGame() {
 
   gameLoop.start();
   _bindInputEvents(canvas);
+
+  // QA/自動テスト用のデバッグフック（ゲームプレイには影響しない）
+  window.__gameDebug = { state: gameState, loop: gameLoop };
 }
 
 function _bindInputEvents(canvas) {
@@ -331,5 +334,23 @@ window.addEventListener("resize", () => {
   if (cleanupScreen) cleanupScreen.resize();
 });
 
+/**
+ * スマホのSafariは、ページがスクロールできる状態で少し動かすと、アドレスバーや
+ * タブバーを自動的に折りたたんで画面を広く使わせてくれることがある。
+ * このゲームは誤操作防止のため通常はページ全体のスクロールを止めているが
+ * （style.css参照）、1pxだけ動かせる余地を残してあるので、それを使って
+ * バーを縮めてもらうきっかけを作る。あくまで「効けば得」の対応で、
+ * iOSのバージョンやSafariの設定（タブバーを常に表示、など）によっては
+ * 効果が出ないこともある。
+ */
+function nudgeScrollToCollapseBrowserChrome() {
+  window.scrollTo(0, 1);
+}
+window.addEventListener("load", nudgeScrollToCollapseBrowserChrome);
+// ページ内で最初にタップ・クリックされたタイミングでも念のため試す
+document.addEventListener("pointerdown", nudgeScrollToCollapseBrowserChrome, { once: true });
+
 /* ===== 起動 ===== */
 goHome();
+// スクリプト読み込み時点ですでに load イベントを逃している場合に備えて即時にも試す
+nudgeScrollToCollapseBrowserChrome();
