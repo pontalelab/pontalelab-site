@@ -21,6 +21,9 @@ export function createCleanupState() {
     activeFishList: [],
     activeTrashList: [],
     particles: [],
+    // コンボ達成時などに、タップした場所に一時的に浮かび上がって消える文字演出
+    // （画面を固定で占有するバッジではなく、その場限りの演出にすることで視界を邪魔しないようにしている）
+    floatingTexts: [],
 
     elapsedTime: 0,
     fishSpawnTimer: 0,

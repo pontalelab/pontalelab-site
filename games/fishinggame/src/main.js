@@ -22,14 +22,16 @@ let gameScreen = null;
 const audio    = new AudioManager();
 
 /* ===== うみそうじモード用の状態（永続保存はしない） ===== */
-let cleanupLoop   = null;
-let cleanupState  = null;
-let cleanupScreen = null;
+let cleanupLoop     = null;
+let cleanupState    = null;
+let cleanupScreen   = null;
+let cleanupHintTimer = null; // ヒント文言を自動で消すためのタイマー
 
 /* ===== ホーム画面 ===== */
 function goHome() {
   if (gameLoop)    { gameLoop.stop();    gameLoop = null; }
   if (cleanupLoop) { cleanupLoop.stop(); cleanupLoop = null; }
+  if (cleanupHintTimer) { clearTimeout(cleanupHintTimer); cleanupHintTimer = null; }
   saveData = loadSaveData();
   showScreen("screen-home");
   renderHomeScreen(
@@ -135,6 +137,8 @@ function _bindInputEvents(canvas) {
 }
 
 /* ===== うみをそうじする（新モード） ===== */
+const CLEANUP_HINT_AUTO_HIDE_MS = 6000; // このミリ秒が経つと、まだ消していなくても自動的にヒントを消す
+
 function startCleanup() {
   hideCleanupClearToast();
   document.getElementById("overlay-cleanup-timeup")?.classList.add("hidden");
@@ -145,17 +149,18 @@ function startCleanup() {
   cleanupScreen.resize();
 
   showScreen("screen-cleanup");
+  showCleanupHint();
 
   cleanupLoop = new CleanupLoop(
     cleanupState,
     { render: (state) => { cleanupScreen.render(state); updateCleanupHUD(state); } },
     audio,
     {
-      onTrashRemoved:  () => updateCleanupHUD(cleanupState),
+      onTrashRemoved:  () => { updateCleanupHUD(cleanupState); hideCleanupHint(); },
       onStageChange:   () => updateCleanupHUD(cleanupState),
       onClearMoment:   () => showCleanupClearToast(),
       onClearToastEnd: () => hideCleanupClearToast(),
-      onFishCatch:     () => updateCleanupHUD(cleanupState),
+      onFishCatch:     () => { updateCleanupHUD(cleanupState); hideCleanupHint(); },
       onTimeUp:        (state) => showCleanupTimeUpOverlay(state),
     },
   );
@@ -206,6 +211,23 @@ function showCleanupClearToast() {
 function hideCleanupClearToast() {
   const toast = document.getElementById("cleanup-clear-toast");
   if (toast) toast.classList.remove("show");
+}
+
+/**
+ * うみそうじモードの「ゴミも おさかなも タップして…」ヒント文言。
+ * ゲーム画面を邪魔しないよう、最初にタップした瞬間か、数秒経ったら自動的に消える。
+ */
+function showCleanupHint() {
+  const hint = document.getElementById("cleanup-hint");
+  if (hint) hint.classList.remove("faded");
+  if (cleanupHintTimer) clearTimeout(cleanupHintTimer);
+  cleanupHintTimer = setTimeout(() => hideCleanupHint(), CLEANUP_HINT_AUTO_HIDE_MS);
+}
+
+function hideCleanupHint() {
+  const hint = document.getElementById("cleanup-hint");
+  if (hint) hint.classList.add("faded");
+  if (cleanupHintTimer) { clearTimeout(cleanupHintTimer); cleanupHintTimer = null; }
 }
 
 /** 90秒のプレイ時間が終わったときの、リプレイ導線つきオーバーレイ */

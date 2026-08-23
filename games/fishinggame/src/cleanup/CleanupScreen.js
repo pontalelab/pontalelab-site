@@ -43,6 +43,7 @@ export class CleanupScreen {
     for (const fish of state.activeFishList) _drawFish(ctx, fish);
 
     _drawParticles(ctx, state.particles);
+    _drawFloatingTexts(ctx, state.floatingTexts);
   }
 
   /** クライアント座標 → キャンバス論理座標 */
@@ -98,8 +99,12 @@ function _drawGradientBg(ctx, level, t) {
   grad.addColorStop(0, c.top);
   grad.addColorStop(0.5, c.mid);
   grad.addColorStop(1, c.bottom);
+  // save/restoreで囲み、この暗い背景色のfillStyleが以降の描画（魚・ゴミの絵文字など）に
+  // 引き継がれないようにする（背景画像の読み込みが終わるまでの間だけ通るフォールバック経路）
+  ctx.save();
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, CLEANUP_CANVAS_W, CLEANUP_CANVAS_H);
+  ctx.restore();
 }
 
 function _drawWaveLines(ctx, t, alpha) {
@@ -179,9 +184,10 @@ function _drawTrash(ctx, entity) {
   ctx.arc(cx, cy, fontSize * 0.62, 0, Math.PI * 2);
   ctx.fillStyle = "rgba(255,255,255,0.10)";
   ctx.fill();
-  // fillStyle の透明度が絵文字の描画にも引き継がれてしまうため、
-  // 絵文字本体は不透明な色に戻してから描画する
-  ctx.fillStyle = "#000";
+  // fillStyle の透明度・色が絵文字の描画にも引き継がれてしまうことがあるため
+  // （環境によっては色絵文字フォントが使えず単色にフォールバックすることがある）、
+  // 絵文字本体を描く前に必ず不透明・視認しやすい色に戻しておく
+  ctx.fillStyle = "#fff";
   ctx.fillText(entity.emoji, cx, cy);
   ctx.restore();
 }
@@ -201,6 +207,8 @@ function _drawFish(ctx, entity) {
   ctx.font = `${fontSize}px serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
+  // 背景描画（フォールバック時）などで書き換わったfillStyleを引き継がないよう、明示的に指定する
+  ctx.fillStyle = "#fff";
   ctx.fillText(entity.emoji, 0, 0);
   ctx.restore();
 }
@@ -216,6 +224,24 @@ function _drawParticles(ctx, particles) {
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
     ctx.fill();
+  }
+  ctx.restore();
+}
+
+/* ======= 浮遊テキスト（コンボ演出など） =======
+   固定位置のHUDバッジではなく、タップした場所にその場限りで浮かび上がって消える演出。
+   画面を占有し続けないため、遊んでいる本人の視界を邪魔しない。 */
+
+function _drawFloatingTexts(ctx, list) {
+  ctx.save();
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  for (const t of list) {
+    const alpha = Math.max(0, t.life / t.maxLife);
+    ctx.globalAlpha = alpha;
+    ctx.font = `bold ${t.fontSize}px sans-serif`;
+    ctx.fillStyle = t.color;
+    ctx.fillText(t.text, t.x, t.y);
   }
   ctx.restore();
 }
@@ -242,16 +268,7 @@ export function updateCleanupHUD(state) {
     timerEl.textContent = secs;
     timerEl.classList.toggle("urgent", secs <= 10);
   }
-
-  const comboEl = document.getElementById("cleanup-combo-badge");
-  if (comboEl) {
-    if (state.comboStep > 0) {
-      comboEl.textContent = `🎵 コンボ ${state.comboStep}`;
-      comboEl.classList.add("show");
-    } else {
-      comboEl.classList.remove("show");
-    }
-  }
+  // コンボ数は固定バッジではなく、捕まえた場所に浮かぶ文字演出（_drawFloatingTexts）で表現する
 }
 
 export { cleanupStages };
