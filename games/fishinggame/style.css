@@ -3,8 +3,15 @@
 
 body {
   width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  /* スマホのSafariは、ページがほんの少しでもスクロールできる状態で動かすと、
+     アドレスバー・タブバーを自動的に折りたたんでくれることがある。
+     完全に overflow: hidden にしてしまうとこの余地が無くなるため、
+     1px分だけ縦に長くしてスクロール可能にしている（見た目には影響しない）。
+     実際に折りたたむきっかけは src/main.js 側で window.scrollTo(0, 1) を呼んで作る。 */
+  height: calc(100vh + 1px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
   background: #0a1628;
   font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'ヒラギノ角ゴ ProN', 'メイリオ', sans-serif;
   touch-action: none;
