@@ -1,6 +1,15 @@
 /* ===== リセット & ベース ===== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* bodyのoverflowはhtml（ルート要素）へ伝播し、実際のスクロールバーはビューポート側に
+   表示される。そのため、下のbodyのスクロールバー非表示指定だけでは足りず、htmlの方にも
+   同じ指定をしておく必要がある。 */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar { display: none; }
+
 body {
   width: 100vw;
   /* スマホのSafariは、ページがほんの少しでもスクロールできる状態で動かすと、
@@ -16,7 +25,13 @@ body {
   font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'ヒラギノ角ゴ ProN', 'メイリオ', sans-serif;
   touch-action: none;
   user-select: none;
+  /* 1pxのスクロール余地はあくまでSafari向けの仕掛けであって、実際にスクロールバーを
+     見せたいわけではない。非表示にしないとデスクトップ等でスクロールバーの分だけ
+     表示幅が狭まってしまう（classic scrollbarのある環境）ため、視覚的には隠す。 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* 旧Edge/IE */
 }
+body::-webkit-scrollbar { display: none; } /* Chrome/Safari/新Edge */
 
 #app { width: 100%; height: 100%; position: relative; }
 
