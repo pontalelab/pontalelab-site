@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>おさるのたいこ | Pontalelab</title>
+<meta name="description" content="おさるといっしょに たいこを たたこう。対象年齢の目安：2〜6歳。">
+<meta property="og:title" content="おさるのたいこ | Pontalelab">
+<meta property="og:description" content="おさるといっしょに たいこを たたこう。対象年齢の目安：2〜6歳。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pontalelab.com/games/osarunotaiko/">
+<meta property="og:image" content="https://pontalelab.com/icons/icon-512.png">
+
+<!-- Home screen icons -->
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2d6a4f">
+<script src="/js/analytics.js" defer></script>
+
+<style>
+  :root{
+    --sky-top:#FFE8B8;
+    --sky-bottom:#FFC978;
+    --wood-dark:#7A4A2B;
+    --wood-mid:#A8683C;
+    --wood-light:#C98A52;
+    --fur:#B5764A;
+    --fur-dark:#8C5A34;
+    --fur-light:#E0AE7C;
+    --blush:#FFB3AE;
+    --leaf:#5C8A3A;
+    --leaf-dark:#436326;
+    --leaf-far:#7FA66B;
+    --cream:#FFF6E6;
+    --ink:#4A2E17;
+    --hit-flash:#FFF2C4;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    padding:0;
+    height:100%;
+    overflow:hidden;
+    font-family:-apple-system,"Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+    user-select:none;
+  }
+  #stage{
+    position:relative;
+    width:100%;
+    height:100%;
+    background:linear-gradient(180deg,var(--sky-top) 0%, var(--sky-bottom) 65%, #F2A94E 100%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+  }
+
+  /* ホーム画面(モード選択) */
+  #home-screen{
+    position:absolute;
+    inset:0;
+    z-index:100;
+    background:rgba(74,46,23,0.55);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: opacity 350ms ease;
+  }
+  #home-screen.hidden{
+    opacity:0;
+    pointer-events:none;
+  }
+  #home-card{
+    width:82%;
+    max-width:340px;
+    background:var(--cream);
+    border:4px solid var(--wood-dark);
+    border-radius:22px;
+    padding:26px 22px;
+    box-shadow:0 8px 0 rgba(122,74,43,0.35);
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:14px;
+  }
+  #home-title{
+    font-size:22px;
+    font-weight:800;
+    color:var(--ink);
+    text-align:center;
+  }
+  #home-sub{
+    font-size:13px;
+    color:var(--ink);
+    opacity:0.7;
+    text-align:center;
+    margin-bottom:4px;
+  }
+  .mode-btn{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:4px;
+    padding:14px 16px;
+    border:3px solid var(--wood-dark);
+    border-radius:14px;
+    background:var(--wood-light);
+    box-shadow:0 4px 0 rgba(122,74,43,0.35);
+    cursor:pointer;
+    font-family:inherit;
+    text-align:left;
+  }
+  .mode-btn:active{
+    transform:translateY(2px);
+    box-shadow:0 2px 0 rgba(122,74,43,0.35);
+  }
+  .mode-btn-name{
+    font-size:17px;
+    font-weight:800;
+    color:var(--ink);
+  }
+  .mode-btn-desc{
+    font-size:12px;
+    color:var(--ink);
+    opacity:0.8;
+    line-height:1.4;
+  }
+
+  /* 背景の木:リズムが揃うスコアに応じて下から上がってくる */
+  #bg-trees-far{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:66%;
+    z-index:-1;
+    pointer-events:none;
+    transform: translateY(92%);
+    transition: transform 1200ms ease-out;
+  }
+  #bg-trees-far svg{
+    width:100%;
+    height:100%;
+    display:block;
+  }
+
+  #bg-trees{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:52%;
+    z-index:0;
+    pointer-events:none;
+    transform: translateY(88%);
+    transition: transform 1000ms ease-out;
+  }
+  #bg-trees svg{
+    width:100%;
+    height:100%;
+    display:block;
+  }
+
+  /* jungle leaf decorations */
+  .leaf-deco{
+    position:absolute;
+    top:0;
+    width:100%;
+    height:90px;
+    pointer-events:none;
+  }
+
+  /* header */
+  #header{
+    width:100%;
+    padding:18px 20px 6px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:relative;
+    z-index:5;
+  }
+  #title{
+    font-size:20px;
+    font-weight:700;
+    color:var(--ink);
+    letter-spacing:.02em;
+  }
+  #score-box{
+    background:var(--cream);
+    border:3px solid var(--wood-dark);
+    border-radius:16px;
+    padding:6px 16px;
+    font-size:18px;
+    font-weight:700;
+    color:var(--ink);
+    min-width:64px;
+    text-align:center;
+    box-shadow:0 3px 0 rgba(122,74,43,0.3);
+  }
+
+  /* 木が上がりきった時の「賑やかモード」演出 */
+  #rainbow-overlay{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    opacity:0;
+    pointer-events:none;
+    background:repeating-linear-gradient(120deg,
+      #FF3B6B 0%, #FF9F3B 8%, #FFE63B 16%, #5CE85C 24%,
+      #3BB8FF 32%, #8A5CFF 40%, #FF3BC7 48%, #FF3B6B 56%);
+    background-size:260% 260%;
+    transition: opacity 500ms ease;
+  }
+  #stage.party #rainbow-overlay{
+    opacity:0.85;
+    animation: rainbowScroll 2.4s linear infinite, rainbowPulse 1.1s ease-in-out infinite;
+  }
+  @keyframes rainbowScroll{
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+  @keyframes rainbowPulse{
+    0%,100% { filter:saturate(1.1) brightness(1); }
+    50%     { filter:saturate(1.6) brightness(1.2); }
+  }
+
+  /* パーティ中にキラキラ光る星の粒 */
+  #party-sparkles{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    opacity:0;
+    transition: opacity 400ms ease;
+  }
+  #stage.party #party-sparkles{ opacity:1; }
+  #party-sparkles span{
+    position:absolute;
+    font-size:30px;
+    color:#FFE873;
+    text-shadow:0 0 10px rgba(255,255,255,0.9), 0 0 3px rgba(0,0,0,0.15);
+    animation: sparkleTwinkle 1.3s ease-in-out infinite;
+  }
+  @keyframes sparkleTwinkle{
+    0%,100% { opacity:0.15; transform:scale(0.6) rotate(0deg); }
+    50%     { opacity:1;    transform:scale(1.2) rotate(25deg); }
+  }
+
+  #bird-choir{
+    position:absolute;
+    top:6%;
+    left:2%;
+    display:flex;
+    gap:4px;
+    z-index:2;
+    pointer-events:none;
+    transform: translateX(-140%);
+    opacity:0;
+    transition: transform 650ms cubic-bezier(.2,.8,.3,1), opacity 500ms ease;
+  }
+  #choir-branch{
+    position:absolute;
+    left:-6%;
+    right:-14%;
+    bottom:8px;
+    height:8px;
+    background:var(--wood-dark);
+    border-radius:6px;
+    z-index:-1;
+    transform:rotate(-2deg);
+  }
+  .choir-bird{
+    position:relative;
+  }
+  #bird-choir svg{
+    width:44px;
+    height:auto;
+    display:block;
+    transform-origin:50% 100%;
+  }
+  #stage.party #bird-choir{
+    transform: translateX(0);
+    opacity:1;
+  }
+  #stage.party .choir-bird svg{
+    animation: choirBounce 560ms ease-in-out infinite;
+  }
+  #stage.party .choir-bird:nth-child(1) svg{ animation-delay:0ms; }
+  #stage.party .choir-bird:nth-child(2) svg{ animation-delay:140ms; }
+  #stage.party .choir-bird:nth-child(3) svg{ animation-delay:280ms; }
+  @keyframes choirBounce{
+    0%,100% { transform: translateY(0) rotate(0deg) scaleY(1); }
+    35%     { transform: translateY(-9px) rotate(-8deg) scaleY(1.08); }
+    60%     { transform: translateY(-2px) rotate(6deg) scaleY(0.94); }
+  }
+
+  .choir-note{
+    position:absolute;
+    left:50%;
+    top:-2px;
+    font-size:13px;
+    color:#FF8A5B;
+    text-shadow:0 1px 0 rgba(255,255,255,0.6);
+    opacity:0;
+    pointer-events:none;
+  }
+  #stage.party .choir-note{
+    animation: choirNoteFloat 900ms ease-out infinite;
+  }
+  @keyframes choirNoteFloat{
+    0%   { opacity:0; transform:translate(-50%,0) scale(0.6); }
+    15%  { opacity:1; }
+    100% { opacity:0; transform:translate(-40%,-30px) scale(1.05) rotate(12deg); }
+  }
+
+  .dance-monkey{
+    position:absolute;
+    bottom:16%;
+    width:16%;
+    max-width:70px;
+    z-index:2;
+    pointer-events:none;
+    opacity:0;
+    transition: transform 650ms cubic-bezier(.2,.8,.3,1), opacity 500ms ease;
+  }
+  .dance-monkey svg{ width:100%; height:auto; display:block; }
+  #dance-monkey-left{ left:3%; transform: translateX(-160%); }
+  #dance-monkey-right{ right:3%; transform: translateX(160%); }
+  #stage.party #dance-monkey-left{ transform: translateX(0) translateY(0); opacity:1; }
+  #stage.party #dance-monkey-right{ transform: translateX(0) translateY(0); opacity:1; }
+  #stage.party .dance-monkey{
+    animation: danceBounce 600ms ease-in-out infinite;
+  }
+  @keyframes danceBounce{
+    0%,100%{ transform: translateX(0) translateY(0); }
+    50%    { transform: translateX(0) translateY(-10px); }
+  }
+  .dance-arm{ transform-box:fill-box; transform-origin:50% 100%; }
+  #stage.party .dance-arm-l{ animation: armWaveL 600ms ease-in-out infinite; }
+  #stage.party .dance-arm-r{ animation: armWaveR 600ms ease-in-out infinite; }
+  @keyframes armWaveL{ 0%,100%{ transform:rotate(-10deg); } 50%{ transform:rotate(18deg); } }
+  @keyframes armWaveR{ 0%,100%{ transform:rotate(10deg); } 50%{ transform:rotate(-18deg); } }
+
+  /* 鳥:おさるの右上、木にとまって固定BPMで音符を出す */
+  #bird-wrap{
+    position:absolute;
+    top:2%;
+    right:4%;
+    width:22%;
+    max-width:100px;
+    z-index:1;
+    pointer-events:none;
+  }
+  #bird-wrap svg{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+  .music-note{
+    position:absolute;
+    font-size:34px;
+    font-weight:700;
+    color:#FF8A5B;
+    text-shadow:0 1px 0 rgba(255,255,255,0.6);
+    pointer-events:none;
+    z-index:2;
+    animation: noteFloat 1100ms ease-out forwards;
+  }
+  @keyframes noteFloat{
+    0%   { opacity:0; transform:translate(0,0) scale(0.6) rotate(-8deg); }
+    15%  { opacity:1; transform:translate(-2px,-6px) scale(1) rotate(-4deg); }
+    100% { opacity:0; transform:translate(-18px,-46px) scale(1.05) rotate(-14deg); }
+  }
+
+  #scene{
+    position:relative;
+    flex:1;
+    width:100%;
+    max-width:480px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+  }
+
+  svg{ display:block; }
+
+  #monkey-svg{
+    position:relative;
+    z-index:3;
+    width:78%;
+    max-width:340px;
+    height:auto;
+    overflow:visible;
+  }
+
+  #face-normal{ opacity:1; transition: opacity 120ms ease; }
+  #face-laugh{ opacity:0; transition: opacity 120ms ease; }
+  #monkey-svg.laughing #face-normal{ opacity:0; }
+  #monkey-svg.laughing #face-laugh{ opacity:1; }
+
+  .arm-l, .arm-r{
+    transform-box: fill-box;
+    transform-origin: 90% 10%;
+  }
+  .arm-l{ transform-origin: 10% 10%; }
+  .arm-r{ transform-origin: 90% 10%; }
+
+  .stick-l, .stick-r{
+    transform-box: fill-box;
+    transform-origin: 50% 0%;
+  }
+
+  .arm-l.swing{ animation: swingL 340ms cubic-bezier(.25,.1,.25,1) 1; }
+  .arm-r.swing{ animation: swingR 340ms cubic-bezier(.25,.1,.25,1) 1; }
+  .stick-l.swing{ animation: stickSwingL 340ms cubic-bezier(.2,.05,.2,1) 1; }
+  .stick-r.swing{ animation: stickSwingR 340ms cubic-bezier(.2,.05,.2,1) 1; }
+
+  /* 静止角度は水平(バチは親グループでrotate(±90))。
+     打撃の瞬間(55%)には「腕の回転+90°(バチ静止傾き)+バチの相対回転」の
+     合計が45°になるよう、腕とバチを連動させて振り下ろす
+     (振りかぶりで上外側へ、打撃で45°まで振り下ろし、少し戻して静止へ) */
+  @keyframes swingL{
+    0%   { transform: rotate(0deg); }
+    25%  { transform: rotate(-18deg); }
+    55%  { transform: rotate(18deg); }
+    75%  { transform: rotate(8deg); }
+    100% { transform: rotate(0deg); }
+  }
+  @keyframes swingR{
+    0%   { transform: rotate(0deg); }
+    25%  { transform: rotate(18deg); }
+    55%  { transform: rotate(-18deg); }
+    75%  { transform: rotate(-8deg); }
+    100% { transform: rotate(0deg); }
+  }
+  @keyframes stickSwingL{
+    0%   { transform: rotate(0deg); }
+    25%  { transform: rotate(-27deg); }
+    55%  { transform: rotate(27deg); }
+    75%  { transform: rotate(12deg); }
+    100% { transform: rotate(0deg); }
+  }
+  @keyframes stickSwingR{
+    0%   { transform: rotate(0deg); }
+    25%  { transform: rotate(27deg); }
+    55%  { transform: rotate(-27deg); }
+    75%  { transform: rotate(-12deg); }
+    100% { transform: rotate(0deg); }
+  }
+
+  /* 20回に1回、両手を高く上げて喜ぶポーズ。
+     腕もバチも最終的に鉛直上向き(180°)に揃える。
+     はみ出し防止のため、
+     1) 腕を振り上げる間はバチをワールド座標で下向きのまま打ち消して振れ幅を抑え、
+     2) 腕が上がりきってからバチだけを腕に沿わせて真上に揃える
+     という2段階にしている(戻りも同じ手順を逆順で実行) */
+  .arm-l.celebrate{ animation: celebrateArmL 1000ms ease-in-out 1; }
+  .arm-r.celebrate{ animation: celebrateArmR 1000ms ease-in-out 1; }
+  .stick-l.celebrate{ animation: celebrateStickL 1000ms ease-in-out 1; }
+  .stick-r.celebrate{ animation: celebrateStickR 1000ms ease-in-out 1; }
+
+  @keyframes celebrateArmL{
+    0%   { transform: rotate(0deg); }
+    35%  { transform: rotate(180deg); }
+    55%  { transform: rotate(180deg); }
+    75%  { transform: rotate(180deg); }
+    90%  { transform: rotate(180deg); }
+    100% { transform: rotate(0deg); }
+  }
+  @keyframes celebrateArmR{
+    0%   { transform: rotate(0deg); }
+    35%  { transform: rotate(-180deg); }
+    55%  { transform: rotate(-180deg); }
+    75%  { transform: rotate(-180deg); }
+    90%  { transform: rotate(-180deg); }
+    100% { transform: rotate(0deg); }
+  }
+  /* 腕の動きを打ち消して「バチのワールド角度」を制御:
+     0-35%は下向き(0)を保ったまま腕だけ上げ、35-75%で真上(腕と合計180)へ、
+     75-90%で一旦下向きに戻し、90-100%で腕と一緒に元に戻す */
+  @keyframes celebrateStickL{
+    0%   { transform: rotate(0deg); }
+    35%  { transform: rotate(-180deg); }
+    55%  { transform: rotate(0deg); }
+    75%  { transform: rotate(0deg); }
+    90%  { transform: rotate(-180deg); }
+    100% { transform: rotate(0deg); }
+  }
+  @keyframes celebrateStickR{
+    0%   { transform: rotate(0deg); }
+    35%  { transform: rotate(180deg); }
+    55%  { transform: rotate(0deg); }
+    75%  { transform: rotate(0deg); }
+    90%  { transform: rotate(180deg); }
+    100% { transform: rotate(0deg); }
+  }
+
+
+
+  .swoosh{
+    opacity:0;
+    stroke:var(--fur-light);
+    stroke-width:5;
+    fill:none;
+    stroke-linecap:round;
+  }
+  .swoosh.swing{
+    animation: swooshFade 340ms ease-out 1;
+  }
+  @keyframes swooshFade{
+    0%   { opacity:0; }
+    40%  { opacity:0; }
+    50%  { opacity:0.85; }
+    65%  { opacity:0.4; }
+    100% { opacity:0; }
+  }
+
+  #drum-wrap{
+    position:relative;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    margin-top:-22%;
+    z-index:2;
+  }
+  #drum-svg{
+    width:70%;
+    max-width:300px;
+    height:auto;
+  }
+  #drum-head{
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 90ms ease-out;
+  }
+  #drum-head.hit{ transform: scaleY(0.93) translateY(2px); }
+
+  .drum-star{
+    position:absolute;
+    left:50%;
+    top:38%;
+    font-size:15px;
+    color:#FFD34D;
+    text-shadow:0 1px 0 rgba(0,0,0,0.15);
+    pointer-events:none;
+    z-index:4;
+    animation: starBurst 700ms ease-out forwards;
+  }
+  @keyframes starBurst{
+    0%   { opacity:0; transform:translate(-50%,-50%) scale(0.3); }
+    18%  { opacity:1; }
+    100% { opacity:0; transform:translate(calc(-50% + var(--dx,0px)), calc(-50% + var(--dy,0px))) scale(1.15) rotate(40deg); }
+  }
+
+  .ripple{
+    position:absolute;
+    left:50%;
+    top:38%;
+    width:40px;
+    height:40px;
+    margin-left:-20px;
+    margin-top:-20px;
+    border-radius:50%;
+    border:4px solid var(--hit-flash);
+    opacity:0;
+    pointer-events:none;
+  }
+  .ripple.play{
+    animation: rippleAnim 380ms ease-out forwards;
+  }
+  @keyframes rippleAnim{
+    0%{ opacity:0.9; transform:scale(0.3); }
+    100%{ opacity:0; transform:scale(2.6); }
+  }
+
+  #ground{
+    width:100%;
+    height:14%;
+    background:linear-gradient(180deg,#C98A52 0%, #A8683C 100%);
+    position:relative;
+    z-index:1;
+    border-top:4px solid var(--wood-dark);
+  }
+
+  #footer{
+    width:100%;
+    padding:10px 20px 22px;
+    text-align:center;
+    color:var(--ink);
+    font-size:13px;
+    opacity:0.75;
+    z-index:5;
+  }
+
+  #tap-hint{
+    position:absolute;
+    bottom:10px;
+    left:0;
+    right:0;
+    text-align:center;
+    font-size:14px;
+    color:var(--ink);
+    opacity:0.6;
+    pointer-events:none;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:0.35; }
+    50%{ opacity:0.75; }
+  }
+
+  #combo-pop{
+    position:absolute;
+    font-size:22px;
+    font-weight:800;
+    color:#FF6B35;
+    text-shadow:0 2px 0 #fff8;
+    pointer-events:none;
+    opacity:0;
+    z-index:6;
+  }
+  #combo-pop.play{
+    animation: popUp 550ms ease-out forwards;
+  }
+  @keyframes popUp{
+    0%{ opacity:0; transform:translate(-50%,0) scale(0.6); }
+    30%{ opacity:1; transform:translate(-50%,-18px) scale(1.15); }
+    100%{ opacity:0; transform:translate(-50%,-46px) scale(1); }
+  }
+  /* サイトのゲーム一覧への導線。#stage の外側に置くことで、タップが#stageの
+     pointerdownリスナー（太鼓の打撃扱い）に伝わらないようにしている。
+     上部は#headerのタイトル/スコア表示と重なってしまうため、太鼓（中央）や
+     下部中央のヒント文言（#tap-hint、短い中央寄せテキスト）と被らない
+     左下の余白に小さく配置する。 */
+  #site-back-link{
+    position:fixed;
+    bottom:10px; left:10px;
+    z-index:9999;
+    font-size:11px;
+    font-weight:700;
+    color:var(--ink);
+    background:rgba(255,246,230,0.88);
+    border:2px solid var(--wood-dark);
+    border-radius:20px;
+    padding:5px 10px;
+    text-decoration:none;
+    box-shadow:0 2px 0 rgba(122,74,43,0.3);
+  }
+</style>
+</head>
+<body>
+<a href="../" id="site-back-link">🎮 ゲームいちらんに もどる</a>
+<div id="stage">
+
+  <div id="home-screen">
+    <div id="home-card">
+      <div id="home-title">おさるのたいこ</div>
+      <div id="home-sub">あそびかたを えらんでね</div>
+      <button class="mode-btn" id="mode-easy-btn">
+        <span class="mode-btn-name">やさしい</span>
+        <span class="mode-btn-desc">はやく たたくと うしろの きが あがるよ</span>
+      </button>
+      <button class="mode-btn" id="mode-rhythm-btn">
+        <span class="mode-btn-name">リズム</span>
+        <span class="mode-btn-desc">おなじ リズムで たたくと うしろの きが あがるよ</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="rainbow-overlay"></div>
+
+  <div id="party-sparkles">
+    <span style="left:8%;top:14%;animation-delay:0ms;">✦</span>
+    <span style="left:18%;top:32%;animation-delay:180ms;">★</span>
+    <span style="left:30%;top:10%;animation-delay:360ms;">✦</span>
+    <span style="left:45%;top:22%;animation-delay:120ms;">✧</span>
+    <span style="left:58%;top:8%;animation-delay:500ms;">★</span>
+    <span style="left:70%;top:26%;animation-delay:260ms;">✦</span>
+    <span style="left:82%;top:12%;animation-delay:420ms;">✧</span>
+    <span style="left:90%;top:34%;animation-delay:80ms;">★</span>
+    <span style="left:12%;top:48%;animation-delay:300ms;">✧</span>
+    <span style="left:63%;top:44%;animation-delay:600ms;">✦</span>
+  </div>
+
+  <div id="bg-trees-far">
+    <svg viewBox="0 0 400 260" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="55" y="150" width="14" height="110" fill="var(--leaf-far)" opacity="0.7"/>
+      <circle cx="62" cy="110" r="58" fill="var(--leaf-far)"/>
+      <circle cx="62" cy="70" r="44" fill="var(--leaf-far)"/>
+
+      <rect x="130" y="175" width="12" height="85" fill="var(--leaf-far)" opacity="0.7"/>
+      <circle cx="136" cy="140" r="46" fill="var(--leaf-far)"/>
+      <circle cx="136" cy="105" r="36" fill="var(--leaf-far)"/>
+
+      <rect x="210" y="130" width="16" height="130" fill="var(--leaf-far)" opacity="0.7"/>
+      <circle cx="218" cy="86" r="66" fill="var(--leaf-far)"/>
+      <circle cx="218" cy="40" r="50" fill="var(--leaf-far)"/>
+
+      <rect x="290" y="170" width="13" height="90" fill="var(--leaf-far)" opacity="0.7"/>
+      <circle cx="296" cy="132" r="48" fill="var(--leaf-far)"/>
+      <circle cx="296" cy="96" r="37" fill="var(--leaf-far)"/>
+
+      <rect x="358" y="145" width="15" height="115" fill="var(--leaf-far)" opacity="0.7"/>
+      <circle cx="365" cy="102" r="60" fill="var(--leaf-far)"/>
+      <circle cx="365" cy="60" r="46" fill="var(--leaf-far)"/>
+    </svg>
+  </div>
+
+  <div id="bg-trees">
+    <svg viewBox="0 0 400 220" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="16" y="90" width="16" height="130" fill="var(--wood-dark)"/>
+      <circle cx="24" cy="66" r="52" fill="var(--leaf-dark)"/>
+      <circle cx="24" cy="40" r="40" fill="var(--leaf)"/>
+
+      <rect x="87" y="120" width="13" height="100" fill="var(--wood-dark)"/>
+      <circle cx="93" cy="100" r="42" fill="var(--leaf-dark)"/>
+      <circle cx="93" cy="74" r="34" fill="var(--leaf)"/>
+
+      <rect x="168" y="150" width="14" height="70" fill="var(--wood-dark)"/>
+      <circle cx="175" cy="128" r="38" fill="var(--leaf-dark)"/>
+      <circle cx="175" cy="106" r="30" fill="var(--leaf)"/>
+
+      <rect x="257" y="120" width="14" height="100" fill="var(--wood-dark)"/>
+      <circle cx="264" cy="100" r="44" fill="var(--leaf-dark)"/>
+      <circle cx="264" cy="72" r="35" fill="var(--leaf)"/>
+
+      <rect x="333" y="90" width="17" height="130" fill="var(--wood-dark)"/>
+      <circle cx="342" cy="66" r="54" fill="var(--leaf-dark)"/>
+      <circle cx="342" cy="40" r="42" fill="var(--leaf)"/>
+    </svg>
+  </div>
+
+  <div id="header">
+    <div id="title">おさるのたいこ</div>
+    <div id="score-box">0<span style="font-size:12px;font-weight:600;"> かい</span></div>
+  </div>
+
+  <div id="scene">
+    <div id="combo-pop">NICE!</div>
+
+    <!-- BIRD: 固定BPMで口から音符を出す -->
+    <div id="bird-wrap">
+      <svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(100,0) scale(-1,1)">
+          <!-- branch -->
+          <path d="M0,66 C30,60 70,60 100,68" stroke="var(--wood-dark)" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <!-- tail -->
+          <path d="M30,54 C16,50 10,42 14,34 C22,40 28,46 36,50 Z" fill="#5B8FC7"/>
+          <!-- body -->
+          <ellipse cx="52" cy="46" rx="24" ry="21" fill="#6FA3D8"/>
+          <!-- belly -->
+          <ellipse cx="55" cy="54" rx="15" ry="11" fill="#F2E7CE"/>
+          <!-- wing -->
+          <path d="M46,40 C40,48 42,58 54,60 C48,52 48,46 52,40 Z" fill="#5B8FC7"/>
+          <!-- head -->
+          <circle cx="70" cy="32" r="16" fill="#6FA3D8"/>
+          <!-- eye -->
+          <circle cx="75" cy="28" r="3.2" fill="var(--ink)"/>
+          <circle cx="76" cy="27" r="1" fill="#fff"/>
+          <!-- beak (中央=おさる側を向く) -->
+          <path id="bird-beak" d="M84,32 L95,30 L84,37 Z" fill="#F2A94E"/>
+          <!-- feet -->
+          <path d="M46,64 L44,70 M52,64 L52,70" stroke="#E08A3C" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- 鳥の合唱隊:木が上がりきったら左から出てくる -->
+    <div id="bird-choir">
+      <div id="choir-branch"></div>
+      <div class="choir-bird">
+        <svg viewBox="0 0 60 46" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="28" rx="20" ry="17" fill="#E8896B"/><ellipse cx="30" cy="34" rx="11" ry="8" fill="#F7E3D3"/><circle cx="30" cy="12" r="12" fill="#E8896B"/><circle cx="24" cy="10" r="2.4" fill="var(--ink)"/><circle cx="36" cy="10" r="2.4" fill="var(--ink)"/><path d="M25,16 L35,16 L30,22 Z" fill="#F2A94E"/></svg>
+        <span class="choir-note" style="animation-delay:0ms;">♪</span>
+      </div>
+      <div class="choir-bird">
+        <svg viewBox="0 0 60 46" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="28" rx="20" ry="17" fill="#7FC77F"/><ellipse cx="30" cy="34" rx="11" ry="8" fill="#F2F4D8"/><circle cx="30" cy="12" r="12" fill="#7FC77F"/><circle cx="24" cy="10" r="2.4" fill="var(--ink)"/><circle cx="36" cy="10" r="2.4" fill="var(--ink)"/><path d="M25,16 L35,16 L30,22 Z" fill="#F2A94E"/></svg>
+        <span class="choir-note" style="animation-delay:220ms;">♫</span>
+      </div>
+      <div class="choir-bird">
+        <svg viewBox="0 0 60 46" xmlns="http://www.w3.org/2000/svg"><ellipse cx="30" cy="28" rx="20" ry="17" fill="#F2C94C"/><ellipse cx="30" cy="34" rx="11" ry="8" fill="#FFF6DE"/><circle cx="30" cy="12" r="12" fill="#F2C94C"/><circle cx="24" cy="10" r="2.4" fill="var(--ink)"/><circle cx="36" cy="10" r="2.4" fill="var(--ink)"/><path d="M25,16 L35,16 L30,22 Z" fill="#F2A94E"/></svg>
+        <span class="choir-note" style="animation-delay:440ms;">♪</span>
+      </div>
+    </div>
+
+    <!-- 踊る小猿:木が上がりきったら左右から出てくる -->
+    <div id="dance-monkey-left" class="dance-monkey">
+      <svg viewBox="0 0 60 70" xmlns="http://www.w3.org/2000/svg">
+        <path class="dance-arm dance-arm-l" d="M18,32 C8,22 6,8 12,2" stroke="var(--fur)" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path class="dance-arm dance-arm-r" d="M42,32 C52,22 54,8 48,2" stroke="var(--fur)" stroke-width="9" stroke-linecap="round" fill="none"/>
+
+        <!-- body -->
+        <ellipse cx="30" cy="53" rx="15" ry="17" fill="var(--fur)"/>
+        <ellipse cx="30" cy="57" rx="9" ry="10" fill="var(--fur-light)"/>
+        <path d="M30,50 C28,47 24,48 24,52 C24,56 27,58 30,61 C33,58 36,56 36,52 C36,48 32,47 30,50 Z" fill="var(--blush)" opacity="0.5"/>
+
+        <!-- back ears -->
+        <circle cx="11" cy="23" r="8.5" fill="var(--fur-dark)"/>
+        <circle cx="49" cy="23" r="8.5" fill="var(--fur-dark)"/>
+        <circle cx="11" cy="23" r="5.2" fill="var(--blush)" opacity="0.9"/>
+        <circle cx="49" cy="23" r="5.2" fill="var(--blush)" opacity="0.9"/>
+
+        <!-- head -->
+        <circle cx="30" cy="20" r="15" fill="var(--fur)"/>
+
+        <!-- face patch: twin-peak like the main monkey -->
+        <path d="M17,26 C17,15 21,7 27,6.3 C28.5,6 29.5,8 30,10.3 C30.5,8 31.5,6 33,6.3 C39,7 43,15 43,26 C43,35 37,40 30,40 C23,40 17,35 17,26 Z" fill="var(--fur-light)"/>
+
+        <!-- blush cheeks -->
+        <ellipse cx="19.5" cy="27.5" rx="4.2" ry="2.6" fill="var(--blush)" opacity="0.85"/>
+        <ellipse cx="40.5" cy="27.5" rx="4.2" ry="2.6" fill="var(--blush)" opacity="0.85"/>
+
+        <!-- eyes -->
+        <rect x="26.3" y="18" width="2" height="6" rx="1" fill="var(--ink)"/>
+        <rect x="31.7" y="18" width="2" height="6" rx="1" fill="var(--ink)"/>
+        <circle cx="27.3" cy="20" r="0.5" fill="#fff" opacity="0.85"/>
+        <circle cx="32.7" cy="20" r="0.5" fill="#fff" opacity="0.85"/>
+
+        <!-- smile -->
+        <path d="M23,30 C25,35 27,37 30,37 C33,37 35,35 37,30" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div id="dance-monkey-right" class="dance-monkey">
+      <svg viewBox="0 0 60 70" xmlns="http://www.w3.org/2000/svg">
+        <path class="dance-arm dance-arm-l" d="M18,32 C8,22 6,8 12,2" stroke="var(--fur)" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path class="dance-arm dance-arm-r" d="M42,32 C52,22 54,8 48,2" stroke="var(--fur)" stroke-width="9" stroke-linecap="round" fill="none"/>
+
+        <!-- body -->
+        <ellipse cx="30" cy="53" rx="15" ry="17" fill="var(--fur)"/>
+        <ellipse cx="30" cy="57" rx="9" ry="10" fill="var(--fur-light)"/>
+        <path d="M30,50 C28,47 24,48 24,52 C24,56 27,58 30,61 C33,58 36,56 36,52 C36,48 32,47 30,50 Z" fill="var(--blush)" opacity="0.5"/>
+
+        <!-- back ears -->
+        <circle cx="11" cy="23" r="8.5" fill="var(--fur-dark)"/>
+        <circle cx="49" cy="23" r="8.5" fill="var(--fur-dark)"/>
+        <circle cx="11" cy="23" r="5.2" fill="var(--blush)" opacity="0.9"/>
+        <circle cx="49" cy="23" r="5.2" fill="var(--blush)" opacity="0.9"/>
+
+        <!-- head -->
+        <circle cx="30" cy="20" r="15" fill="var(--fur)"/>
+
+        <!-- face patch: twin-peak like the main monkey -->
+        <path d="M17,26 C17,15 21,7 27,6.3 C28.5,6 29.5,8 30,10.3 C30.5,8 31.5,6 33,6.3 C39,7 43,15 43,26 C43,35 37,40 30,40 C23,40 17,35 17,26 Z" fill="var(--fur-light)"/>
+
+        <!-- blush cheeks -->
+        <ellipse cx="19.5" cy="27.5" rx="4.2" ry="2.6" fill="var(--blush)" opacity="0.85"/>
+        <ellipse cx="40.5" cy="27.5" rx="4.2" ry="2.6" fill="var(--blush)" opacity="0.85"/>
+
+        <!-- eyes -->
+        <rect x="26.3" y="18" width="2" height="6" rx="1" fill="var(--ink)"/>
+        <rect x="31.7" y="18" width="2" height="6" rx="1" fill="var(--ink)"/>
+        <circle cx="27.3" cy="20" r="0.5" fill="#fff" opacity="0.85"/>
+        <circle cx="32.7" cy="20" r="0.5" fill="#fff" opacity="0.85"/>
+
+        <!-- smile -->
+        <path d="M23,30 C25,35 27,37 30,37 C33,37 35,35 37,30" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- MONKEY -->
+    <svg id="monkey-svg" viewBox="0 0 340 400" xmlns="http://www.w3.org/2000/svg">
+      <!-- back ears -->
+      <circle cx="66" cy="148" r="50" fill="var(--fur-dark)"/>
+      <circle cx="274" cy="148" r="50" fill="var(--fur-dark)"/>
+      <circle cx="66" cy="148" r="31" fill="var(--blush)" opacity="0.9"/>
+      <circle cx="274" cy="148" r="31" fill="var(--blush)" opacity="0.9"/>
+
+      <!-- torso -->
+      <path d="M112,258 C110,312 122,348 170,348 C218,348 230,312 228,258 L213,235 L127,235 Z" fill="var(--fur)"/>
+      <ellipse cx="170" cy="284" rx="35" ry="42" fill="var(--fur-light)"/>
+      <path d="M170,270 C166,262 155,264 155,274 C155,282 163,288 170,294 C177,288 185,282 185,274 C185,264 174,262 170,270 Z" fill="var(--blush)" opacity="0.55"/>
+
+      <!-- right arm: drawn after the torso so the stick is never hidden behind the body -->
+      <g class="arm-r" id="armR">
+        <path d="M255,235 C300,230 322,255 320,300 C318,335 288,345 262,332 L245,300 C248,275 250,255 255,235 Z" fill="var(--fur)"/>
+        <ellipse cx="270" cy="300" rx="22" ry="20" fill="var(--fur-light)"/>
+        <!-- stick: grip near the hand, mallet head points down toward the drum.
+             静止角度を水平(90°)に傾ける -->
+        <g transform="rotate(90 271 296)">
+          <g class="stick-r" id="stickR">
+            <rect x="266" y="296" width="10" height="72" rx="5" fill="var(--wood-dark)"/>
+            <circle cx="271" cy="372" r="11" fill="var(--wood-mid)"/>
+          </g>
+        </g>
+        <path class="swoosh" id="swooshR" d="M315,353 C302,372 268,380 249,367"/>
+      </g>
+
+      <!-- left arm -->
+      <g class="arm-l" id="armL">
+        <path d="M85,235 C40,230 18,255 20,300 C22,335 52,345 78,332 L95,300 C92,275 90,255 85,235 Z" fill="var(--fur)"/>
+        <ellipse cx="70" cy="300" rx="22" ry="20" fill="var(--fur-light)"/>
+        <g transform="rotate(-90 69 296)">
+          <g class="stick-l" id="stickL">
+            <rect x="64" y="296" width="10" height="72" rx="5" fill="var(--wood-dark)"/>
+            <circle cx="69" cy="372" r="11" fill="var(--wood-mid)"/>
+          </g>
+        </g>
+        <path class="swoosh" id="swooshL" d="M25,353 C38,372 72,380 91,367"/>
+      </g>
+
+      <!-- head -->
+      <circle cx="170" cy="130" r="112" fill="var(--fur)"/>
+      <!-- inner ears -->
+      <circle cx="70" cy="150" r="17" fill="var(--fur)"/>
+      <circle cx="270" cy="150" r="17" fill="var(--fur)"/>
+
+      <!-- little top hair tuft -->
+      <path d="M155,22 C150,8 165,2 172,12 C176,2 192,4 190,18 C198,10 210,20 202,30 C196,22 182,20 176,26 C170,18 158,20 155,22 Z" fill="var(--fur-dark)"/>
+
+      <!-- face patch: twin-peak fringe like the original sketch -->
+      <path d="M96,150 C96,108 118,74 150,71 C159,70 166,80 170,93 C174,80 181,70 190,71 C222,74 244,108 244,150 C244,198 214,222 170,222 C126,222 96,198 96,150 Z" fill="var(--fur-light)"/>
+
+      <!-- blush cheeks -->
+      <ellipse cx="110" cy="174" rx="23" ry="14" fill="var(--blush)" opacity="0.85"/>
+      <ellipse cx="230" cy="174" rx="23" ry="14" fill="var(--blush)" opacity="0.85"/>
+
+      <!-- normal face: simple line eyes + smile -->
+      <g id="face-normal">
+        <rect x="129" y="118" width="9" height="30" rx="4.5" fill="var(--ink)"/>
+        <rect x="202" y="118" width="9" height="30" rx="4.5" fill="var(--ink)"/>
+        <circle cx="133.5" cy="126" r="2.4" fill="#fff" opacity="0.8"/>
+        <circle cx="206.5" cy="126" r="2.4" fill="#fff" opacity="0.8"/>
+        <path d="M128,173 C140,196 154,206 170,206 C186,206 200,196 212,173" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linecap="round"/>
+      </g>
+
+      <!-- laugh face: shown briefly every 10th hit -->
+      <g id="face-laugh">
+        <path d="M120,132 Q133,112 147,132" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M193,132 Q206,112 220,132" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M124,168 C124,161 143,156 170,156 C197,156 216,161 216,168 C216,196 195,216 170,216 C145,216 124,196 124,168 Z" fill="var(--ink)"/>
+      </g>
+    </svg>
+  </div>
+
+  <div id="drum-wrap">
+    <svg id="drum-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- drum body -->
+      <path d="M30,70 L30,150 C30,178 74,196 150,196 C226,196 270,178 270,150 L270,70 Z" fill="var(--wood-mid)"/>
+      <path d="M30,70 L30,150 C30,178 74,196 150,196 C226,196 270,178 270,150 L270,70" fill="none" stroke="var(--wood-dark)" stroke-width="5"/>
+      <!-- side bands -->
+      <path d="M40,95 C70,108 230,108 260,95" fill="none" stroke="var(--wood-dark)" stroke-width="5" opacity="0.5"/>
+      <path d="M35,130 C70,146 230,146 265,130" fill="none" stroke="var(--wood-dark)" stroke-width="5" opacity="0.5"/>
+      <!-- rim -->
+      <ellipse cx="150" cy="70" rx="120" ry="34" fill="var(--wood-dark)"/>
+      <!-- head -->
+      <ellipse id="drum-head" cx="150" cy="68" rx="104" ry="28" fill="var(--cream)"/>
+      <ellipse cx="150" cy="68" rx="104" ry="28" fill="none" stroke="var(--wood-dark)" stroke-width="4"/>
+      <ellipse cx="150" cy="68" rx="72" ry="18" fill="none" stroke="var(--wood-light)" stroke-width="3" opacity="0.6"/>
+    </svg>
+    <div class="ripple" id="ripple"></div>
+  </div>
+
+  <div id="ground"></div>
+
+  <div id="tap-hint">たたいてね</div>
+</div>
+
+<script>
+(function(){
+  const stage = document.getElementById('stage');
+  const scoreBox = document.getElementById('score-box');
+  const monkeySvg = document.getElementById('monkey-svg');
+  const armL = document.getElementById('armL');
+  const armR = document.getElementById('armR');
+  const stickL = document.getElementById('stickL');
+  const stickR = document.getElementById('stickR');
+  const swooshL = document.getElementById('swooshL');
+  const swooshR = document.getElementById('swooshR');
+  const drumHead = document.getElementById('drum-head');
+  const ripple = document.getElementById('ripple');
+  const drumWrap = document.getElementById('drum-wrap');
+  const comboPop = document.getElementById('combo-pop');
+  const scene = document.getElementById('scene');
+  const tapHint = document.getElementById('tap-hint');
+  const bgTrees = document.getElementById('bg-trees');
+  const bgTreesFar = document.getElementById('bg-trees-far');
+  const birdWrap = document.getElementById('bird-wrap');
+
+  const SWING_MS = 340;       // 振りかぶり〜打撃〜戻りの全体時間
+  const IMPACT_RATIO = 0.55;  // バチが太鼓に当たるタイミング(アニメ全体に対する割合)
+  const IMPACT_MS = Math.round(SWING_MS * IMPACT_RATIO);
+
+  let nextIsLeft = true;
+  let score = 0;
+  let audioCtx = null;
+  let busy = false; // 打撃アニメ中の多重発火を防ぐ
+
+  // --- リズム判定まわり ---
+  let lastTapTime = null;
+  let treeLevel = 0;          // 0〜100。木の上がり具合
+  let partyDropTimer = null;  // 賑やかモードを2秒維持してから解除するためのタイマー
+  const TREE_MAX = 100;
+  const TARGET_BPM = 100;                        // 「リズム」モード:目標とする一定のリズム
+  const TARGET_INTERVAL = 60000 / TARGET_BPM;     // 目標タップ間隔(ms)
+  const RHYTHM_TOLERANCE = 0.22;                  // 目標間隔からの許容ズレ(比率)
+  const EASY_PACE_MS = 250;                       // 「やさしい」モード:1秒間に4回以上=間隔250ms以下
+  let gameMode = null; // 'easy' | 'rhythm'
+  let periodicLaughActive = false; // 10回ごとの一瞬の笑い
+  let rhythmLaughActive = false;   // リズムキープ中の継続的な笑い
+  let rhythmLaughTimer = null;
+
+  function refreshLaughClass(){
+    if(periodicLaughActive || rhythmLaughActive){
+      monkeySvg.classList.add('laughing');
+    } else {
+      monkeySvg.classList.remove('laughing');
+    }
+  }
+
+  function setTreeLevel(level){
+    treeLevel = Math.max(0, Math.min(TREE_MAX, level));
+    // 0のとき88%(ほぼ隠れる)、100のとき0%(完全に上がりきる)
+    const translate = 88 - (treeLevel / TREE_MAX) * 88;
+    bgTrees.style.transform = 'translateY(' + translate + '%)';
+    // 奥の木はさらに一段高く、少し遅れて追従させる
+    const translateFar = 92 - (treeLevel / TREE_MAX) * 92;
+    bgTreesFar.style.transform = 'translateY(' + translateFar + '%)';
+
+    // 木が上がりきったら賑やかモード。下がっても2秒間は維持してから解除する
+    if(treeLevel >= TREE_MAX){
+      clearTimeout(partyDropTimer);
+      partyDropTimer = null;
+      stage.classList.add('party');
+    } else if(stage.classList.contains('party') && !partyDropTimer){
+      partyDropTimer = setTimeout(function(){
+        stage.classList.remove('party');
+        partyDropTimer = null;
+      }, 2000);
+    }
+  }
+
+  // 何もしなくても背景は少しずつ下がっていく(自然減衰)
+  setInterval(function(){
+    if(treeLevel > 0){
+      setTreeLevel(treeLevel - 3);
+    }
+  }, 400);
+
+  // 鳥が固定BPMで口から音符を出す(プレイヤーが合わせるべき基準リズムを示す)
+  const NOTE_CHARS = ['♪', '♫'];
+  function spawnBirdNote(){
+    const beak = document.getElementById('bird-beak');
+    if(!beak || !birdWrap) return;
+    const beakRect = beak.getBoundingClientRect();
+    const sceneRect = scene.getBoundingClientRect();
+
+    const note = document.createElement('div');
+    note.className = 'music-note';
+    note.textContent = NOTE_CHARS[Math.floor(Math.random() * NOTE_CHARS.length)];
+    note.style.left = (beakRect.left - sceneRect.left) + 'px';
+    note.style.top = (beakRect.top + beakRect.height / 2 - sceneRect.top) + 'px';
+    scene.appendChild(note);
+
+    setTimeout(function(){
+      if(note.parentNode) note.parentNode.removeChild(note);
+    }, 1150);
+  }
+  setInterval(function(){
+    if(gameMode === 'rhythm') spawnBirdNote();
+  }, TARGET_INTERVAL);
+
+  // ホーム画面:モード選択
+  const homeScreen = document.getElementById('home-screen');
+  document.getElementById('mode-easy-btn').addEventListener('click', function(e){
+    e.stopPropagation();
+    gameMode = 'easy';
+    homeScreen.classList.add('hidden');
+  });
+  document.getElementById('mode-rhythm-btn').addEventListener('click', function(e){
+    e.stopPropagation();
+    gameMode = 'rhythm';
+    homeScreen.classList.add('hidden');
+  });
+
+  function handleRhythm(now){
+    if(lastTapTime === null){
+      // 最初のタップはまだ判定できない
+      lastTapTime = now;
+      return;
+    }
+
+    const dt = now - lastTapTime;
+    lastTapTime = now;
+
+    // モードごとに判定方法を切り替える
+    let onRhythm;
+    if(gameMode === 'easy'){
+      // やさしい:1秒間に4回以上のペース(間隔250ms以下)で叩けているか
+      onRhythm = dt <= EASY_PACE_MS;
+    } else {
+      // リズム:目標の一定リズム(TARGET_INTERVAL)とどれだけズレているかで判定する
+      const deviation = Math.abs(dt - TARGET_INTERVAL) / TARGET_INTERVAL;
+      onRhythm = deviation <= RHYTHM_TOLERANCE;
+    }
+
+    if(onRhythm){
+      setTreeLevel(treeLevel + 14); // 合っている:木が上がる
+      spawnDrumStars();
+    } else {
+      setTreeLevel(treeLevel - 22); // 外れた:木が少しずつ下がる
+    }
+
+    // 木が上がりきっていて、かつリズムをキープできている間はおさるが笑い続ける
+    if(treeLevel >= TREE_MAX && onRhythm){
+      rhythmLaughActive = true;
+      refreshLaughClass();
+      clearTimeout(rhythmLaughTimer);
+      rhythmLaughTimer = setTimeout(function(){
+        rhythmLaughActive = false;
+        refreshLaughClass();
+      }, Math.min(2200, TARGET_INTERVAL * 1.8 + 300));
+    } else if(!onRhythm){
+      rhythmLaughActive = false;
+      clearTimeout(rhythmLaughTimer);
+      refreshLaughClass();
+    }
+  }
+
+  function getAudioCtx(){
+    if(!audioCtx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AC();
+    }
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function playDrumSound(){
+    try{
+      const ctx = getAudioCtx();
+      const now = ctx.currentTime;
+
+      // low thump (membrane)
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.exponentialRampToValueAtTime(60, now + 0.12);
+      gain.gain.setValueAtTime(0.9, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.26);
+
+      // click transient (stick hit)
+      const bufferSize = ctx.sampleRate * 0.03;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for(let i=0;i<bufferSize;i++){
+        data[i] = (Math.random()*2-1) * (1 - i/bufferSize);
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.35, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 2200;
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(now);
+      noise.stop(now + 0.05);
+    }catch(e){ /* audio not available, ignore */ }
+  }
+
+  function vibrate(){
+    if(navigator.vibrate){ navigator.vibrate(15); }
+  }
+
+  function showRipple(){
+    ripple.classList.remove('play');
+    void ripple.offsetWidth;
+    ripple.classList.add('play');
+  }
+
+  // テンポが合った時に太鼓から星を飛ばす。パーティ状態では数を増やす
+  function spawnDrumStars(){
+    const count = stage.classList.contains('party') ? 9 : 3;
+    for(let i = 0; i < count; i++){
+      const star = document.createElement('div');
+      star.className = 'drum-star';
+      star.textContent = '★';
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 34 + Math.random() * 46;
+      star.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+      star.style.setProperty('--dy', (Math.sin(angle) * dist - 24) + 'px');
+      star.style.fontSize = (12 + Math.random() * 10) + 'px';
+      star.style.animationDelay = (Math.random() * 80) + 'ms';
+      drumWrap.appendChild(star);
+      setTimeout(function(){
+        if(star.parentNode) star.parentNode.removeChild(star);
+      }, 820);
+    }
+  }
+
+  function showCombo(){
+    if(score > 0 && score % 10 === 0){
+      comboPop.textContent = score + 'かい つづいたよ！';
+      comboPop.classList.remove('play');
+      void comboPop.offsetWidth;
+      comboPop.classList.add('play');
+
+      // 10回に1回、おさるが笑う
+      periodicLaughActive = true;
+      refreshLaughClass();
+      setTimeout(function(){
+        periodicLaughActive = false;
+        refreshLaughClass();
+      }, 650);
+
+      // 20回に1回、両手を上げて喜ぶ
+      if(score % 20 === 0){
+        setTimeout(function(){
+          armL.classList.add('celebrate');
+          armR.classList.add('celebrate');
+          stickL.classList.add('celebrate');
+          stickR.classList.add('celebrate');
+          setTimeout(function(){
+            armL.classList.remove('celebrate');
+            armR.classList.remove('celebrate');
+            stickL.classList.remove('celebrate');
+            stickR.classList.remove('celebrate');
+          }, 1020);
+        }, SWING_MS + 30);
+      }
+    }
+  }
+
+  function restartAnim(el){
+    el.classList.remove('swing');
+    void el.offsetWidth; // reflow でアニメーションを強制的に最初から再生
+    el.classList.add('swing');
+  }
+
+  function hit(){
+    if(tapHint){ tapHint.style.display = 'none'; }
+
+    handleRhythm(performance.now());
+
+    const arm = nextIsLeft ? armL : armR;
+    const stick = nextIsLeft ? stickL : stickR;
+    const swoosh = nextIsLeft ? swooshL : swooshR;
+
+    // 腕とバチを連動させて振り下ろし、太鼓を打撃するアニメーションを再生
+    restartAnim(arm);
+    restartAnim(stick);
+    restartAnim(swoosh);
+
+    setTimeout(function(){
+      arm.classList.remove('swing');
+      stick.classList.remove('swing');
+      swoosh.classList.remove('swing');
+    }, SWING_MS + 20);
+
+    // バチが実際に太鼓に当たる瞬間に合わせて演出を発火
+    setTimeout(function(){
+      drumHead.classList.add('hit');
+      showRipple();
+      playDrumSound();
+      vibrate();
+      setTimeout(function(){ drumHead.classList.remove('hit'); }, 110);
+    }, IMPACT_MS);
+
+    score += 1;
+    scoreBox.innerHTML = score + '<span style="font-size:12px;font-weight:600;"> かい</span>';
+    showCombo();
+
+    nextIsLeft = !nextIsLeft;
+  }
+
+  stage.addEventListener('pointerdown', function(e){
+    // モード選択ボタンはstageの内側にあるため、ボタンを押した瞬間のpointerdownが
+    // stageまでバブリングしてしまい、遊び始める前に「たいこを1回叩いた」扱いに
+    // なってしまう（スコアが1から始まる・音や振動が鳴る）不具合があった。
+    // モードを選ぶまではhit()を無視することで防ぐ。
+    if(gameMode === null) return;
+    hit();
+  }, {passive:true});
+
+})();
+</script>
+</body>
+</html>
