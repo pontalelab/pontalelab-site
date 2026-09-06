@@ -31,6 +31,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://pontalelab.com/games/otonoehon/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://pontalelab.com/zukan/mushi/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
