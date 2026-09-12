@@ -727,6 +727,150 @@ const QUESTIONS = [
 
 const QUESTIONS_PER_QUIZ = 5;
 
+// えんどれすモード（47問連続）で、何問答えるごとに地図演出をはさむか
+const ENDLESS_CHECKPOINT_INTERVAL = 5;
+
+// 名前で都道府県データをすぐ引けるようにしておく（地図演出で使う）
+const QUESTIONS_BY_NAME = Object.fromEntries(QUESTIONS.map((q) => [q.name, q]));
+
+// ---------- 「くみあわせ地図」レイアウト ----------
+// このゲームにはクイズ用の都道府県シルエット（QUESTIONS[].paths, viewBox "0 0 100 100"）が
+// もともとあるので、それを実際のおおまかな位置関係・大きさに合わせて並べ直し、ひとつの
+// 日本地図っぽい絵として組み立てている。都道府県境が測量どおりに正確な地図ではなく、
+// 「なんとなく日本の形に見える」ことを目標にしたデフォルメ配置（x, y は中心座標、
+// scale は都道府県ごとのおおよその面積比を反映した縮尺）。
+const MAP_VIEWBOX_W = 620;
+const MAP_VIEWBOX_H = 870;
+const PREF_LAYOUT = [
+  // 北海道
+  { name: "北海道", x: 330, y: 85, scale: 1.5 },
+  // 東北
+  { name: "青森県", x: 330, y: 195, scale: 0.9 },
+  { name: "岩手県", x: 380, y: 235, scale: 1.0 },
+  { name: "秋田県", x: 288, y: 232, scale: 0.95 },
+  { name: "宮城県", x: 372, y: 278, scale: 0.85 },
+  { name: "山形県", x: 308, y: 278, scale: 0.85 },
+  { name: "福島県", x: 345, y: 322, scale: 1.0 },
+  // 関東
+  { name: "茨城県", x: 432, y: 380, scale: 0.75 },
+  { name: "栃木県", x: 390, y: 350, scale: 0.75 },
+  { name: "群馬県", x: 345, y: 355, scale: 0.75 },
+  { name: "埼玉県", x: 375, y: 397, scale: 0.6 },
+  { name: "千葉県", x: 442, y: 432, scale: 0.75 },
+  { name: "東京都", x: 390, y: 422, scale: 0.42 },
+  { name: "神奈川県", x: 385, y: 448, scale: 0.55 },
+  // 中部
+  { name: "新潟県", x: 310, y: 320, scale: 1.0 },
+  { name: "富山県", x: 275, y: 357, scale: 0.6 },
+  { name: "石川県", x: 250, y: 350, scale: 0.65 },
+  { name: "福井県", x: 235, y: 392, scale: 0.6 },
+  { name: "山梨県", x: 350, y: 402, scale: 0.5 },
+  { name: "長野県", x: 300, y: 392, scale: 0.95 },
+  { name: "岐阜県", x: 265, y: 417, scale: 0.85 },
+  { name: "静岡県", x: 330, y: 443, scale: 0.8 },
+  { name: "愛知県", x: 285, y: 448, scale: 0.7 },
+  // 近畿
+  { name: "三重県", x: 290, y: 472, scale: 0.65 },
+  { name: "滋賀県", x: 255, y: 452, scale: 0.55 },
+  { name: "京都府", x: 230, y: 440, scale: 0.65 },
+  { name: "大阪府", x: 225, y: 477, scale: 0.42 },
+  { name: "兵庫県", x: 190, y: 455, scale: 0.85 },
+  { name: "奈良県", x: 250, y: 487, scale: 0.5 },
+  { name: "和歌山県", x: 235, y: 517, scale: 0.6 },
+  // 中国
+  { name: "鳥取県", x: 175, y: 450, scale: 0.55 },
+  { name: "島根県", x: 138, y: 450, scale: 0.65 },
+  { name: "岡山県", x: 180, y: 482, scale: 0.6 },
+  { name: "広島県", x: 133, y: 482, scale: 0.75 },
+  { name: "山口県", x: 98, y: 492, scale: 0.65 },
+  // 四国
+  { name: "香川県", x: 195, y: 522, scale: 0.42 },
+  { name: "徳島県", x: 225, y: 532, scale: 0.55 },
+  { name: "愛媛県", x: 155, y: 542, scale: 0.65 },
+  { name: "高知県", x: 190, y: 562, scale: 0.85 },
+  // 九州
+  { name: "福岡県", x: 125, y: 557, scale: 0.65 },
+  { name: "佐賀県", x: 88, y: 567, scale: 0.5 },
+  { name: "長崎県", x: 53, y: 582, scale: 0.7 },
+  { name: "熊本県", x: 100, y: 607, scale: 0.75 },
+  { name: "大分県", x: 150, y: 597, scale: 0.65 },
+  { name: "宮崎県", x: 135, y: 637, scale: 0.75 },
+  { name: "鹿児島県", x: 100, y: 662, scale: 0.85 },
+  // 沖縄（実際の地図と同じく、離れた場所に別枠で、少し拡大して表示する慣習にならう）。
+  // 沖縄県のシルエットデータは「本島＋遠く離れた小さな島々」を含む5つの図形でできており、
+  // 全部をまとめて面積比どおりに縮小すると、本島自体が点にしか見えなくなってしまう。
+  // そのためこの地図だけ特別に、一番大きい本島の図形（onlyPaths: [0]）だけを取り出し、
+  // その図形自体の中心（centerX/centerY。他の都道府県は中心が(50,50)である前提だが、
+  // 沖縄本島の図形は中心がズレているため個別に指定）を基準に、見やすい大きさへ拡大している
+  { name: "沖縄県", x: 100, y: 788, scale: 5.5, centerX: 55.85, centerY: 39, onlyPaths: [0] },
+];
+const OKINAWA_INSET = { x: 52, y: 745, w: 96, h: 86 };
+
+// 5問ごとの「地図が埋まっていく」演出用の日本地図コンポーネント。
+// filled: これまでに正解した都道府県名の配列。justUnlocked: 直前のチェックポイントで
+// 新しく塗られた都道府県名（ポップするアニメーションをつける対象）。
+function JapanMapProgress({ filled, justUnlocked = [], size = 280 }) {
+  const filledSet = useMemo(() => new Set(filled), [filled]);
+  const justSet = useMemo(() => new Set(justUnlocked), [justUnlocked]);
+  return (
+    <svg
+      viewBox={`0 0 ${MAP_VIEWBOX_W} ${MAP_VIEWBOX_H}`}
+      width={size}
+      height={(size * MAP_VIEWBOX_H) / MAP_VIEWBOX_W}
+      style={{ display: "block", margin: "0 auto" }}
+      aria-label="にっぽんちずの すすみぐあい"
+    >
+      <rect
+        x={OKINAWA_INSET.x}
+        y={OKINAWA_INSET.y}
+        width={OKINAWA_INSET.w}
+        height={OKINAWA_INSET.h}
+        fill="none"
+        stroke="#d8cdf2"
+        strokeWidth="2"
+        strokeDasharray="5 4"
+        rx="10"
+      />
+      {PREF_LAYOUT.map((p) => {
+        const q = QUESTIONS_BY_NAME[p.name];
+        if (!q) return null;
+        const isFilled = filledSet.has(p.name);
+        const isNew = isFilled && justSet.has(p.name);
+        // centerX/centerY省略時は、そのシルエットの中心が座標(50,50)にある前提で計算する
+        const cx = p.centerX ?? 50;
+        const cy = p.centerY ?? 50;
+        const offsetX = cx * p.scale;
+        const offsetY = cy * p.scale;
+        const pathsToRender = p.onlyPaths ? p.onlyPaths.map((i) => q.paths[i]) : q.paths;
+        // 沖縄のように面積比に合わせて大きく拡大している都道府県だと、他と同じ「ローカル座標での
+        // 線の太さ」のままでは、拡大後の実際の線幅が図形自体より太くなってしまい、白い縁取りが
+        // 塗りつぶし部分をほぼ覆い隠して見えなくなってしまう。scale で割ることで、拡大率に関わらず
+        // 最終的な見た目の線の太さがそろうようにしている
+        const strokeW = (isFilled ? 1.4 : 1) / p.scale;
+        return (
+          <g key={p.name} transform={`translate(${p.x - offsetX}, ${p.y - offsetY}) scale(${p.scale})`}>
+            <g
+              className={isNew ? "pref-pop" : undefined}
+              style={{ transformBox: "fill-box", transformOrigin: "center" }}
+            >
+              {pathsToRender.map((d, i) => (
+                <path
+                  key={i}
+                  d={d}
+                  fill={isFilled ? "#06d6a0" : "#ece6f7"}
+                  stroke={isFilled ? "#ffffff" : "#c9bfe6"}
+                  strokeWidth={strokeW}
+                  style={{ transition: "fill 0.6s ease, stroke 0.6s ease" }}
+                />
+              ))}
+            </g>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -758,6 +902,13 @@ export default function SilhouetteQuiz() {
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
   const [feedback, setFeedback] = useState(null); // null | "correct" | "wrong"
+
+  // ---------- えんどれすモード（47問連続＋地図演出） ----------
+  const [isEndless, setIsEndless] = useState(false);
+  const [correctPrefectures, setCorrectPrefectures] = useState([]); // これまで正解した都道府県名（全体）
+  const [chunkNewlyCorrect, setChunkNewlyCorrect] = useState([]); // 直近のチェックポイント以降に正解した分
+  const [showMapCheckpoint, setShowMapCheckpoint] = useState(false);
+  const [checkpointJustUnlocked, setCheckpointJustUnlocked] = useState([]);
 
   const q = order.length ? QUESTIONS[order[step]] : null;
   const choices = useMemo(() => (q ? shuffle(q.choices) : []), [q]);
@@ -845,6 +996,7 @@ export default function SilhouetteQuiz() {
 
   function startQuiz(level) {
     setDifficulty(level);
+    setIsEndless(false);
     setOrder(shuffle([...Array(QUESTIONS.length).keys()]).slice(0, QUESTIONS_PER_QUIZ));
     setStep(0);
     setSelected(null);
@@ -852,6 +1004,28 @@ export default function SilhouetteQuiz() {
     setScore(0);
     setDone(false);
     setFeedback(null);
+    setCorrectPrefectures([]);
+    setChunkNewlyCorrect([]);
+    setShowMapCheckpoint(false);
+    setCheckpointJustUnlocked([]);
+    setScreen("quiz");
+  }
+
+  // えんどれすモード：47都道府県ぜんぶをランダムな順番で1回ずつ出題する
+  function startEndlessQuiz() {
+    setDifficulty("normal"); // かげがくるくる回る「むずかしい」は47問連続だと大変なので、えんどれすは常に通常表示
+    setIsEndless(true);
+    setOrder(shuffle([...Array(QUESTIONS.length).keys()]));
+    setStep(0);
+    setSelected(null);
+    setRevealed(false);
+    setScore(0);
+    setDone(false);
+    setFeedback(null);
+    setCorrectPrefectures([]);
+    setChunkNewlyCorrect([]);
+    setShowMapCheckpoint(false);
+    setCheckpointJustUnlocked([]);
     setScreen("quiz");
   }
 
@@ -860,23 +1034,58 @@ export default function SilhouetteQuiz() {
     const isCorrect = choice === q.kana;
     setSelected(choice);
     setRevealed(true);
-    if (isCorrect) setScore((s) => s + 1);
+    if (isCorrect) {
+      setScore((s) => s + 1);
+      setCorrectPrefectures((arr) => [...arr, q.name]);
+      setChunkNewlyCorrect((arr) => [...arr, q.name]);
+    }
     setFeedback(isCorrect ? "correct" : "wrong");
   }
 
-  function advance() {
-    setFeedback(null);
-    if (step + 1 >= order.length) {
-      setDone(true);
-      return;
-    }
+  function goToNextStep() {
     setStep((s) => s + 1);
     setSelected(null);
     setRevealed(false);
   }
 
+  function advance() {
+    setFeedback(null);
+    const answeredCount = step + 1;
+    if (answeredCount >= order.length) {
+      setDone(true);
+      return;
+    }
+    if (isEndless && answeredCount % ENDLESS_CHECKPOINT_INTERVAL === 0) {
+      setCheckpointJustUnlocked(chunkNewlyCorrect);
+      setChunkNewlyCorrect([]);
+      setShowMapCheckpoint(true);
+      return;
+    }
+    goToNextStep();
+  }
+
+  // 地図演出は数秒で自動的に次の問題へ進む。タップでも早送りできる
+  useEffect(() => {
+    if (!showMapCheckpoint) return;
+    const timer = setTimeout(() => {
+      setShowMapCheckpoint(false);
+      goToNextStep();
+    }, 2600);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showMapCheckpoint]);
+
+  function skipMapCheckpoint() {
+    setShowMapCheckpoint(false);
+    goToNextStep();
+  }
+
   function restart() {
-    startQuiz(difficulty);
+    if (isEndless) {
+      startEndlessQuiz();
+    } else {
+      startQuiz(difficulty);
+    }
   }
 
   function goHome() {
@@ -934,11 +1143,18 @@ export default function SilhouetteQuiz() {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
       }
+      @keyframes prefPop {
+        0% { opacity: 0; transform: scale(0.3); }
+        55% { opacity: 1; transform: scale(1.3); }
+        100% { transform: scale(1); }
+      }
+      .pref-pop { animation: prefPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1); }
       .bounce-btn:active { transform: scale(0.94); }
       .bounce-btn { transition: transform 0.12s ease; }
       .float-deco { animation: floaty 4s ease-in-out infinite; }
       @media (prefers-reduced-motion: reduce) {
         .float-deco, svg[aria-label="とどうふけんのかげ"] { animation: none !important; }
+        .pref-pop { animation: none !important; }
       }
     `}</style>
   );
@@ -1145,6 +1361,32 @@ export default function SilhouetteQuiz() {
           </button>
 
           <button
+            className="bounce-btn"
+            onClick={startEndlessQuiz}
+            style={{
+              display: "block",
+              width: "100%",
+              background: "#4cc9f0",
+              border: "none",
+              color: "#ffffff",
+              padding: "22px 20px",
+              borderRadius: 24,
+              fontSize: 22,
+              fontWeight: 800,
+              letterSpacing: "0.1em",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              marginBottom: 26,
+              boxShadow: "0 6px 0 #2f9bc4",
+            }}
+          >
+            ♾️ えんどれす
+            <div style={{ fontSize: 13, fontWeight: 700, marginTop: 6, opacity: 0.9 }}>
+              47と どうふけん ぜんぶに ちょうせん！
+            </div>
+          </button>
+
+          <button
             onClick={goHome}
             className="bounce-btn"
             style={{
@@ -1196,7 +1438,7 @@ export default function SilhouetteQuiz() {
               marginBottom: 10,
             }}
           >
-            {difficulty === "hard" ? "🌀 むずかしい" : "🙂 ふつう"}
+            {isEndless ? "♾️ えんどれす" : difficulty === "hard" ? "🌀 むずかしい" : "🙂 ふつう"}
           </div>
           <div style={{ fontSize: 52, marginBottom: 10 }}>
             {score === order.length ? "🏆" : score >= order.length * 0.6 ? "🎉" : "💪"}
@@ -1204,13 +1446,21 @@ export default function SilhouetteQuiz() {
           <div style={{ fontSize: 28, fontWeight: 800, color: "#4a3f6b", marginBottom: 10 }}>
             {score} / {order.length} もん せいかい！
           </div>
-          <div style={{ fontSize: 15, color: "#8b7fae", fontWeight: 700, marginBottom: 30 }}>
+          <div style={{ fontSize: 15, color: "#8b7fae", fontWeight: 700, marginBottom: isEndless ? 18 : 30 }}>
             {score === order.length
               ? "ぜんもん せいかい！すごいね！"
               : score >= order.length * 0.6
               ? "よくできたね！"
               : "つぎは がんばろう！"}
           </div>
+          {isEndless && (
+            <div style={{ marginBottom: 26 }}>
+              <JapanMapProgress filled={correctPrefectures} size={230} />
+              <div style={{ fontSize: 12, color: "#8b7fae", fontWeight: 700, marginTop: 8 }}>
+                できあがった にっぽんちず
+              </div>
+            </div>
+          )}
           <div
             style={{
               display: "flex",
@@ -1284,6 +1534,49 @@ export default function SilhouetteQuiz() {
     <div style={shellStyle}>
       {sharedStyleTag}
       <MuteButton />
+
+      {showMapCheckpoint && (
+        <div
+          onClick={skipMapCheckpoint}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 60,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(255,253,247,0.98)",
+            animation: "fadeIn 0.2s ease",
+            padding: "24px",
+            boxSizing: "border-box",
+            cursor: "pointer",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 22,
+              fontWeight: 800,
+              color: "#ff8fab",
+              marginBottom: 4,
+              animation: "popText 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
+              textAlign: "center",
+            }}
+          >
+            {step + 1}もん とうたつ！
+          </div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#8b7fae", marginBottom: 18, textAlign: "center" }}>
+            にっぽんちずが すこし うまってきたよ
+          </div>
+          <JapanMapProgress filled={correctPrefectures} justUnlocked={checkpointJustUnlocked} size={260} />
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#4a3f6b", marginTop: 18 }}>
+            ⭐️ せいかい {score}こ
+          </div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#b3a9d1", marginTop: 16 }}>
+            タップで つづきへ ▶
+          </div>
+        </div>
+      )}
 
       {feedback && (
         <div
@@ -1465,7 +1758,7 @@ export default function SilhouetteQuiz() {
           <div
             style={{
               color: "#ffffff",
-              background: difficulty === "hard" ? "#ff8fab" : "#06d6a0",
+              background: isEndless ? "#4cc9f0" : difficulty === "hard" ? "#ff8fab" : "#06d6a0",
               letterSpacing: "0.1em",
               fontSize: 12,
               fontWeight: 800,
@@ -1473,7 +1766,7 @@ export default function SilhouetteQuiz() {
               borderRadius: 999,
             }}
           >
-            {difficulty === "hard" ? "🌀 むずかしい" : "🙂 ふつう"}
+            {isEndless ? "♾️ えんどれす" : difficulty === "hard" ? "🌀 むずかしい" : "🙂 ふつう"}
           </div>
         </div>
 
