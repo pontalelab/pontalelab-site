@@ -1024,7 +1024,14 @@ export default function SilhouetteQuiz() {
   }
 
   function advance() {
+    const wasWrong = feedback === "wrong";
     setFeedback(null);
+    // えんどれすモードでは、まちがえた時点でそこまでの記録を持ってけっかがめんへ
+    // 進む（サバイバル方式）。のこりの問題には進まない
+    if (isEndless && wasWrong) {
+      setDone(true);
+      return;
+    }
     const answeredCount = step + 1;
     if (answeredCount >= order.length) {
       setDone(true);
@@ -1039,17 +1046,7 @@ export default function SilhouetteQuiz() {
     goToNextStep();
   }
 
-  // 地図演出は数秒で自動的に次の問題へ進む。タップでも早送りできる
-  useEffect(() => {
-    if (!showMapCheckpoint) return;
-    const timer = setTimeout(() => {
-      setShowMapCheckpoint(false);
-      goToNextStep();
-    }, 2600);
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showMapCheckpoint]);
-
+  // 地図演出はタップして次の問題へ進む（自動では進まない）
   function skipMapCheckpoint() {
     setShowMapCheckpoint(false);
     goToNextStep();
@@ -1357,7 +1354,7 @@ export default function SilhouetteQuiz() {
           >
             ♾️ えんどれす
             <div style={{ fontSize: 13, fontWeight: 700, marginTop: 6, opacity: 0.9 }}>
-              47と どうふけん ぜんぶに ちょうせん！
+              47と どうふけん ぜんぶに ちょうせん！まちがえたら そこまで
             </div>
           </button>
 
