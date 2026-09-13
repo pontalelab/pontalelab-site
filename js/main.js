@@ -145,6 +145,11 @@ const i18n = {
     "parents-page:p6":    "ぜひ、お子さんと一緒に遊んでみてください。",
     "parents-page:gamesLink":   "ゲーム一覧を見る →",
     "parents-page:supportLink": "ぽんたーれらぼを応援する →",
+    "parents-page:h2-credit":   "🗾 ゲームの地図データについて",
+    "parents-page:pCredit1":    "「けんけんちず」など、地図を使うゲームでは、以下のデータを加工して地図を作成しています。",
+    "parents-page:pCredit2":    "地図データ：Geolonia「都道府県データ」／ 国土交通省「国土数値情報（行政区域データ）」を加工して作成",
+    "parents-page:creditLinkGeolonia": "→ Geoloniaのデータページ",
+    "parents-page:creditLinkMlit":     "→ 国土交通省 国土数値情報",
 
     /* --- Support Page --- */
     "meta:title:support": "ぽんたーれらぼを応援する | Pontalelab",
@@ -324,6 +329,11 @@ const i18n = {
     "parents-page:p6":    "We hope you'll enjoy it together with your child.",
     "parents-page:gamesLink":   "See all games →",
     "parents-page:supportLink": "Support Pontalelab →",
+    "parents-page:h2-credit":   "🗾 About Our Map Data",
+    "parents-page:pCredit1":    "For map-based games such as Kenkenchizu, we create our maps by processing the following data.",
+    "parents-page:pCredit2":    "Map data: created by processing Geolonia's \"Prefecture Data\" and the Ministry of Land, Infrastructure, Transport and Tourism's \"National Land Numerical Information (Administrative Area Data).\"",
+    "parents-page:creditLinkGeolonia": "→ Geolonia's data page",
+    "parents-page:creditLinkMlit":     "→ MLIT National Land Numerical Information",
 
     /* --- Support Page --- */
     "meta:title:support": "Support Pontalelab | Pontalelab",
