@@ -60,13 +60,7 @@ const i18n = {
 
     /* --- Research Log --- */
     "log:heading": "研究記録",
-    "log1:date":  "2026年05月20日",
-    "log1:title": "むしたん v1.0 公開",
-    "log1:text":  "虫の図鑑収集ゲームの初版をリリースしました。10種類の虫を探して集めよう！",
-    "log2:date":  "2026年04月15日",
-    "log2:title": "まぜまぜ研究室 ベータ版",
-    "log2:text":  "素材を組み合わせる実験ゲームのベータ版を公開。新しい発見があるかも？",
-    "log3:date":  "2026年04月01日",
+    "log3:date":  "2026年09月19日",
     "log3:title": "Pontalelab オープン！",
     "log3:text":  "親子向けデジタル研究所「Pontalelab」をオープンしました。これからもいろんなゲームを追加していきます！",
 
@@ -244,13 +238,7 @@ const i18n = {
 
     /* --- Research Log --- */
     "log:heading": "Research Log",
-    "log1:date":  "May 20, 2026",
-    "log1:title": "Mushitan v1.0 Released",
-    "log1:text":  "The first version of Bug Hunt is live! Search and collect 10 different insects.",
-    "log2:date":  "April 15, 2026",
-    "log2:title": "Mix Mix Lab Beta",
-    "log2:text":  "Beta release of our material-combining experiment game. What will you discover?",
-    "log3:date":  "April 1, 2026",
+    "log3:date":  "September 19, 2026",
     "log3:title": "Pontalelab is Open!",
     "log3:text":  "Welcome to Pontalelab, a digital lab for families! We'll keep adding new games.",
 
