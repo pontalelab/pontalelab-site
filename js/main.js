@@ -60,7 +60,7 @@ const i18n = {
 
     /* --- Research Log --- */
     "log:heading": "研究記録",
-    "log3:date":  "2026年09月19日",
+    "log3:date":  "2026年11月14日",
     "log3:title": "Pontalelab オープン！",
     "log3:text":  "親子向けデジタル研究所「Pontalelab」をオープンしました。これからもいろんなゲームを追加していきます！",
 
@@ -238,7 +238,7 @@ const i18n = {
 
     /* --- Research Log --- */
     "log:heading": "Research Log",
-    "log3:date":  "September 19, 2026",
+    "log3:date":  "November 14, 2026",
     "log3:title": "Pontalelab is Open!",
     "log3:text":  "Welcome to Pontalelab, a digital lab for families! We'll keep adding new games.",
 
