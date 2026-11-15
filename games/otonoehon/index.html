@@ -296,6 +296,8 @@
   }
   .template-card:hover{ border-color:var(--leaf-dark); }
   .template-emoji{ font-size:28px; }
+  .char-img{ width:1.25em; height:1.25em; object-fit:contain; vertical-align:middle; display:inline-block; }
+  .template-emoji .char-img{ width:44px; height:44px; }
   .template-title{ font-weight:700; color:var(--leaf-dark); font-size:15px; }
   .template-desc{ font-size:12px; color:var(--ink-soft); }
 
@@ -316,7 +318,7 @@
 <!-- ① タイトル画面 -->
 <div class="screen" id="screen-title">
   <div class="book-cover">
-    <div class="book-cover-emoji">🌿📖🐝</div>
+    <div class="book-cover-emoji">🌿📖<img class="char-img" src="hachi.png" alt="はち"></div>
     <h1>おとの えほん</h1>
     <div class="sub">さわると、おとが なるよ</div>
     <button id="start-btn" class="primary big"><span class="icon">▶</span>はじめる</button>
@@ -334,12 +336,12 @@
   <h1 style="font-size:18px;">どうやってあそぶ？</h1>
   <div class="template-list">
     <button class="template-card" id="pick-mode-saru">
-      <span class="template-emoji">🐒</span>
+      <span class="template-emoji"><img class="char-img" src="saru.png" alt="さる"></span>
       <span class="template-title">さるの ブランコ</span>
       <span class="template-desc">ふえは もう なっているよ。さるを うごかしてみよう</span>
     </button>
     <button class="template-card" id="pick-mode-hachi">
-      <span class="template-emoji">🐝</span>
+      <span class="template-emoji"><img class="char-img" src="hachi.png" alt="はち"></span>
       <span class="template-title">はちの ふえ</span>
       <span class="template-desc">さるは もう いるよ。はなを なぞって みよう</span>
     </button>
@@ -357,7 +359,7 @@
   <h1 style="font-size:18px;">きょくを えらぼう</h1>
   <div class="template-list">
     <button class="template-card" id="pick-song-bunbunbun">
-      <span class="template-emoji">🐝</span>
+      <span class="template-emoji"><img class="char-img" src="hachi.png" alt="はち"></span>
       <span class="template-title">ぶんぶんぶん</span>
     </button>
     <button class="template-card" id="pick-song-shabondama">
@@ -403,6 +405,21 @@
 (() => {
   const canvas = document.getElementById('cv');
   const ctx = canvas.getContext('2d');
+
+  // キャラクター画像（読み込み前・失敗時は絵文字で描画）
+  function loadCharImg(src){
+    const img = new Image();
+    img.onload = () => { try{ draw(); }catch(e){} };
+    img.src = src;
+    return img;
+  }
+  const SARU_IMG = loadCharImg('saru.png');
+  const HACHI_IMG = loadCharImg('hachi.png');
+  function drawCharImg(img, size){
+    if(!img.complete || !img.naturalWidth) return false;
+    ctx.drawImage(img, -size/2, -size/2, size, size);
+    return true;
+  }
   const statusEl = document.getElementById('status');
   const playBtn = document.getElementById('play-btn');
   const toolPendulumBtn = document.getElementById('tool-pendulum');
@@ -1026,13 +1043,15 @@
         ctx.shadowBlur = 16 * glow;
       }
       const fontSize = 26 + glow * 8;
-      ctx.font = `${fontSize}px sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
       ctx.save();
       ctx.translate(ex2, ey2);
-      ctx.scale(-1, 1); // 左右反転
-      ctx.fillText('🐒', 0, 0);
+      if(!drawCharImg(SARU_IMG, fontSize * 1.5)){
+        ctx.font = `${fontSize}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.scale(-1, 1); // 左右反転
+        ctx.fillText('🐒', 0, 0);
+      }
       ctx.restore();
       ctx.shadowBlur = 0;
     } else {
@@ -1076,8 +1095,10 @@
       ctx.font = `${active ? 22 : 18}px sans-serif`;
       ctx.save();
       ctx.translate(bx, by);
-      ctx.scale(-1, 1); // 左右反転
-      ctx.fillText('🐝', 0, 0);
+      ctx.scale(-1, 1); // 左右反転（進行方向＝右を向く）
+      if(!drawCharImg(HACHI_IMG, (active ? 22 : 18) * 1.6)){
+        ctx.fillText('🐝', 0, 0);
+      }
       ctx.restore();
       ctx.shadowBlur = 0;
     }
