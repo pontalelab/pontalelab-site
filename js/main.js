@@ -15,6 +15,7 @@ const i18n = {
     "meta:title:games":   "ゲーム一覧 | Pontalelab",
     "meta:title:about":   "Pontalelabについて",
     "meta:title:privacy": "プライバシーポリシー | Pontalelab",
+    "meta:title:terms":   "利用規約 | Pontalelab",
     "meta:title:contact": "お問い合わせ | Pontalelab",
 
     /* --- Header / Nav --- */
@@ -77,6 +78,7 @@ const i18n = {
     "cta:parentsLink": "おうちの人へ →",
     "footer:about":   "Pontalelabについて",
     "footer:privacy": "プライバシーポリシー",
+    "footer:terms":   "利用規約",
     "footer:contact": "お問い合わせ",
     "footer:copy":    "© 2026 Pontalelab",
 
@@ -172,6 +174,8 @@ const i18n = {
     /* --- Privacy Page --- */
     "privacy:h1":   "プライバシーポリシー",
     "privacy:lead": "Pontalelabにおける個人情報の取り扱いについて説明します。",
+    "terms:h1":     "利用規約",
+    "terms:lead":   "Pontalelabをご利用いただくにあたってのお約束です。",
 
     /* --- Contact Page --- */
     "contact:h1":           "お問い合わせ",
@@ -197,6 +201,7 @@ const i18n = {
     "meta:title:games":   "Games | Pontalelab",
     "meta:title:about":   "About | Pontalelab",
     "meta:title:privacy": "Privacy Policy | Pontalelab",
+    "meta:title:terms":   "Terms of Use | Pontalelab",
     "meta:title:contact": "Contact | Pontalelab",
 
     /* --- Header / Nav --- */
@@ -259,6 +264,7 @@ const i18n = {
     "cta:parentsLink": "For Parents →",
     "footer:about":   "About",
     "footer:privacy": "Privacy Policy",
+    "footer:terms":   "Terms of Use",
     "footer:contact": "Contact",
     "footer:copy":    "© 2026 Pontalelab",
 
@@ -354,6 +360,8 @@ const i18n = {
     /* --- Privacy Page --- */
     "privacy:h1":   "Privacy Policy",
     "privacy:lead": "How Pontalelab handles information about our visitors.",
+    "terms:h1":     "Terms of Use",
+    "terms:lead":   "The terms for using Pontalelab. (The full text below is in Japanese.)",
 
     /* --- Contact Page --- */
     "contact:h1":           "Contact Us",

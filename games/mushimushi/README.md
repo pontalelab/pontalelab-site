@@ -46,3 +46,7 @@ npm run build
 ```
 
 CIが正常に動いていれば、通常この作業は不要です。
+
+## BGM
+
+`public/bgm/` の3曲（`grass_day.mp3`・`forest_evening.mp3`・`night_field.mp3`）は、株式会社VSQが運営する VSQ plus+（https://vsq.co.jp/plus/ ）のフリー音源です。利用規約（https://vsq.co.jp/plus/tos/ ）では、ゲームでの商用利用が可能で、クレジット表記は任意です。音源ファイルを元の状態のまま単体で配布・再配信することは禁止されています。サイトの利用規約ページ（`terms/index.html`）の「使用している素材について」にも記載しています。
