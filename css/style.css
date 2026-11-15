@@ -1076,3 +1076,4 @@ body[data-page="games"] .game-card-age { white-space: nowrap; font-size: clamp(0
   body[data-page="games"] .btn-disabled { height: 38px; font-size: 0.9rem; }
 }
 .game-card-thumb img { object-position: center top; }
+body[data-page="games"] .game-card-desc { flex: none; max-height: calc(2 * 1.45em); }
