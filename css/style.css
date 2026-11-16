@@ -1078,3 +1078,11 @@ body[data-page="games"] .game-card-age { white-space: nowrap; font-size: clamp(0
 .game-card-thumb img { object-position: center top; }
 body[data-page="games"] .game-card-desc { flex: none; max-height: calc(2 * 1.45em); }
 .game-card-thumb img { position: absolute; inset: 0; }
+
+/* Top page featured card: same thumbnail as the games list */
+.game-card .game-card-thumb {
+  border-radius: 16px;
+  margin-bottom: 0;
+  box-shadow: var(--shadow-sm);
+}
+.game-card .game-card-thumb:hover img { transform: scale(1.04); }

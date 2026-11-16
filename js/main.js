@@ -85,7 +85,7 @@ const i18n = {
     /* --- Games Page --- */
     "games:heading": "ゲーム一覧",
     "games:desc":    "親子で楽しめる無料ブラウザゲーム",
-    "game4:name":    "うみのひらがな",
+    "game4:name":    "おさかなひらがな",
     "game4:desc":    "海の生き物と一緒にひらがなを学ぼう",
     "game4:btn":     "遊ぶ →",
     "game4:age":     "対象年齢の目安：4〜7歳",
@@ -271,7 +271,7 @@ const i18n = {
     /* --- Games Page --- */
     "games:heading": "Games",
     "games:desc":    "Free browser games for the whole family",
-    "game4:name":    "Umi no Hiragana",
+    "game4:name":    "Osakana Hiragana",
     "game4:desc":    "Learn hiragana with ocean creatures!",
     "game4:btn":     "Play →",
     "game4:age":     "Recommended age: 4–7",

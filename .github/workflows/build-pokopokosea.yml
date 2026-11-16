@@ -1,4 +1,4 @@
-name: Build pokopokosea (うみのひらがな)
+name: Build pokopokosea (おさかなひらがな)
 
 on:
   push:
@@ -86,6 +86,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "変更なし。コミットをスキップします。"
           else
-            git commit -m "chore: うみのひらがなを自動ビルド・デプロイ"
+            git commit -m "chore: おさかなひらがなを自動ビルド・デプロイ"
             git push
           fi

@@ -26,7 +26,7 @@ manifest.json    PWA用マニフェスト
 | 表示名 | フォルダ | ステータス | 技術構成 |
 |---|---|---|---|
 | むしたん | `games/mushimushi/` | 公開中（GitHub Actionsで自動ビルド） | Vite + React + TypeScript + Zustand |
-| うみのひらがな | `games/pokopokosea/` | 公開中（手動ビルド。むしたんと同じCI化が未着手） | Vite + React + TypeScript |
+| おさかなひらがな | `games/pokopokosea/` | 公開中（手動ビルド。むしたんと同じCI化が未着手） | Vite + React + TypeScript |
 | あみあみうみ | `games/fishinggame/` | 公開中 | 素のJS/CSS（ビルド不要） |
 | けんけんちず | `games/kenkenchizu/` | 公開中・47都道府県すべて実装（GitHub Actionsで自動ビルド） | Vite + React |
 | まぜまぜ研究室 | `games/mazemaze/` | 実装あり・`games/index.html`未リンク（開発中扱い） | 素のJS/CSS（ビルド不要） |
@@ -34,7 +34,7 @@ manifest.json    PWA用マニフェスト
 
 昆虫図鑑（`/zukan/mushi/`）は`tools/zukan-build/`のNode.jsスクリプトで生成する静的ページです。
 
-> **フォルダ名と表示名が一致しないゲームがあります。** 例えば `games/pokopokosea/` は現在「うみのひらがな」として公開されています。ゲームを探すときは `games/index.html` 内の `href` で実際のリンク先を確認してください。
+> **フォルダ名と表示名が一致しないゲームがあります。** 例えば `games/pokopokosea/` は現在「おさかなひらがな」として公開されています。ゲームを探すときは `games/index.html` 内の `href` で実際のリンク先を確認してください。
 
 ## ローカルでの開発
 
@@ -48,7 +48,7 @@ npm run dev            # 開発サーバー起動
 
 `src/`・`index.dev.html`等を変更して`main`にpushすると、GitHub Actionsが自動的にビルドして配信ディレクトリへ反映します（詳細は各ゲームのREADME.mdを参照）。手元で`npm run build`やビルド成果物のコミットをする必要はありません。
 
-### Vite製・手動ビルドのゲーム（うみのひらがな）
+### Vite製・手動ビルドのゲーム（おさかなひらがな）
 
 ```bash
 cd games/pokopokosea
