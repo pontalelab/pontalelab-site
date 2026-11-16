@@ -1086,3 +1086,11 @@ body[data-page="games"] .game-card-desc { flex: none; max-height: calc(2 * 1.45e
   box-shadow: var(--shadow-sm);
 }
 .game-card .game-card-thumb:hover img { transform: scale(1.04); }
+/* Featured cards: keep the play buttons aligned even when a card has an extra link below */
+.sect-featured .game-card { position: relative; padding-bottom: calc(clamp(24px, 4vw, 40px) + 34px); }
+.sect-featured .game-card .btn-play ~ a {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: clamp(18px, 3vw, 30px);
+  margin-top: 0 !important;
+}
