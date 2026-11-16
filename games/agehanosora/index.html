@@ -148,7 +148,7 @@ html,body{height:100%;overflow:hidden;background:var(--sky);color:var(--ink);fon
   <i class="artsharp"></i>
   <div class="logo">
     <span class="sub">アゲハの</span>
-    <h1 class="main">そらレース</h1>
+    <h1 class="main">そら</h1>
   </div>
   <p class="tapgo" id="toSelect">タップして スタート</p>
   <p class="bestline" id="bestline" hidden></p>
@@ -239,6 +239,9 @@ html,body{height:100%;overflow:hidden;background:var(--sky);color:var(--ink);fon
 .titlescr:focus-visible{outline:4px solid #ffd23f;outline-offset:-8px}
 .bestline{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 1.5vh);margin:0;text-align:center;font-weight:900;font-size:13px;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.45)}
 .card h1.selh{font-size:24px;margin-bottom:4px}
+/* bigger title logo */
+.logo .sub{font-size:clamp(34px,min(12vw,7vh),68px);margin-bottom:-2px}
+.logo .main{font-size:clamp(88px,min(34vw,20vh),190px);line-height:1}
 /* mode tabs + duel HUD */
 .modes{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:-8px 0 10px;padding:4px;border-radius:16px;background:#dcecfb}
 .md{appearance:none;border:0;border-radius:12px;padding:9px 4px;font-family:var(--body);font-weight:900;font-size:14px;color:#4b7aa6;background:transparent;cursor:pointer;white-space:nowrap}
