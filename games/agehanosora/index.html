@@ -668,8 +668,24 @@ function drawTape(T,hy){const x=T.x,top=H*.26,bot=H*.84,w=9*S,seg=18*S;
   const cs=bh/4;for(let r=0;r<4;r++)for(let c=0;c<2;c++){ctx.fillStyle=(r+c)%2?'#1d2433':'#fff';ctx.fillRect(x-bw/2+6*S+c*cs,by+r*cs,cs,cs);ctx.fillRect(x+bw/2-6*S-(c+1)*cs,by+r*cs,cs,cs)}
   ctx.font=`400 ${Math.round(22*S)}px "Dela Gothic One","M PLUS Rounded 1c",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#f0531f';ctx.fillText('ゴール',x,by+bh/2+1);ctx.textBaseline='alphabetic'}
 $('slow').onclick=()=>{st.slow=!st.slow;$('slow').classList.toggle('on',st.slow)};
-$('pause').onclick=()=>{st.paused=!st.paused;$('pause').classList.toggle('on',st.paused);$('pause').querySelector('span').textContent=st.paused?'さいかい':'ていし'};
-$('snd').onclick=()=>{st.sound=!st.sound;$('snd').classList.toggle('on',!st.sound)};
+$('pause').onclick=()=>{st.paused=!st.paused;$('pause').classList.toggle('on',st.paused);$('pause').querySelector('span').textContent=st.paused?'さいかい':'ていし';bgmSync()};
+$('snd').onclick=()=>{st.sound=!st.sound;$('snd').classList.toggle('on',!st.sound);bgmSync()};
+/* BGM: obfuscated AAC (bgm.dat) decoded into Web Audio; starts on the first touch, follows おと / ていし / tab visibility */
+let bgmBuf=null,bgmSrc=null,bgmGain=null,bgmAt=0,bgmPos=0,bgmOK=false,bgmLS=0,bgmLE=0;
+const bgmRaw=fetch('bgm.dat').then(r=>r.ok?r.arrayBuffer():null).catch(()=>null);
+function bgmDecode(b){const u=new Uint8Array(b),o=new Uint8Array(u.length-4);for(let i=0;i<o.length;i++)o[i]=u[i+4]^((i*31+90)&255);return o.buffer}
+function bgmSync(){if(!bgmOK||!bgmBuf)return;const a=audio,on=st.sound&&!st.paused&&!document.hidden;
+  if(on){if(a.state!=='running')a.resume().catch(()=>{});if(!bgmSrc){const s=a.createBufferSource();s.buffer=bgmBuf;s.loop=true;s.loopStart=bgmLS;s.loopEnd=bgmLE;s.connect(bgmGain);
+    const off=Math.max(bgmLS,bgmPos);s.start(0,off);bgmAt=a.currentTime-off;bgmSrc=s}}
+  else if(bgmSrc){const t=a.currentTime-bgmAt,len=bgmLE-bgmLS;bgmPos=t<bgmLE?t:bgmLS+((t-bgmLS)%len);try{bgmSrc.stop()}catch(e){}bgmSrc.disconnect();bgmSrc=null}}
+function bgmUnlock(){if(bgmOK)return;bgmOK=true;try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();if(audio.state!=='running')audio.resume().catch(()=>{});
+  bgmGain=audio.createGain();bgmGain.gain.value=.4;bgmGain.connect(audio.destination)}catch(e){return}
+  bgmRaw.then(b=>b&&new Promise((res,rej)=>audio.decodeAudioData(bgmDecode(b),res,rej))).then(buf=>{if(!buf)return;
+    /* trim encoder padding so the loop is seamless */
+    const d=buf.getChannelData(0),th=1e-3;let i=0,j=d.length-1;while(i<j&&Math.abs(d[i])<th)i++;while(j>i&&Math.abs(d[j])<th)j--;
+    bgmLS=i/buf.sampleRate;bgmLE=(j+1)/buf.sampleRate;bgmPos=bgmLS;bgmBuf=buf;bgmSync()}).catch(()=>{})}
+['pointerdown','touchstart','keydown'].forEach(e=>addEventListener(e,bgmUnlock,{once:true,capture:true,passive:true}));
+document.addEventListener('visibilitychange',bgmSync);
 
 /* ---------- LOOP ---------- */
 let last=performance.now();
