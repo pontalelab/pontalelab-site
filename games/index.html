@@ -32,26 +32,15 @@
         "position": 2,
         "item": {
           "@type": "Game",
-          "name": "おさかなひらがな",
-          "description": "海の生き物と一緒にひらがなを学ぼう",
-          "url": "https://pontalelab.com/games/pokopokosea/",
-          "audience": { "@type": "PeopleAudience", "suggestedMinAge": 4, "suggestedMaxAge": 7 }
+          "name": "アゲハのそら",
+          "description": "アゲハチョウになって空のレースで1位をめざそう",
+          "url": "https://pontalelab.com/games/agehanosora/",
+          "audience": { "@type": "PeopleAudience", "suggestedMinAge": 4, "suggestedMaxAge": 8 }
         }
       },
       {
         "@type": "ListItem",
         "position": 3,
-        "item": {
-          "@type": "Game",
-          "name": "あみあみうみ",
-          "description": "あみで魚をすくって図鑑を集めよう",
-          "url": "https://pontalelab.com/games/fishinggame/",
-          "audience": { "@type": "PeopleAudience", "suggestedMinAge": 3, "suggestedMaxAge": 6 }
-        }
-      },
-      {
-        "@type": "ListItem",
-        "position": 4,
         "item": {
           "@type": "Game",
           "name": "けんけんちず",
@@ -62,7 +51,29 @@
       },
       {
         "@type": "ListItem",
+        "position": 4,
+        "item": {
+          "@type": "Game",
+          "name": "おさかなひらがな",
+          "description": "海の生き物と一緒にひらがなを学ぼう",
+          "url": "https://pontalelab.com/games/pokopokosea/",
+          "audience": { "@type": "PeopleAudience", "suggestedMinAge": 4, "suggestedMaxAge": 7 }
+        }
+      },
+      {
+        "@type": "ListItem",
         "position": 5,
+        "item": {
+          "@type": "Game",
+          "name": "あみあみうみ",
+          "description": "あみで魚をすくって図鑑を集めよう",
+          "url": "https://pontalelab.com/games/fishinggame/",
+          "audience": { "@type": "PeopleAudience", "suggestedMinAge": 3, "suggestedMaxAge": 6 }
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 6,
         "item": {
           "@type": "Game",
           "name": "おとのえほん",
@@ -73,24 +84,13 @@
       },
       {
         "@type": "ListItem",
-        "position": 6,
+        "position": 7,
         "item": {
           "@type": "Game",
           "name": "おさるのたいこ",
           "description": "おさるといっしょにたいこを叩いてリズム遊びを楽しもう",
           "url": "https://pontalelab.com/games/osarunotaiko/",
           "audience": { "@type": "PeopleAudience", "suggestedMinAge": 2, "suggestedMaxAge": 6 }
-        }
-      },
-      {
-        "@type": "ListItem",
-        "position": 7,
-        "item": {
-          "@type": "Game",
-          "name": "アゲハのそら",
-          "description": "アゲハチョウになって空のレースで1位をめざそう",
-          "url": "https://pontalelab.com/games/agehanosora/",
-          "audience": { "@type": "PeopleAudience", "suggestedMinAge": 4, "suggestedMaxAge": 8 }
         }
       }
     ]
@@ -137,7 +137,6 @@
     <section class="sect-games" aria-label="ゲーム一覧">
       <div class="inner">
         <div class="games-grid">
-
           <!-- むしたん -->
           <article class="game-card-full">
             <div class="game-card-thumb has-img">
@@ -150,6 +149,32 @@
             <p  class="game-card-age"   data-i18n="game2:age">対象年齢の目安：3〜6歳</p>
             <a href="mushimushi/" class="btn-play" data-i18n="game2:btn">遊ぶ →</a>
             <a href="../zukan/mushi/" style="display:block;text-align:center;margin-top:10px;font-size:0.85rem;color:var(--forest-dk);" data-i18n="game2:zukanLink">図鑑で虫をもっと知る →</a>
+          </article>
+
+          <!-- アゲハのそら -->
+          <article class="game-card-full">
+            <div class="game-card-thumb has-img">
+              <img src="thumbs/agehanosora.webp" alt="" width="720" height="540" loading="lazy" decoding="async" style="object-position:center bottom">
+            </div>
+            <h2 class="game-card-title" data-i18n="game9:name">アゲハのそら</h2>
+            <p  class="game-card-desc"  data-i18n="game9:desc">
+              アゲハチョウになって空のレースで1位をめざそう
+            </p>
+            <p  class="game-card-age"   data-i18n="game9:age">対象年齢の目安：4〜8歳</p>
+            <a href="agehanosora/" class="btn-play" data-i18n="game9:btn">遊ぶ →</a>
+          </article>
+
+          <!-- けんけんちず -->
+          <article class="game-card-full">
+            <div class="game-card-thumb has-img">
+              <img src="thumbs/kenkenchizu.webp" alt="" width="720" height="540" loading="lazy" decoding="async">
+            </div>
+            <h2 class="game-card-title" data-i18n="game6:name">けんけんちず</h2>
+            <p  class="game-card-desc"  data-i18n="game6:desc">
+              シルエットを見てどこの県か当てよう
+            </p>
+            <p  class="game-card-age"   data-i18n="game6:age">対象年齢の目安：4〜8歳</p>
+            <a href="kenkenchizu/" class="btn-play" data-i18n="game6:btn">遊ぶ →</a>
           </article>
 
           <!-- おさかなひらがな -->
@@ -178,19 +203,6 @@
             <a href="fishinggame/" class="btn-play" data-i18n="game5:btn">遊ぶ →</a>
           </article>
 
-          <!-- けんけんちず -->
-          <article class="game-card-full">
-            <div class="game-card-thumb has-img">
-              <img src="thumbs/kenkenchizu.webp" alt="" width="720" height="540" loading="lazy" decoding="async">
-            </div>
-            <h2 class="game-card-title" data-i18n="game6:name">けんけんちず</h2>
-            <p  class="game-card-desc"  data-i18n="game6:desc">
-              シルエットを見てどこの県か当てよう
-            </p>
-            <p  class="game-card-age"   data-i18n="game6:age">対象年齢の目安：4〜8歳</p>
-            <a href="kenkenchizu/" class="btn-play" data-i18n="game6:btn">遊ぶ →</a>
-          </article>
-
           <!-- おとのえほん -->
           <article class="game-card-full">
             <div class="game-card-thumb has-img">
@@ -215,19 +227,6 @@
             </p>
             <p  class="game-card-age"   data-i18n="game8:age">対象年齢の目安：2〜6歳</p>
             <a href="osarunotaiko/" class="btn-play" data-i18n="game8:btn">遊ぶ →</a>
-          </article>
-
-          <!-- アゲハのそら -->
-          <article class="game-card-full">
-            <div class="game-card-thumb has-img">
-              <img src="thumbs/agehanosora.webp" alt="" width="720" height="540" loading="lazy" decoding="async" style="object-position:center bottom">
-            </div>
-            <h2 class="game-card-title" data-i18n="game9:name">アゲハのそら</h2>
-            <p  class="game-card-desc"  data-i18n="game9:desc">
-              アゲハチョウになって空のレースで1位をめざそう
-            </p>
-            <p  class="game-card-age"   data-i18n="game9:age">対象年齢の目安：4〜8歳</p>
-            <a href="agehanosora/" class="btn-play" data-i18n="game9:btn">遊ぶ →</a>
           </article>
 
           <!-- ポコポコ楽団 (開発中) -->
