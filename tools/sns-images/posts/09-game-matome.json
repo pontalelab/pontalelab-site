@@ -1,0 +1,29 @@
+{
+  "theme": "forest",
+  "slides": [
+    {
+      "type": "cover",
+      "eyebrow": "保存して使える",
+      "title": "無料で遊べる\n**知育ゲーム7本**\nまとめ",
+      "sub": "アプリ不要・登録なし・広告なし",
+      "collage": ["/games/thumbs/kenkenchizu.webp", "/games/thumbs/osarunotaiko.webp", "/games/thumbs/fishinggame.webp"]
+    },
+    { "type": "game", "index": "01 / 07", "thumb": "/games/thumbs/mushimushi.webp", "name": "むしたん", "age": "3〜6歳", "desc": "草むらや木にかくれた虫を探して、\n図鑑を集めよう" },
+    { "type": "game", "index": "02 / 07", "thumb": "/games/thumbs/pokopokosea.webp", "name": "おさかなひらがな", "age": "4〜7歳", "desc": "海の生き物といっしょに、\nひらがなを学ぼう" },
+    { "type": "game", "index": "03 / 07", "thumb": "/games/thumbs/fishinggame.webp", "name": "あみあみうみ", "age": "3〜6歳", "desc": "あみで魚をすくって、\n図鑑を集めよう" },
+    { "type": "game", "index": "04 / 07", "thumb": "/games/thumbs/kenkenchizu.webp", "name": "けんけんちず", "age": "4〜8歳", "desc": "シルエットを見て、\nどこの県か当てよう" },
+    { "type": "game", "index": "05 / 07", "thumb": "/games/thumbs/otonoehon.webp", "name": "おとのえほん", "age": "3〜8歳", "desc": "ふりこや笛を置いて、\n自分だけの音楽を鳴らそう" },
+    { "type": "game", "index": "06 / 07", "thumb": "/games/thumbs/osarunotaiko.webp", "name": "おさるのたいこ", "age": "2〜6歳", "desc": "おさるといっしょにたいこをたたいて、\nリズム遊び" },
+    { "type": "game", "index": "07 / 07", "thumb": "/games/thumbs/agehanosora.webp", "name": "アゲハのそら", "age": "4〜8歳", "desc": "アゲハチョウになって、\n空のレースで1位をめざそう" },
+    {
+      "type": "cta",
+      "icon": "game",
+      "eyebrow": "冬休みのおうち時間に",
+      "heading": "スマホやタブレットで\nすぐ遊べます",
+      "badges": ["無料", "登録なし", "広告なし", "課金なし"],
+      "button": "プロフィールのリンクから",
+      "url": "pontalelab.com"
+    }
+  ],
+  "caption": "保存しておくと便利です📌\nぽんたーれらぼで遊べるゲーム7本まとめ\n\n🐛 むしたん（3〜6歳）虫を探して図鑑を集める\n🐟 おさかなひらがな（4〜7歳）海の生き物とひらがなを学ぶ\n🎣 あみあみうみ（3〜6歳）あみで魚をすくって図鑑を集める\n🗾 けんけんちず（4〜8歳）シルエットで都道府県を当てる\n🎵 おとのえほん（3〜8歳）ふりこや笛で音楽を作る\n🐒 おさるのたいこ（2〜6歳）たいこでリズム遊び\n🦋 アゲハのそら（4〜8歳）アゲハチョウになって空のレース\n\nぜんぶ無料で、アプリのインストールも会員登録もいりません。\nスマホやタブレットのブラウザで、すぐに遊べます。\n\n冬休みのおうち時間や、ちょっとした待ち時間にもどうぞ。\n\n▶ プロフィールのリンクから\n\n#知育ゲーム #無料ゲーム #冬休み #おうち遊び #親子で遊ぶ"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "pontalelab-sns-images",
+  "private": true,
+  "description": "Instagram用の投稿画像（1080x1350）を自動生成するツール",
+  "scripts": {
+    "build": "node generate.js"
+  },
+  "dependencies": {
+    "@fontsource/m-plus-rounded-1c": "^5.2.5",
+    "@fontsource/zen-maru-gothic": "^5.2.5"
+  },
+  "optionalDependencies": {
+    "playwright": "^1.48.0"
+  }
+}
