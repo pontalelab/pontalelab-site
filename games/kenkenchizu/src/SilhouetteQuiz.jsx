@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
+import { loadAudioUrl } from "./obfuscatedAudio";
 
 // 実際の地理データ(GeoJSON)を簡略化して生成した都道府県シルエットです
 const QUESTIONS = [
@@ -863,7 +864,7 @@ const CANDY = ["#ff8fab", "#ffd166", "#06d6a0", "#4cc9f0"];
 const FLOATERS = ["⭐️", "🌈", "🎈", "✨", "🍭", "🦄"];
 
 // ---------- BGM ----------
-const BGM_URL = `${import.meta.env.BASE_URL}bgm/theme.mp3`;
+const BGM_URL = `${import.meta.env.BASE_URL}bgm/theme.dat`;
 const BGM_VOLUME = 0.35;
 const BGM_MUTE_KEY = "kenkenchizu-bgm-muted";
 
@@ -901,14 +902,32 @@ export default function SilhouetteQuiz() {
   // モバイルの自動再生制限があるため、ユーザーの最初のタップ（「はじめる」ボタン）で再生を開始する
   function startBgm() {
     if (!audioRef.current) {
-      const audio = new Audio(BGM_URL);
+      const audio = new Audio();
       audio.loop = true;
       audio.volume = BGM_VOLUME;
       audio.muted = muted;
       audioRef.current = audio;
+      loadAudioUrl(BGM_URL)
+        .then((src) => {
+          audio.src = src;
+          if (!document.hidden) audio.play().catch(() => {});
+        })
+        .catch(() => {});
+      return;
     }
-    audioRef.current.play().catch(() => {});
+    if (audioRef.current.src) audioRef.current.play().catch(() => {});
   }
+
+  // 読み込みが「はじめる」に間に合わず再生できなかった端末（iOS など）向けに、次のタップで再生を再試行する
+  useEffect(() => {
+    loadAudioUrl(BGM_URL).catch(() => {}); // 画面表示と同時に先読みしておく
+    function retry() {
+      const audio = audioRef.current;
+      if (audio && audio.src && audio.paused && !document.hidden) audio.play().catch(() => {});
+    }
+    window.addEventListener("pointerdown", retry);
+    return () => window.removeEventListener("pointerdown", retry);
+  }, []);
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.muted = muted;
