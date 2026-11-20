@@ -1,0 +1,7 @@
+[
+  { "file": "01-hajimemashite.json", "title": "はじめまして", "desc": "自己紹介・プロフィールに固定" },
+  { "file": "03-nai-mono.json", "title": "ないものの話", "desc": "広告・課金・登録なしの理由" },
+  { "file": "05-fuyu-no-tentou.json", "title": "冬のてんとう虫", "desc": "いきもの豆知識（季節ネタ）" },
+  { "file": "07-kaihatsu-nisshi-01.json", "title": "開発日誌 #1", "desc": "アゲハのそらができるまで" },
+  { "file": "09-game-matome.json", "title": "ゲーム7本まとめ", "desc": "保存されやすいまとめ投稿" }
+]

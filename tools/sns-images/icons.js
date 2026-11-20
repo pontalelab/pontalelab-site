@@ -2,6 +2,10 @@
    投稿画像で使うアイコン（24x24の線画SVG）
    絵文字はOSによって見た目が変わるため、画像内ではこのアイコンを使う。
    ============================================================ */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.PLIcons = factory();
+})(typeof self !== "undefined" ? self : this, function () {
 const P = {
   game: '<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="18" cy="14" r="1" fill="currentColor"/>',
   book: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 11.5h5"/>',
@@ -37,4 +41,5 @@ function icon(name, size = 48, extra = "") {
   return `<svg class="ico" ${extra} width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
 }
 
-module.exports = { icon, ICON_NAMES: Object.keys(P) };
+return { icon, ICON_NAMES: Object.keys(P) };
+});

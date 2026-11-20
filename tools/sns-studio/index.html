@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f3d2c">
+<title>SNSスタジオ | ぽんたーれらぼ</title>
+<link rel="icon" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="studio.css">
+</head>
+<body>
+
+<!-- ===== ホーム ===== -->
+<section id="home" class="st-view">
+  <header class="st-hero">
+    <div class="st-hero-bg"></div>
+    <div class="st-hero-inner">
+      <div class="st-brand"><img src="/icons/icon-192.png" alt=""><span>ぽんたーれらぼ</span></div>
+      <h1>SNSスタジオ</h1>
+      <p>文章を書くだけで、<br>Instagramの投稿画像ができあがります</p>
+    </div>
+  </header>
+
+  <div class="st-home-body">
+    <div class="st-sec" id="drafts-sec" hidden>
+      <div class="st-sec-head"><h2>つづきから</h2></div>
+      <div id="drafts" class="st-drafts"></div>
+    </div>
+
+    <div class="st-sec">
+      <div class="st-sec-head"><h2>テンプレートから作る</h2><span>最初の投稿セット</span></div>
+      <div id="presets" class="st-cards"></div>
+    </div>
+
+    <div class="st-sec">
+      <div class="st-sec-head"><h2>図鑑から作る</h2><span>5枚の豆知識投稿を自動作成</span></div>
+      <div id="zukan" class="st-zukan"></div>
+    </div>
+
+    <button class="st-blank" id="new-blank">
+      <span class="st-blank-ico">＋</span>
+      <span><b>白紙から作る</b><small>表紙1枚からスタート</small></span>
+    </button>
+
+    <p class="st-foot">画像は1080×1350px（Instagramの縦長サイズ）で書き出されます。<br>下書きはこの端末のブラウザに自動保存されます。</p>
+  </div>
+</section>
+
+<!-- ===== 編集画面 ===== -->
+<section id="editor" class="st-view" hidden>
+  <header class="st-bar">
+    <button class="st-icon-btn" id="back" aria-label="もどる">
+      <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <input id="post-title" class="st-title-input" maxlength="40" aria-label="投稿の名前">
+    <button class="st-icon-btn" id="theme-btn" aria-label="テーマの色">
+      <span class="st-theme-dot" id="theme-dot"></span>
+    </button>
+  </header>
+
+  <div class="st-preview-wrap">
+    <div id="preview" class="st-preview"></div>
+    <div class="st-pager" id="pager"></div>
+  </div>
+
+  <div class="st-tools">
+    <button data-act="left" aria-label="前へ移動"><svg viewBox="0 0 24 24"><path d="M14 6l-6 6 6 6"/></svg></button>
+    <button data-act="right" aria-label="後ろへ移動"><svg viewBox="0 0 24 24"><path d="M10 6l6 6-6 6"/></svg></button>
+    <button data-act="dup"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>複製</button>
+    <button data-act="del"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>削除</button>
+    <button data-act="add" class="st-add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>追加</button>
+  </div>
+
+  <div class="st-tabs" role="tablist">
+    <button class="on" data-tab="slide">スライドを編集</button>
+    <button data-tab="caption">投稿の本文</button>
+  </div>
+
+  <div id="panel-slide" class="st-panel"></div>
+  <div id="panel-caption" class="st-panel" hidden>
+    <div class="st-field">
+      <label>本文（キャプション）</label>
+      <textarea id="caption" rows="14" placeholder="Instagramに貼り付ける本文"></textarea>
+      <div class="st-hint" id="caption-count"></div>
+    </div>
+    <button class="st-btn-sub" id="copy-caption">
+      <svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>本文をコピー
+    </button>
+  </div>
+
+  <div class="st-dock">
+    <div class="st-todo" id="todo" hidden></div>
+    <button class="st-btn-main" id="export">
+      <svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>画像を書き出す
+    </button>
+  </div>
+</section>
+
+<!-- ===== ボトムシート ===== -->
+<div class="st-sheet-back" id="sheet-back" hidden></div>
+<div class="st-sheet" id="sheet" hidden>
+  <div class="st-sheet-grip"></div>
+  <div class="st-sheet-head"><h3 id="sheet-title"></h3><button class="st-sheet-x" id="sheet-x" aria-label="閉じる">×</button></div>
+  <div class="st-sheet-body" id="sheet-body"></div>
+</div>
+
+<div class="st-toast" id="toast"></div>
+<div id="stage" aria-hidden="true"></div>
+<input type="file" id="file" accept="image/*" hidden>
+
+<script src="../sns-images/icons.js"></script>
+<script src="../sns-images/templates.js"></script>
+<script src="vendor/html-to-image.js"></script>
+<script src="studio.js"></script>
+</body>
+</html>
