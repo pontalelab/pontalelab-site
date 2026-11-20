@@ -8,11 +8,19 @@
   "use strict";
   const T = window.PLTemplates;
   const $ = (s, el = document) => el.querySelector(s);
-  const POSTS_BASE = "../sns-images/posts/";
-  const ZUKAN_DATA = "/tools/zukan-build/data/";
-  const FONT_CSS_URL = "https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap";
+  // 動かす場所ごとの設定。Claudeの非公開ページ版では window.PL_STUDIO で上書きする
+  const CFG = Object.assign({
+    assetBase: "",                         // "/games/..." の前に付ける文字列
+    postsBase: "../sns-images/posts/",
+    zukanList: null,                       // 図鑑JSONのURL一覧を返すURL（null ならサイトの図鑑ページから探す）
+    zukanData: "/tools/zukan-build/data/",
+    fonts: null,                           // [{weight, url, range}] を指定すると同梱フォントを使う
+    fontCssUrl: "https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap",
+    useHistory: true
+  }, window.PL_STUDIO || {});
+  const POSTS_BASE = CFG.postsBase;
   const DRAFT_KEY = "pl-sns-studio-drafts-v1";
-  const ctx = { asset: (src) => src || null };
+  const ctx = { asset: (src) => !src ? null : (src.startsWith("/") ? CFG.assetBase + src : src) };
 
   // 投稿画像用のCSSをページに読み込む
   const styleEl = document.createElement("style");
@@ -136,16 +144,21 @@
   async function loadZukan() {
     const box = $("#zukan");
     try {
-      const html = await (await fetch("/zukan/mushi/")).text();
-      const ids = [...new Set([...html.matchAll(/href="\/zukan\/(\w+)\/(\w+)\/"/g)].map((m) => m[1] + "/" + m[2]))];
-      const items = await Promise.all(ids.map(async (key) => {
-        try { return await (await fetch(ZUKAN_DATA + key + ".json")).json(); } catch { return null; }
+      let urls;
+      if (CFG.zukanList) urls = await (await fetch(CFG.zukanList)).json();
+      else {
+        const html = await (await fetch("/zukan/mushi/")).text();
+        const ids = [...new Set([...html.matchAll(/href="\/zukan\/(\w+)\/(\w+)\/"/g)].map((m) => m[1] + "/" + m[2]))];
+        urls = ids.map((key) => CFG.zukanData + key + ".json");
+      }
+      const items = await Promise.all(urls.map(async (u) => {
+        try { return await (await fetch(u)).json(); } catch { return null; }
       }));
       box.innerHTML = "";
       items.filter(Boolean).forEach((z) => {
         const b = document.createElement("button");
         b.className = "st-bug";
-        const img = z.images && z.images[0] ? z.images[0].url : "/icons/icon-192.png";
+        const img = ctx.asset(z.images && z.images[0] ? z.images[0].url : "/icons/icon-512.png");
         b.innerHTML = `<div class="st-bug-img"><img src="${esc(img)}" alt=""></div><b>${esc(z.name)}</b>`;
         b.onclick = () => {
           const post = T.zukanPost(z);
@@ -173,8 +186,8 @@
       const th = row.querySelector(".st-draft-thumb");
       const m = mini(d.post, 0, 56); th.appendChild(m); fitLater(m);
       row.querySelector(".st-draft-main").onclick = () => openDraft(d);
-      row.querySelector(".st-draft-del").onclick = () => {
-        if (!confirm(`「${d.title}」を削除しますか？`)) return;
+      row.querySelector(".st-draft-del").onclick = async () => {
+        if (!(await askConfirm(`「${d.title}」を削除しますか？`, "削除する"))) return;
         drafts = drafts.filter((x) => x.id !== d.id);
         try { localStorage.setItem(DRAFT_KEY, JSON.stringify(drafts)); } catch {}
         renderDrafts();
@@ -190,7 +203,7 @@
   /* ---------- 編集画面 ---------- */
   function openDraft(d) {
     cur = d; idx = 0; tab = "slide";
-    history.pushState({ editor: true }, "");
+    if (CFG.useHistory) history.pushState({ editor: true }, "");
     $("#post-title").value = d.title;
     $("#caption").value = d.post.caption || "";
     setTab("slide");
@@ -206,7 +219,7 @@
     cur = null;
     show("home");
     renderDrafts();
-    if (!fromPop) history.back();
+    if (!fromPop && CFG.useHistory) history.back();
   }
   $("#back").onclick = () => closeEditor(false);
   $("#post-title").oninput = (e) => { cur.title = e.target.value || "無題"; saveSoon(); };
@@ -270,7 +283,7 @@
   }
 
   // スライドの並べ替え・追加・削除
-  document.querySelector(".st-tools").addEventListener("click", (e) => {
+  document.querySelector(".st-tools").addEventListener("click", async (e) => {
     const b = e.target.closest("button"); if (!b) return;
     const s = cur.post.slides;
     const act = b.dataset.act;
@@ -279,7 +292,7 @@
     else if (act === "dup") { s.splice(idx + 1, 0, clone(s[idx])); idx++; toast("スライドを複製しました"); }
     else if (act === "del") {
       if (s.length <= 1) { toast("最後の1枚は削除できません"); return; }
-      if (!confirm(`${idx + 1}枚目を削除しますか？`)) return;
+      if (!(await askConfirm(`${idx + 1}枚目のスライドを削除しますか？`, "削除する"))) return;
       s.splice(idx, 1); idx = Math.min(idx, s.length - 1);
     }
     else if (act === "add") { openTypeSheet(); return; }
@@ -564,7 +577,7 @@
     const src = img && img.src;
     const isData = src && src.startsWith("data:");
     const name = !src ? "未選択" : isData ? "スマホの写真" : (ASSETS.flatMap((g) => g.items).find((a) => a.src === src) || {}).name || "画像";
-    b.innerHTML = `<span class="st-pick-img ${img && img.style === "sticker" ? "sticker" : ""}" style="${src ? `background-image:url('${src}')` : ""}">${src ? "" : T.icon("camera", 24)}</span>
+    b.innerHTML = `<span class="st-pick-img ${img && img.style === "sticker" ? "sticker" : ""}" style="${src ? `background-image:url('${ctx.asset(src)}')` : ""}">${src ? "" : T.icon("camera", 24)}</span>
       <span><b>${label ? label + "：" : ""}${esc(name)}</b><small>タップして変更</small></span>
       ${removable && src ? `<span class="st-pick-x" aria-label="外す">${'<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>'}</span>` : ""}`;
     b.onclick = (e) => {
@@ -596,7 +609,7 @@
       g.items.forEach((a) => {
         const b = document.createElement("button");
         b.className = "st-asset" + (a.style === "sticker" ? " sticker" : "");
-        b.innerHTML = `<div style="overflow:hidden"><img src="${a.src}" alt="" loading="lazy"></div><span>${esc(a.name)}</span>`;
+        b.innerHTML = `<div style="overflow:hidden"><img src="${ctx.asset(a.src)}" alt="" loading="lazy"></div><span>${esc(a.name)}</span>`;
         b.onclick = () => { closeSheet(); onPick({ src: a.src, style: a.style, ...(a.zoom ? { zoom: a.zoom } : {}) }); };
         grid.appendChild(b);
       });
@@ -627,13 +640,33 @@
     input.click();
   }
 
+  /* ---------- 確認（ブラウザの confirm は使えない場所があるため自前で表示） ---------- */
+  function askConfirm(message, okLabel) {
+    return new Promise((resolve) => {
+      const body = document.createElement("div");
+      body.innerHTML = `<p class="st-confirm-msg"></p><div class="st-actions"><button class="st-btn-danger">${esc(okLabel)}</button><button class="st-btn-sub">やめる</button></div>`;
+      body.querySelector(".st-confirm-msg").textContent = message;
+      let done = false;
+      const finish = (v) => { if (done) return; done = true; closeSheet(); resolve(v); };
+      body.querySelector(".st-btn-danger").onclick = () => finish(true);
+      body.querySelector(".st-btn-sub").onclick = () => finish(false);
+      openSheet("確認", body, () => finish(false));
+    });
+  }
+
   /* ---------- ボトムシート ---------- */
-  function openSheet(title, bodyEl) {
+  let onSheetClose = null;
+  function openSheet(title, bodyEl, onClose) {
+    if (onSheetClose) { const f = onSheetClose; onSheetClose = null; f(); }
+    onSheetClose = onClose || null;
     $("#sheet-title").textContent = title;
     const body = $("#sheet-body"); body.innerHTML = ""; body.appendChild(bodyEl);
     $("#sheet").hidden = false; $("#sheet-back").hidden = false;
   }
-  function closeSheet() { $("#sheet").hidden = true; $("#sheet-back").hidden = true; }
+  function closeSheet() {
+    $("#sheet").hidden = true; $("#sheet-back").hidden = true;
+    if (onSheetClose) { const f = onSheetClose; onSheetClose = null; f(); }
+  }
   $("#sheet-x").onclick = closeSheet;
   $("#sheet-back").onclick = () => { if (!exporting) closeSheet(); };
 
@@ -649,9 +682,31 @@
       return false;
     });
   }
+  // 同梱フォント（Claudeの非公開ページ版）：画面表示用に登録し、書き出し用のCSSも作る
+  let localFontCss = null;
+  function bufToDataUrl(buf) {
+    return new Promise((ok) => { const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.readAsDataURL(new Blob([buf], { type: "font/woff2" })); });
+  }
+  function loadLocalFonts() {
+    if (localFontCss) return localFontCss;
+    localFontCss = Promise.all(CFG.fonts.map(async (f) => {
+      const buf = await (await fetch(f.url)).arrayBuffer();
+      const desc = { weight: String(f.weight), style: "normal", ...(f.range ? { unicodeRange: f.range } : {}) };
+      try { const face = new FontFace("M PLUS Rounded 1c", buf.slice(0), desc); await face.load(); document.fonts.add(face); } catch (e) {}
+      const data = await bufToDataUrl(buf);
+      return `@font-face{font-family:'M PLUS Rounded 1c';font-style:normal;font-weight:${f.weight};src:url(${data}) format('woff2');${f.range ? `unicode-range:${f.range};` : ""}}`;
+    })).then((rules) => {
+      // 表示中のプレビューをフォント読み込み後に描き直す
+      if (cur) renderPreview(false);
+      document.querySelectorAll(".st-card-thumb .st-mini, .st-draft-thumb .st-mini").forEach((m) => T.fitFrame(m.firstElementChild));
+      return rules.join("\n");
+    }).catch(() => "");
+    return localFontCss;
+  }
   async function fontEmbedCss(text) {
+    if (CFG.fonts) return loadLocalFonts();
     if (fontCssText === null) {
-      try { fontCssText = await (await fetch(FONT_CSS_URL)).text(); } catch { fontCssText = ""; }
+      try { fontCssText = await (await fetch(CFG.fontCssUrl)).text(); } catch { fontCssText = ""; }
     }
     const codes = new Set([...text + "0123456789/"].map((c) => c.codePointAt(0)));
     const blocks = fontCssText.match(/@font-face\s*{[^}]*}/g) || [];
@@ -722,8 +777,37 @@
       }
       $("#sheet-title").textContent = "書き出し完了";
       txt.textContent = `${n}枚の画像ができました` + (warns.length ? `（${warns.join("・")}枚目は文字があふれています）` : "");
-      const canShare = navigator.canShare && navigator.canShare({ files });
-      if (canShare) {
+      const claudeDl = window.claude && window.claude.use ? await window.claude.use("downloads").catch(() => null) : null;
+      const saveOne = async (file) => {
+        try { await claudeDl.save({ filename: file.name, data: file }); return true; }
+        catch (e) {
+          const code = e && e.code;
+          if (code === "declined") return false;
+          if (code === "rate_limited") { toast("少し待ってから、もう一度お試しください"); return false; }
+          toast("保存できませんでした"); return false;
+        }
+      };
+      const canShare = !claudeDl && navigator.canShare && navigator.canShare({ files });
+      if (claudeDl) {
+        // Claudeのページ：1枚ずつ保存の確認が出る（iPhoneのClaudeアプリでは共有メニューから「画像を保存」）
+        results.querySelectorAll("a").forEach((a, i) => {
+          a.addEventListener("click", (ev) => { ev.preventDefault(); saveOne(files[i]); });
+        });
+        const all = document.createElement("button");
+        all.className = "st-btn-main";
+        all.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>すべて保存（1枚ずつ確認）';
+        all.onclick = async () => {
+          for (let i = 0; i < files.length; i++) {
+            all.disabled = true;
+            all.lastChild.textContent = `${i + 1} / ${files.length}枚目を保存中…`;
+            const ok = await saveOne(files[i]);
+            if (!ok) break;
+          }
+          all.disabled = false;
+          all.lastChild.textContent = "すべて保存（1枚ずつ確認）";
+        };
+        actions.appendChild(all);
+      } else if (canShare) {
         const share = document.createElement("button");
         share.className = "st-btn-main";
         share.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M5 13v7h14v-7"/></svg>写真に保存・Instagramで共有';
@@ -732,13 +816,15 @@
         };
         actions.appendChild(share);
       }
-      const dl = document.createElement("button");
-      dl.className = "st-btn-sub";
-      dl.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>1枚ずつダウンロード';
-      dl.onclick = async () => {
-        for (const a of results.querySelectorAll("a")) { a.click(); await new Promise((r) => setTimeout(r, 350)); }
-      };
-      actions.appendChild(dl);
+      if (!claudeDl) {
+        const dl = document.createElement("button");
+        dl.className = "st-btn-sub";
+        dl.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>1枚ずつダウンロード';
+        dl.onclick = async () => {
+          for (const a of results.querySelectorAll("a")) { a.click(); await new Promise((r) => setTimeout(r, 350)); }
+        };
+        actions.appendChild(dl);
+      }
       const copy = document.createElement("button");
       copy.className = "st-btn-sub";
       copy.innerHTML = '<svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>本文をコピー';
@@ -746,9 +832,11 @@
       actions.appendChild(copy);
       const note = document.createElement("p");
       note.className = "st-note";
-      note.innerHTML = canShare
-        ? "「写真に保存・Instagramで共有」から、写真アプリへまとめて保存できます。Instagramでは1枚目から順番に選んでください。"
-        : "画像を長押しすると保存できます。Instagramでは1枚目から順番に選んでください。";
+      note.innerHTML = claudeDl
+        ? "保存の確認が1枚ずつ出ます。iPhoneのClaudeアプリでは、共有メニューの「画像を保存」で写真アプリに入ります。画像をタップすると、その1枚だけ保存できます。"
+        : canShare
+          ? "「写真に保存・Instagramで共有」から、写真アプリへまとめて保存できます。Instagramでは1枚目から順番に選んでください。"
+          : "画像を長押しすると保存できます。Instagramでは1枚目から順番に選んでください。";
       actions.appendChild(note);
     } catch (e) {
       console.error(e);
@@ -761,6 +849,7 @@
   };
 
   /* ---------- 起動 ---------- */
-  history.replaceState({ home: true }, "");
+  if (CFG.useHistory) history.replaceState({ home: true }, "");
+  if (CFG.fonts) loadLocalFonts();
   initHome();
 })();

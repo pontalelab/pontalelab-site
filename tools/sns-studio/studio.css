@@ -95,7 +95,7 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 
 /* ---------- 編集画面 ---------- */
 #editor { padding-bottom: calc(110px + var(--safe-b)); }
-.st-bar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+.st-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: flex; align-items: center; gap: 8px; padding: 10px 12px;
   background: rgba(238, 245, 241, .82); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4);
   border-bottom: 1px solid rgba(225, 236, 230, .8); }
 .st-icon-btn { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: var(--card); box-shadow: var(--sh-1); flex: 0 0 auto; }
@@ -240,3 +240,7 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 
 /* 書き出し用（画面外で原寸描画） */
 #stage { position: fixed; left: -20000px; top: 0; width: 1080px; height: 1350px; overflow: hidden; pointer-events: none; }
+
+.st-confirm-msg { font-size: 15px; font-weight: 700; line-height: 1.7; margin: 4px 2px 16px; }
+.st-btn-danger { width: 100%; height: 52px; border-radius: 16px; font-size: 15px; font-weight: 800; color: #fff; background: linear-gradient(135deg, #f0646a, #d63a40);
+  box-shadow: 0 8px 20px rgba(214, 58, 64, .3); }
