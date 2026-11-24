@@ -12,6 +12,10 @@
    非表示のままにする（壊れた見た目を出さない）。
    ============================================================ */
 (function () {
+  // 表示のON/OFF。運営が安定するまで一時的に非表示（false）にしている。
+  // 再開するときは true に戻すだけでよい（Supabase側のデータはそのまま残っている）。
+  const NANDE_ENABLED = false;
+
   // TODO: 実際のSupabaseプロジェクトの値に差し替えてください。
   // どちらも「公開されて問題ない」鍵です（Supabaseのanon keyは
   // RLSと組み合わせて使う前提の公開鍵で、service role keyとは別物です）。
@@ -104,6 +108,8 @@
   async function initNandeOfTheDay() {
     const section = document.getElementById("nande-section");
     if (!section) return;
+
+    if (!NANDE_ENABLED) return; // 一時停止中：セクションは hidden のまま
 
     if (!SUPABASE_URL || SUPABASE_URL.indexOf("YOUR-PROJECT-REF") !== -1) {
       console.info(
