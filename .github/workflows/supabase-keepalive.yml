@@ -1,0 +1,44 @@
+name: Supabase keep-alive（一時停止の防止）
+
+# Supabaseの無料プランは、しばらくアクセスが無いとプロジェクトを自動で一時停止する。
+# 停止するとお問い合わせフォーム（contact/）と「今日のなんで」（js/why.js）が動かなくなるため、
+# 3日おきにデータベースへ小さな読み取りを1回送って、使われている状態を保つ。
+#
+# 使っている鍵は js/why.js と同じ「公開してよい鍵（publishable key）」で、
+# RLSにより is_public=true の行の読み取りしかできない。秘密の鍵は使っていない。
+#
+# 失敗したとき（＝プロジェクトが止まっている・接続できない）はジョブが赤くなり、
+# GitHubから通知メールが届く。その場合はSupabaseの管理画面で「Resume project」を押す。
+#
+# 注意：GitHubは、リポジトリに60日間コミットが無いと定期実行のワークフローを自動で止める。
+# 長く更新しない期間がありそうなときは、ActionsタブでこのワークフローがEnabledか確認する。
+
+on:
+  schedule:
+    # 3日おき・日本時間 12:17（UTC 03:17）
+    - cron: '17 3 */3 * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SUPABASE_URL: https://gzkzsxumeffesfvydfac.supabase.co
+      SUPABASE_PUBLISHABLE_KEY: sb_publishable_GHQsYencRTcOuk-XWTJTRw_PRQKi5bx
+    steps:
+      - name: Read one row from nande_questions
+        run: |
+          status=$(curl -sS -o body.json -w '%{http_code}' --retry 3 --retry-delay 10 \
+            "$SUPABASE_URL/rest/v1/nande_questions?select=id&limit=1" \
+            -H "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_PUBLISHABLE_KEY")
+          echo "HTTP $status"
+          cat body.json; echo
+          if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
+            echo "::error::Supabaseに接続できませんでした（HTTP $status）。管理画面でプロジェクトが一時停止していないか確認してください。"
+            exit 1
+          fi
