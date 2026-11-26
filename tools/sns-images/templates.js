@@ -12,6 +12,8 @@
 const icon = IC.icon;
 const W = 1080;
 const H = 1350;
+const REEL_H = 1920;   // リール（縦9:16）の高さ
+function frameSize(post) { return { w: W, h: post && post.format === "reel" ? REEL_H : H }; }
 
 /* ---------- テーマ（投稿ごとの色） ---------- */
 const THEMES = {
@@ -190,21 +192,23 @@ function renderFrame(slide, i, total, post, ctx) {
   if (!render) throw new Error("未対応のスライド種類: " + slide.type);
   const logo = ctx.asset("/icons/icon-512.png");
   const isLast = i === total - 1;
+  const reel = post.format === "reel";
   const vars = `--bg:${t.bg};--ink:${t.ink};--ink-mid:${t.inkMid};--primary:${t.primary};--primary-lt:${t.primaryLt};` +
     `--accent:${t.accent};--accent-soft:${t.accentSoft};--card:${t.card};--line:${t.line};--mark:${t.mark};--fs:1;` +
     `background:radial-gradient(520px 520px at 92% 6%, ${t.blob1} 0%, transparent 70%),` +
     `radial-gradient(600px 600px at -6% 58%, ${t.blob2} 0%, transparent 70%),` +
     `radial-gradient(520px 520px at 100% 104%, ${t.blob3} 0%, transparent 70%), ${t.bg};`;
-  return `<div class="plf frame ${post.theme === "lab" ? "dark" : ""}" lang="ja" style="${vars}">
+  return `<div class="plf frame ${post.theme === "lab" ? "dark" : ""} ${reel ? "reel" : ""}" lang="ja" style="${vars}">
   <div class="dots"></div>
   <header>
     <div class="brand">${logo ? `<img src="${logo}">` : ""}<span>ぽんたーれらぼ</span></div>
-    ${total > 1 ? `<div class="pager">${i + 1}<span>/</span>${total}</div>` : ""}
+    ${total > 1 && !reel ? `<div class="pager">${i + 1}<span>/</span>${total}</div>` : ""}
   </header>
   <main class="plf-main">${render(slide, ctx)}</main>
   <footer>
     <span>pontalelab.com</span>
-    ${isLast ? `<span class="hint">${icon("bookmark", 30)}保存してあとで見返してね</span>`
+    ${reel ? `<span class="hint">無料・登録なし・広告なし</span>`
+      : isLast ? `<span class="hint">${icon("bookmark", 30)}保存してあとで見返してね</span>`
              : `<span class="hint">スワイプ${icon("arrow", 30)}</span>`}
   </footer>
 </div>`;
@@ -371,10 +375,10 @@ const CSS = `
 
 /* screen（端末の枠） */
 .plf .screenslide{display:flex;flex-direction:column;height:100%}
-.plf .dev-stage{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.plf .dev-stage{position:relative;flex:1;min-height:420px;display:flex;align-items:center;justify-content:center}
 .plf .dev-glow{position:absolute;width:78%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--primary-lt) 45%,transparent) 0%,transparent 68%)}
 .plf .dev{position:relative;background:#14181a;box-shadow:0 40px 80px rgba(10,30,20,.35),inset 0 0 0 3px #2c3236;padding:18px}
-.plf .dev.phone{height:calc(760px*var(--fs));aspect-ratio:9/19;border-radius:72px}
+.plf .dev.phone{position:absolute;top:8px;bottom:8px;left:50%;transform:translateX(-50%);aspect-ratio:9/19;border-radius:72px}
 .plf .dev.tablet{width:96%;aspect-ratio:4/3;border-radius:52px;padding:26px}
 .plf .dev-notch{position:absolute;top:34px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#14181a;z-index:2}
 .plf .dev-screen{width:100%;height:100%;border-radius:56px;overflow:hidden;background:#e9efe9}
@@ -382,6 +386,14 @@ const CSS = `
 .plf .dev-screen img{width:100%;height:100%;object-fit:cover;display:block}
 .plf .dev-empty{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#5d7368;font-weight:800;font-size:30px;text-align:center;line-height:1.5}
 .plf .pcap.center{text-align:center}
+
+/* リール（1080x1920）。上下はInstagramの表示（ボタンや説明文）にかぶるので余白を広く取る */
+.plf.frame.reel{height:${REEL_H}px;padding:150px 80px 250px}
+.plf.reel .heading{font-size:calc(84px*var(--fs))}
+.plf.reel .heading.big{font-size:calc(92px*var(--fs))}
+.plf.reel .dev.tablet{width:100%}
+.plf.reel .pcap{font-size:calc(42px*var(--fs))}
+.plf.reel .ctaslide{justify-content:center;height:100%}
 `;
 
 
@@ -421,11 +433,41 @@ function gamePost(g) {
   return { id: `game-${g.id}`, theme: GAME_THEME[g.id] || "forest", slides, caption };
 }
 
+/* ---------- ゲームデータ → リール（動画） ----------
+   slides[0] は動画を入れる画面、slides[1] は最後に表示する案内。動画そのものは別に保存する */
+function reelPost(g) {
+  const base = g ? gamePost(g) : null;
+  const plain = (t) => String(t || "").replace(/\*\*/g, "").replace(/\n/g, "");
+  return {
+    format: "reel",
+    theme: base ? base.theme : "forest",
+    video: { start: 0, end: null, endCard: true, endSec: 2.5 },
+    slides: [
+      { type: "screen", eyebrow: g ? "無料で遊べるゲーム" : "ゲーム紹介", heading: g ? g.catch : "見出しを\n**入力**",
+        photo: null, ...(g && g.device ? { device: g.device } : {}), caption: g ? `${g.name}（${g.age}）` : "" },
+      { type: "cta", icon: "game", eyebrow: "スマホですぐ遊べる", heading: g ? `${g.name}で\n遊んでみよう` : "プロフィールのリンクから\n遊べます",
+        badges: ["無料", "登録なし", "広告なし"], button: "プロフィールのリンクから", url: g ? `pontalelab.com/games/${g.id}/` : "pontalelab.com" }
+    ],
+    caption: g ? [
+      `${plain(g.catch)}！「${g.name}」🎮`,
+      "",
+      g.desc,
+      "",
+      `🎮 対象年齢の目安：${g.age}`,
+      "💡 無料・登録なし・広告なし",
+      "▶ プロフィールのリンクから、スマホですぐ遊べます",
+      ...(g.credit ? ["", g.credit] : []),
+      "",
+      ["#知育ゲーム", ...(g.tags || []).slice(0, 3), "#おうち遊び"].join(" ")
+    ].join("\n") : ""
+  };
+}
+
 // 投稿内に残っている【要記入】の数
 function countTodos(post) {
   const m = JSON.stringify(post).match(/【[^】]*】/g);
   return m ? m.length : 0;
 }
 
-return { W, H, THEMES, CSS, esc, fmt, renderFrame, fitFrame, zukanPost, gamePost, countTodos, icon, ICON_NAMES: IC.ICON_NAMES };
+return { W, H, REEL_H, frameSize, reelPost, THEMES, CSS, esc, fmt, renderFrame, fitFrame, zukanPost, gamePost, countTodos, icon, ICON_NAMES: IC.ICON_NAMES };
 });

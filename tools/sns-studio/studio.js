@@ -100,8 +100,9 @@
   function mini(post, i, width) {
     const wrap = document.createElement("div");
     wrap.className = "st-mini";
-    wrap.style.width = T.W + "px"; wrap.style.height = T.H + "px";
-    wrap.style.transform = `scale(${width / T.W})`;
+    const fsz = T.frameSize(post);
+    wrap.style.width = fsz.w + "px"; wrap.style.height = fsz.h + "px";
+    wrap.style.transform = `scale(${width / fsz.w})`;
     wrap.innerHTML = T.renderFrame(post.slides[i], i, post.slides.length, post, ctx);
     return wrap;
   }
@@ -154,15 +155,37 @@
         const b = document.createElement("button");
         b.className = "st-game";
         b.innerHTML = `<div class="st-game-img"><img src="${esc(ctx.asset(g.thumb))}" alt=""></div><b>${esc(g.name)}</b><small>${esc(g.age)}</small>`;
-        b.onclick = () => {
-          const post = T.gamePost(g);
-          openDraft(newDraft(`ゲーム紹介：${g.name}`, { theme: post.theme, slides: post.slides, caption: post.caption }));
-        };
+        b.onclick = () => openGameSheet(g);
         box.appendChild(b);
       });
     } catch (e) {
       box.innerHTML = `<p class="st-hint">ゲームの一覧を読み込めませんでした</p>`;
     }
+  }
+
+  function openGameSheet(g) {
+    const body = document.createElement("div");
+    body.className = "st-types";
+    const opts = [
+      ["image", "画像投稿（5枚）", "表紙・遊び方・ゲーム画面・おすすめ・案内", "sparkle"],
+      ["reel", "リール（動画）", "画面録画を端末の枠に入れて、音つきで書き出す", "music"]
+    ];
+    opts.forEach(([k, name, desc, ic]) => {
+      const b = document.createElement("button");
+      b.className = "st-type-opt";
+      b.innerHTML = `<i>${T.icon(ic, 24)}</i><span><b>${name}</b><small>${desc}</small></span>`;
+      b.onclick = () => {
+        closeSheet();
+        if (k === "image") {
+          const post = T.gamePost(g);
+          openDraft(newDraft(`ゲーム紹介：${g.name}`, { theme: post.theme, slides: post.slides, caption: post.caption }));
+        } else {
+          openDraft(newDraft(`リール：${g.name}`, T.reelPost(g)));
+        }
+      };
+      body.appendChild(b);
+    });
+    openSheet(g.name, body);
   }
 
   async function loadZukan() {
@@ -213,6 +236,7 @@
       row.querySelector(".st-draft-del").onclick = async () => {
         if (!(await askConfirm(`「${d.title}」を削除しますか？`, "削除する"))) return;
         drafts = drafts.filter((x) => x.id !== d.id);
+        videoStore.del(d.id);
         try { localStorage.setItem(DRAFT_KEY, JSON.stringify(drafts)); } catch {}
         renderDrafts();
       };
@@ -230,6 +254,9 @@
     if (CFG.useHistory) history.pushState({ editor: true }, "");
     $("#post-title").value = d.title;
     $("#caption").value = d.post.caption || "";
+    document.querySelector(".st-tools").hidden = isReel();
+    $("#export").lastChild.textContent = isReel() ? "動画を書き出す" : "画像を書き出す";
+    if (isReel()) loadVideo(d.id);
     setTab("slide");
     show("editor");
     renderPreview(true);
@@ -254,10 +281,12 @@
     const box = $("#preview");
     box.innerHTML = "";
     const post = cur.post;
+    box.classList.toggle("reel", isReel());
     post.slides.forEach((s, i) => {
       const el = document.createElement("div");
-      el.className = "st-slide" + (i === idx ? " on" : "");
+      el.className = "st-slide" + (isReel() ? " reel" : "") + (i === idx ? " on" : "");
       el.dataset.i = i;
+      if (isReel() && i === 1 && !post.video.endCard) el.classList.add("off");
       box.appendChild(el);
       drawSlide(el, i);
       el.onclick = () => { if (i !== idx) selectSlide(i, true); };
@@ -277,7 +306,7 @@
   }
   function drawSlide(el, i) {
     el.innerHTML = "";
-    const m = mini(cur.post, i, el.clientWidth || Math.min(window.innerWidth * 0.74, 350));
+    const m = mini(cur.post, i, el.clientWidth || (isReel() ? Math.min(window.innerWidth * 0.52, 250) : Math.min(window.innerWidth * 0.74, 350)));
     el.appendChild(m);
     fitLater(m, (r) => {
       const old = el.querySelector(".st-warn"); if (old) old.remove();
@@ -425,7 +454,9 @@
     shot: ["ゲーム画面のスクリーンショット", "photo"],
     device: ["端末の形", "device"],
     items: ["項目", "items"],
-    cross: ["「ないもの」表示（×印をつける）", "toggle"]
+    cross: ["「ないもの」表示（×印をつける）", "toggle"],
+    video: ["ゲームの画面録画", "video"],
+    endcard: ["動画のあとに、この案内を2.5秒表示する", "endcard"]
   };
   const SCHEMA = {
     cover: ["eyebrow", "title", "sub", "visual"],
@@ -452,9 +483,12 @@
     const [tname, , tic] = TYPES[s.type] || ["スライド", "", "sparkle"];
     const head = document.createElement("div");
     head.className = "st-type";
-    head.innerHTML = `<span class="st-type-badge">${T.icon(tic, 16)}${idx + 1}枚目 ・ ${tname}</span>`;
+    head.innerHTML = isReel()
+      ? `<span class="st-type-badge">${T.icon(idx === 0 ? "music" : "arrow", 16)}${idx === 0 ? "リールの画面" : "最後に表示する案内"}</span>`
+      : `<span class="st-type-badge">${T.icon(tic, 16)}${idx + 1}枚目 ・ ${tname}</span>`;
     panel.appendChild(head);
-    (SCHEMA[s.type] || []).forEach((key) => panel.appendChild(field(s, key)));
+    const keys = isReel() ? (idx === 0 ? ["video", "eyebrow", "heading", "device", "caption"] : ["endcard", "eyebrow", "heading", "body", "badges", "button", "url"]) : (SCHEMA[s.type] || []);
+    keys.forEach((key) => panel.appendChild(field(s, key)));
     const hint = document.createElement("p");
     hint.className = "st-hint";
     hint.innerHTML = "<b>**ことば**</b> で黄色いマーカー、<b>【ことば】</b> は要記入（黄色い枠）、改行もそのまま反映されます。";
@@ -465,7 +499,7 @@
     const [label, kind] = F[key];
     const wrap = document.createElement("div");
     wrap.className = "st-field";
-    if (kind !== "toggle") wrap.innerHTML = `<label>${label}</label>`;
+    if (kind !== "toggle" && kind !== "endcard") wrap.innerHTML = `<label>${label}</label>`;
 
     if (kind === "input" || kind === "textarea" || kind === "csv") {
       const el = document.createElement(kind === "textarea" ? "textarea" : "input");
@@ -540,6 +574,17 @@
         h.textContent = "ゲームで一番楽しい場面をスマホでスクリーンショットして選んでください。";
         wrap.appendChild(h);
       }
+    }
+    else if (kind === "video") {
+      wrap.appendChild(videoField());
+    }
+    else if (kind === "endcard") {
+      const row = document.createElement("button");
+      row.className = "st-toggle";
+      const on = cur.post.video.endCard;
+      row.innerHTML = `<span>${label}</span><span class="st-switch ${on ? "on" : ""}"></span>`;
+      row.onclick = () => { cur.post.video.endCard = !on; saveSoon(); renderPreview(false); renderPanel(); };
+      wrap.appendChild(row);
     }
     else if (kind === "device") {
       const seg = document.createElement("div");
@@ -775,6 +820,30 @@
   const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   let exporting = false;
 
+  // 投稿の1枚を原寸のcanvasに描く（リール用に、画面の位置も測って返す）
+  async function renderCanvas(post, i) {
+    const stage = $("#stage");
+    const fsz = T.frameSize(post);
+    stage.style.height = fsz.h + "px";
+    stage.innerHTML = T.renderFrame(post.slides[i], i, post.slides.length, post, ctx);
+    const frame = stage.firstElementChild;
+    await Promise.all([...frame.querySelectorAll("img")].map((im) => im.decode ? im.decode().catch(() => {}) : null));
+    if (document.fonts) await document.fonts.ready;
+    T.fitFrame(frame);
+    const fr = frame.getBoundingClientRect();
+    const rel = (el) => { if (!el) return null; const r = el.getBoundingClientRect(); return { x: r.left - fr.left, y: r.top - fr.top, w: r.width, h: r.height }; };
+    const screenEl = frame.querySelector(".dev-screen");
+    const screen = rel(screenEl);
+    const radius = screenEl ? parseFloat(getComputedStyle(screenEl).borderTopLeftRadius) || 0 : 0;
+    const notch = rel(frame.querySelector(".dev-notch"));
+    const opts = { width: fsz.w, height: fsz.h, pixelRatio: 1, cacheBust: false, fontEmbedCSS: await fontEmbedCss(frame.textContent) };
+    if (isIOS) await window.htmlToImage.toCanvas(frame, opts);
+    const canvas = await window.htmlToImage.toCanvas(frame, opts);
+    stage.innerHTML = "";
+    stage.style.height = "";
+    return { canvas, screen, radius, notch };
+  }
+
   async function renderPng(post, i) {
     const stage = $("#stage");
     stage.innerHTML = T.renderFrame(post.slides[i], i, post.slides.length, post, ctx);
@@ -793,6 +862,7 @@
 
   $("#export").onclick = async () => {
     if (exporting) return;
+    if (isReel()) { exportReel(true); return; }
     saveNow();
     exporting = true;
     $("#export").disabled = true;
@@ -891,6 +961,343 @@
       $("#export").disabled = false;
     }
   };
+
+  /* ---------- リール（動画） ---------- */
+  function isReel() { return !!(cur && cur.post.format === "reel"); }
+
+  // 画面録画はサイズが大きいので、下書き（localStorage）ではなく IndexedDB に保存する
+  const videoMem = new Map();
+  const videoStore = {
+    db: null,
+    open() {
+      if (this.db) return this.db;
+      this.db = new Promise((ok, ng) => {
+        try {
+          const r = indexedDB.open("pl-sns-studio", 1);
+          r.onupgradeneeded = () => r.result.createObjectStore("videos");
+          r.onsuccess = () => ok(r.result); r.onerror = () => ng(r.error);
+        } catch (e) { ng(e); }
+      });
+      return this.db;
+    },
+    async tx(mode, fn) {
+      const db = await this.open();
+      return new Promise((ok, ng) => { const t = db.transaction("videos", mode); const req = fn(t.objectStore("videos")); t.oncomplete = () => ok(req && req.result); t.onerror = () => ng(t.error); });
+    },
+    async put(k, v) { videoMem.set(k, v); try { await this.tx("readwrite", (st) => st.put(v, k)); } catch (e) {} },
+    async get(k) { if (videoMem.has(k)) return videoMem.get(k); try { const v = await this.tx("readonly", (st) => st.get(k)); if (v) videoMem.set(k, v); return v || null; } catch (e) { return null; } },
+    async del(k) { videoMem.delete(k); try { await this.tx("readwrite", (st) => st.delete(k)); } catch (e) {} }
+  };
+
+  let curVideo = null;   // { blob, url, duration }
+  async function loadVideo(id) {
+    if (curVideo && curVideo.url) URL.revokeObjectURL(curVideo.url);
+    curVideo = null;
+    const blob = await videoStore.get(id);
+    if (!blob || !cur || cur.id !== id) { if (cur && cur.id === id) renderPanel(); return; }
+    const url = URL.createObjectURL(blob);
+    const duration = await probeDuration(url);
+    curVideo = { blob, url, duration };
+    if (cur && cur.id === id && idx === 0) renderPanel();
+  }
+  function probeDuration(url) {
+    return new Promise((ok) => {
+      const v = document.createElement("video");
+      v.preload = "metadata"; v.muted = true; v.playsInline = true;
+      v.onloadedmetadata = () => ok(isFinite(v.duration) ? v.duration : 0);
+      v.onerror = () => ok(0);
+      v.src = url;
+    });
+  }
+  // 動画の1コマを画像にして、プレビューの端末の中に表示する
+  function makePoster(url, t) {
+    return new Promise((ok) => {
+      const v = document.createElement("video");
+      v.muted = true; v.playsInline = true; v.preload = "auto";
+      v.onloadeddata = () => { v.currentTime = Math.min(t, Math.max(0, (v.duration || 1) - 0.05)); };
+      v.onseeked = () => {
+        const k = Math.min(1, 720 / Math.max(v.videoWidth, v.videoHeight));
+        const c = document.createElement("canvas");
+        c.width = Math.round(v.videoWidth * k); c.height = Math.round(v.videoHeight * k);
+        c.getContext("2d").drawImage(v, 0, 0, c.width, c.height);
+        ok(c.toDataURL("image/jpeg", 0.8));
+      };
+      v.onerror = () => ok(null);
+      v.src = url;
+    });
+  }
+  const fmtSec = (x) => (Math.round(x * 10) / 10).toFixed(1) + "秒";
+
+  function pickVideo() {
+    const input = document.createElement("input");
+    input.type = "file"; input.accept = "video/*";
+    input.onchange = async () => {
+      const f = input.files && input.files[0];
+      if (!f || !cur) return;
+      const id = cur.id;
+      toast("動画を読み込んでいます…");
+      await videoStore.put(id, f);
+      if (curVideo && curVideo.url) URL.revokeObjectURL(curVideo.url);
+      const url = URL.createObjectURL(f);
+      const duration = await probeDuration(url);
+      if (!duration) { toast("この動画は読み込めませんでした"); return; }
+      curVideo = { blob: f, url, duration };
+      cur.post.video.start = 0;
+      cur.post.video.end = Math.min(duration, 30);
+      cur.post.slides[0].photo = await makePoster(url, 0.2);
+      // 横長の動画ならタブレットの枠にする
+      const v = document.createElement("video"); v.src = url; v.muted = true;
+      await new Promise((ok) => { v.onloadedmetadata = ok; v.onerror = ok; });
+      if (v.videoWidth > v.videoHeight) cur.post.slides[0].device = "tablet"; else delete cur.post.slides[0].device;
+      saveSoon(); renderPreview(false); renderPanel(); updateTodo();
+    };
+    input.click();
+  }
+
+  function videoField() {
+    const box = document.createElement("div");
+    const vid = cur.post.video;
+    if (!curVideo) {
+      const b = document.createElement("button");
+      b.className = "st-upload";
+      b.innerHTML = T.icon("camera", 24) + "画面録画を選ぶ";
+      b.onclick = pickVideo;
+      box.appendChild(b);
+      const h = document.createElement("p");
+      h.className = "st-hint";
+      h.innerHTML = "ゲームを遊びながら、スマホの「画面収録」で録画した動画を選んでください。<b>15〜30秒</b>がおすすめです。ゲームの音もそのまま入ります。";
+      box.appendChild(h);
+      return box;
+    }
+    const d = curVideo.duration;
+    const end = Math.min(vid.end == null ? Math.min(d, 30) : vid.end, d);
+    const info = document.createElement("div");
+    info.className = "st-vinfo";
+    info.innerHTML = `<b>使う長さ：<span class="st-vlen">${fmtSec(end - vid.start)}</span></b><small>動画全体 ${fmtSec(d)}</small>`;
+    box.appendChild(info);
+    const mk = (labelTxt, val, onInput, onChange) => {
+      const r = document.createElement("label");
+      r.className = "st-range";
+      r.innerHTML = `<span style="width:3.2em">${labelTxt}</span><input type="range" min="0" max="${d.toFixed(2)}" step="0.1" value="${val}"><span class="st-rv" style="width:3.6em;text-align:right">${fmtSec(val)}</span>`;
+      const inp = r.querySelector("input");
+      inp.oninput = () => { onInput(+inp.value, r); };
+      inp.onchange = () => onChange && onChange(+inp.value);
+      return r;
+    };
+    const update = () => {
+      box.querySelector(".st-vlen").textContent = fmtSec((vid.end ?? d) - vid.start);
+      const warn = box.querySelector(".st-vwarn");
+      const len = (vid.end ?? d) - vid.start;
+      warn.hidden = len <= 60;
+    };
+    box.appendChild(mk("はじめ", vid.start, (v, r) => {
+      vid.start = Math.min(v, (vid.end ?? d) - 1); r.querySelector(".st-rv").textContent = fmtSec(vid.start); update(); saveSoon();
+    }, async () => { cur.post.slides[0].photo = await makePoster(curVideo.url, vid.start + 0.1); saveSoon(); redrawCurrent(); }));
+    box.appendChild(mk("おわり", end, (v, r) => {
+      vid.end = Math.max(v, vid.start + 1); r.querySelector(".st-rv").textContent = fmtSec(vid.end); update(); saveSoon();
+    }));
+    const warn = document.createElement("p");
+    warn.className = "st-hint st-vwarn"; warn.hidden = true;
+    warn.innerHTML = "<b>60秒より長いと書き出しに時間がかかります。15〜30秒がおすすめです。</b>";
+    box.appendChild(warn);
+    const row = document.createElement("div");
+    row.className = "st-vrow";
+    const play = document.createElement("button");
+    play.className = "st-btn-sub"; play.innerHTML = T.icon("music", 20) + "試しに再生";
+    play.onclick = () => exportReel(false);
+    const change = document.createElement("button");
+    change.className = "st-btn-sub"; change.textContent = "動画を変える";
+    change.onclick = pickVideo;
+    row.appendChild(play); row.appendChild(change);
+    box.appendChild(row);
+    return box;
+  }
+
+  function pickMime() {
+    if (!window.MediaRecorder) return null;
+    const list = ["video/mp4;codecs=avc1.42E01E,mp4a.40.2", "video/mp4;codecs=avc1,mp4a", "video/mp4",
+      "video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"];
+    return list.find((m) => { try { return MediaRecorder.isTypeSupported(m); } catch (e) { return false; } }) || "";
+  }
+  function roundRectPath(c, x, y, w, h, r) {
+    c.beginPath();
+    c.moveTo(x + r, y); c.lineTo(x + w - r, y); c.quadraticCurveTo(x + w, y, x + w, y + r);
+    c.lineTo(x + w, y + h - r); c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    c.lineTo(x + r, y + h); c.quadraticCurveTo(x, y + h, x, y + h - r);
+    c.lineTo(x, y + r); c.quadraticCurveTo(x, y, x + r, y); c.closePath();
+  }
+
+  // record=false なら「試しに再生」（書き出さずに合成結果を見せる）
+  async function exportReel(record) {
+    if (exporting) return;
+    if (!curVideo) { toast("先に画面録画を選んでください"); return; }
+    const mime = record ? pickMime() : "";
+    if (record && mime === null) { toast("この端末では動画を書き出せません"); return; }
+    const post = cur.post, vid = post.video;
+    // iPhoneでは、ボタンを押した直後に再生と音の準備をしておかないと、あとで音が出せない
+    const v = document.createElement("video");
+    v.playsInline = true; v.preload = "auto"; v.src = curVideo.url;
+    v.setAttribute("playsinline", "");
+    v.style.cssText = "position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none";
+    document.body.appendChild(v);
+    let ac = null;
+    try { ac = new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch (e) {}
+    v.play().then(() => v.pause()).catch(() => {});
+
+    exporting = true;
+    $("#export").disabled = true;
+    const body = document.createElement("div");
+    body.innerHTML = `<div class="st-reel-view"><canvas width="${T.W}" height="${T.REEL_H}"></canvas></div>
+      <div class="st-progress"><i></i></div><div class="st-progress-txt">準備中…</div><div class="st-actions"></div>`;
+    let cancelled = false;
+    openSheet(record ? "動画を書き出し中" : "試しに再生", body, () => { cancelled = true; });
+    const cv = body.querySelector("canvas"), cx = cv.getContext("2d");
+    const bar = body.querySelector(".st-progress i"), txt = body.querySelector(".st-progress-txt"), actions = body.querySelector(".st-actions");
+    try {
+      txt.textContent = "画面を準備しています…";
+      const base = await renderCanvas(post, 0);
+      const endCard = vid.endCard ? await renderCanvas(post, 1) : null;
+      if (!base.screen) throw new Error("no screen");
+      await new Promise((ok, ng) => { if (v.readyState >= 1) ok(); else { v.onloadedmetadata = ok; v.onerror = ng; } });
+      const d = v.duration || curVideo.duration;
+      const start = Math.min(vid.start || 0, Math.max(0, d - 0.5));
+      const endT = Math.min(vid.end == null ? Math.min(d, 30) : vid.end, d);
+      const endSec = vid.endCard ? (vid.endSec || 2.5) : 0;
+      const total = (endT - start) + endSec;
+
+      const sr = base.screen;
+      const drawVideoFrame = () => {
+        cx.drawImage(base.canvas, 0, 0);
+        const vw = v.videoWidth, vh = v.videoHeight;
+        if (vw && vh) {
+          cx.save();
+          roundRectPath(cx, sr.x, sr.y, sr.w, sr.h, base.radius);
+          cx.clip();
+          cx.fillStyle = "#000"; cx.fillRect(sr.x, sr.y, sr.w, sr.h);
+          const k = Math.max(sr.w / vw, sr.h / vh);
+          const sw = sr.w / k, sh = sr.h / k;
+          cx.drawImage(v, (vw - sw) / 2, (vh - sh) / 2, sw, sh, sr.x, sr.y, sr.w, sr.h);
+          cx.restore();
+        }
+        if (base.notch) { cx.fillStyle = "#14181a"; roundRectPath(cx, base.notch.x, base.notch.y, base.notch.w, base.notch.h, base.notch.h / 2); cx.fill(); }
+      };
+
+      let rec = null, chunks = [];
+      if (record) {
+        const stream = cv.captureStream(30);
+        if (ac) {
+          try {
+            const src = ac.createMediaElementSource(v);
+            const dest = ac.createMediaStreamDestination();
+            src.connect(dest);
+            dest.stream.getAudioTracks().forEach((t) => stream.addTrack(t));
+          } catch (e) {}
+        }
+        rec = new MediaRecorder(stream, { ...(mime ? { mimeType: mime } : {}), videoBitsPerSecond: 8000000, audioBitsPerSecond: 128000 });
+        rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+      } else if (ac) {
+        // 試しに再生では音をスピーカーから出す
+        try { const src = ac.createMediaElementSource(v); src.connect(ac.destination); } catch (e) {}
+      }
+
+      v.currentTime = start;
+      await new Promise((ok) => { v.onseeked = ok; setTimeout(ok, 1500); });
+      drawVideoFrame();
+      txt.textContent = record ? "書き出し中…（画面を閉じずにお待ちください）" : "再生中…";
+      if (rec) rec.start(250);
+      if (ac) await ac.resume().catch(() => {});
+      await v.play();
+
+      // 動画の部分
+      await new Promise((ok) => {
+        const tick = () => {
+          if (cancelled) { ok(); return; }
+          drawVideoFrame();
+          const t = v.currentTime - start;
+          bar.style.width = `${Math.min(100, (t / total) * 100)}%`;
+          if (v.currentTime >= endT || v.ended) { v.pause(); ok(); return; }
+          requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+      // 最後の案内
+      if (endCard && !cancelled) {
+        const t0 = performance.now();
+        await new Promise((ok) => {
+          const tick = () => {
+            if (cancelled) { ok(); return; }
+            cx.drawImage(endCard.canvas, 0, 0);
+            const t = (performance.now() - t0) / 1000;
+            bar.style.width = `${Math.min(100, ((endT - start + t) / total) * 100)}%`;
+            if (t >= endSec) { ok(); return; }
+            requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        });
+      }
+      v.pause();
+      if (ac) ac.close().catch(() => {});
+      if (cancelled) { if (rec && rec.state !== "inactive") rec.stop(); return; }
+      bar.style.width = "100%";
+      if (!rec) {
+        txt.textContent = "再生が終わりました。よければ「動画を書き出す」へ進んでください";
+        return;
+      }
+      const blob = await new Promise((ok) => { rec.onstop = () => ok(new Blob(chunks, { type: (rec.mimeType || mime || "video/mp4").split(";")[0] })); rec.stop(); });
+      const isMp4 = /mp4/.test(blob.type);
+      const usedMime = (rec.mimeType || mime || "").toLowerCase();
+      const isSafari = /safari/i.test(navigator.userAgent) && !/chrome|crios|android/i.test(navigator.userAgent);
+      const instaOk = isMp4 && (/avc1|h264/.test(usedMime) || (isSafari && !/vp9|vp8|av01/.test(usedMime)));
+      const base0 = (cur.title || "pontalelab").replace(/[\\/:*?"<>|\s#]+/g, "_").slice(0, 30);
+      const filename = `${base0}.${isMp4 ? "mp4" : "webm"}`;
+      const url = URL.createObjectURL(blob);
+      $("#sheet-title").textContent = "書き出し完了";
+      body.querySelector(".st-reel-view").innerHTML = `<video src="${url}" controls playsinline></video>`;
+      txt.textContent = `${fmtSec(total)}の動画ができました（${(blob.size / 1048576).toFixed(1)}MB）`;
+      const file = new File([blob], filename, { type: blob.type });
+      const claudeDl = window.claude && window.claude.use ? await window.claude.use("downloads").catch(() => null) : null;
+      if (claudeDl) {
+        const b = document.createElement("button");
+        b.className = "st-btn-main";
+        b.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>動画を保存';
+        b.onclick = async () => {
+          try { await claudeDl.save({ filename, data: file }); }
+          catch (e) { if (!(e && e.code === "declined")) toast(e && e.code === "rate_limited" ? "少し待ってから、もう一度お試しください" : "保存できませんでした"); }
+        };
+        actions.appendChild(b);
+      } else if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        const b = document.createElement("button");
+        b.className = "st-btn-main";
+        b.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M5 13v7h14v-7"/></svg>動画を保存・共有';
+        b.onclick = async () => { try { await navigator.share({ files: [file] }); } catch (e) {} };
+        actions.appendChild(b);
+      } else {
+        const a = document.createElement("a");
+        a.className = "st-btn-main"; a.href = url; a.download = filename; a.style.textDecoration = "none";
+        a.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>動画をダウンロード';
+        actions.appendChild(a);
+      }
+      const copy = document.createElement("button");
+      copy.className = "st-btn-sub";
+      copy.innerHTML = '<svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>本文をコピー';
+      copy.onclick = () => $("#copy-caption").click();
+      actions.appendChild(copy);
+      const note = document.createElement("p");
+      note.className = "st-note";
+      note.innerHTML = instaOk
+        ? "Instagramでは「リール」を選んで、この動画を投稿してください。BGMを足す場合は、Instagramの音源を小さめの音量で重ねるのがおすすめです。"
+        : "<b>この端末では、Instagram向けの形式（H.264）で書き出せませんでした。</b>投稿できない場合は、iPhoneのClaudeアプリかSafariで書き出してください。";
+      actions.appendChild(note);
+    } catch (e) {
+      console.error(e);
+      $("#sheet-title").textContent = "うまくいきませんでした";
+      txt.textContent = "動画を読み込めなかったか、この端末では書き出しに対応していない可能性があります。";
+    } finally {
+      try { v.pause(); v.remove(); } catch (e) {}
+      exporting = false;
+      $("#export").disabled = false;
+    }
+  }
 
   /* ---------- 起動 ---------- */
   if (CFG.useHistory) history.replaceState({ home: true }, "");
