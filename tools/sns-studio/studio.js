@@ -168,7 +168,9 @@
     body.className = "st-types";
     const opts = [
       ["image", "画像投稿（5枚）", "表紙・遊び方・ゲーム画面・おすすめ・案内", "sparkle"],
-      ["reel", "リール（動画）", "画面録画を端末の枠に入れて、音つきで書き出す", "music"]
+      ["reel", "リール（動画）", "画面録画を端末の枠に入れて、音つきで書き出す", "music"],
+      ["story-image", "ストーリーズ（画像）", "リンクスタンプを貼る場所つき。押せるリンクで誘導", "arrow"],
+      ["story-video", "ストーリーズ（動画）", "画面録画＋リンクスタンプの場所", "arrow"]
     ];
     opts.forEach(([k, name, desc, ic]) => {
       const b = document.createElement("button");
@@ -179,8 +181,11 @@
         if (k === "image") {
           const post = T.gamePost(g);
           openDraft(newDraft(`ゲーム紹介：${g.name}`, { theme: post.theme, slides: post.slides, caption: post.caption }));
-        } else {
+        } else if (k === "reel") {
           openDraft(newDraft(`リール：${g.name}`, T.reelPost(g)));
+        } else {
+          const p = T.storyPost(g, k === "story-video" ? "video" : "image");
+          openDraft(newDraft(`ストーリーズ：${g.name}`, p));
         }
       };
       body.appendChild(b);
@@ -281,10 +286,10 @@
     const box = $("#preview");
     box.innerHTML = "";
     const post = cur.post;
-    box.classList.toggle("reel", isReel());
+    box.classList.toggle("reel", isTall());
     post.slides.forEach((s, i) => {
       const el = document.createElement("div");
-      el.className = "st-slide" + (isReel() ? " reel" : "") + (i === idx ? " on" : "");
+      el.className = "st-slide" + (isTall() ? " reel" : "") + (i === idx ? " on" : "");
       el.dataset.i = i;
       if (isReel() && i === 1 && !post.video.endCard) el.classList.add("off");
       box.appendChild(el);
@@ -306,8 +311,10 @@
   }
   function drawSlide(el, i) {
     el.innerHTML = "";
-    const m = mini(cur.post, i, el.clientWidth || (isReel() ? Math.min(window.innerWidth * 0.52, 250) : Math.min(window.innerWidth * 0.74, 350)));
+    const w = el.clientWidth || (isTall() ? Math.min(window.innerWidth * 0.52, 250) : Math.min(window.innerWidth * 0.74, 350));
+    const m = mini(cur.post, i, w);
     el.appendChild(m);
+    if (isStory()) markLinkZone(el, m, w);
     fitLater(m, (r) => {
       const old = el.querySelector(".st-warn"); if (old) old.remove();
       if (r.overflow) {
@@ -316,6 +323,25 @@
       }
     });
   }
+  // ストーリーズ：リンクスタンプを貼る位置を、プレビューにだけ点線で示す（書き出し画像には入らない）
+  function markLinkZone(el, m, w) {
+    const place = () => {
+      const old = el.querySelector(".st-lz"); if (old) old.remove();
+      const frame = m.firstElementChild, sp = frame && frame.querySelector(".lz-space");
+      if (!sp) return;
+      const k = w / T.W;
+      const fr = frame.getBoundingClientRect(), r = sp.getBoundingClientRect();
+      const g = document.createElement("div");
+      g.className = "st-lz";
+      g.style.left = (r.left - fr.left) + "px"; g.style.top = (r.top - fr.top) + "px";
+      g.style.width = r.width + "px"; g.style.height = r.height + "px";
+      g.textContent = "リンクスタンプの位置";
+      el.appendChild(g);
+      void k;
+    };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => requestAnimationFrame(() => requestAnimationFrame(place))); else place();
+  }
+
   function redrawCurrent() {
     const el = $(`#preview .st-slide[data-i="${idx}"]`);
     if (el) drawSlide(el, idx);
@@ -471,7 +497,7 @@
   let redrawTimer = 0;
   function changed(structural) {
     clearTimeout(redrawTimer);
-    redrawTimer = setTimeout(() => { redrawCurrent(); updateTodo(); }, 120);
+    redrawTimer = setTimeout(() => { if (isStory()) renderPreview(false); else redrawCurrent(); updateTodo(); }, 120);
     saveSoon();
     if (structural) renderPanel();
   }
@@ -484,10 +510,11 @@
     const head = document.createElement("div");
     head.className = "st-type";
     head.innerHTML = isReel()
-      ? `<span class="st-type-badge">${T.icon(idx === 0 ? "music" : "arrow", 16)}${idx === 0 ? "リールの画面" : "最後に表示する案内"}</span>`
+      ? `<span class="st-type-badge">${T.icon(idx === 0 ? "music" : "arrow", 16)}${idx === 0 ? (isStory() ? "ストーリーズの画面" : "リールの画面") : "最後に表示する案内"}</span>`
       : `<span class="st-type-badge">${T.icon(tic, 16)}${idx + 1}枚目 ・ ${tname}</span>`;
     panel.appendChild(head);
     const keys = isReel() ? (idx === 0 ? ["video", "eyebrow", "heading", "device", "caption"] : ["endcard", "eyebrow", "heading", "body", "badges", "button", "url"]) : (SCHEMA[s.type] || []);
+    if (isStory()) panel.appendChild(storyLinkField());
     keys.forEach((key) => panel.appendChild(field(s, key)));
     const hint = document.createElement("p");
     hint.className = "st-hint";
@@ -631,6 +658,31 @@
       wrap.appendChild(add);
     }
     return wrap;
+  }
+
+  // ストーリーズのリンク（投稿全体で共通）
+  function storyLinkField() {
+    const box = document.createElement("div");
+    box.className = "st-field st-storylink";
+    box.innerHTML = `<label>リンクスタンプに入れるURL</label>
+      <div class="st-urlrow"><input type="text" id="story-link" inputmode="url"><button class="st-ico-btn" aria-label="URLをコピー">${'<svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>'}</button></div>
+      <label style="margin-top:12px">リンクの上の一言</label>
+      <input type="text" id="story-label">
+      <p class="st-hint">投稿するとき、Instagramでリンクスタンプを追加して、プレビューの点線の位置に置いてください。点線は書き出し画像には入りません。</p>`;
+    const link = box.querySelector("#story-link"), label = box.querySelector("#story-label");
+    link.value = cur.post.link || ""; label.value = cur.post.linkLabel || "";
+    link.oninput = () => { cur.post.link = link.value.trim(); saveSoon(); };
+    label.oninput = () => { cur.post.linkLabel = label.value; changed(); };
+    box.querySelector(".st-ico-btn").onclick = () => copyText(cur.post.link || "", "URLをコピーしました");
+    return box;
+  }
+  async function copyText(v, msg) {
+    try { await navigator.clipboard.writeText(v); toast(msg); }
+    catch (e) {
+      const ta = document.createElement("textarea"); ta.value = v; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); toast(msg); } catch (e2) { toast("コピーできませんでした"); }
+      ta.remove();
+    }
   }
 
   function iconButton(value, onPick, wide) {
@@ -851,12 +903,15 @@
     await Promise.all([...frame.querySelectorAll("img")].map((im) => im.decode ? im.decode().catch(() => {}) : null));
     if (document.fonts) await document.fonts.ready;
     const fit = T.fitFrame(frame);
-    const opts = { width: T.W, height: T.H, pixelRatio: 1, cacheBust: false, fontEmbedCSS: await fontEmbedCss(frame.textContent) };
+    const fsz = T.frameSize(post);
+    stage.style.height = fsz.h + "px";
+    const opts = { width: fsz.w, height: fsz.h, pixelRatio: 1, cacheBust: false, fontEmbedCSS: await fontEmbedCss(frame.textContent) };
     // iOS Safariは1回目に画像が抜けることがあるため、2回描画する
     if (isIOS) await window.htmlToImage.toCanvas(frame, opts);
     const canvas = await window.htmlToImage.toCanvas(frame, opts);
     const blob = await new Promise((ok) => canvas.toBlob(ok, "image/png"));
     stage.innerHTML = "";
+    stage.style.height = "";
     return { blob, fit };
   }
 
@@ -939,14 +994,15 @@
         };
         actions.appendChild(dl);
       }
+      if (isStory()) actions.appendChild(storyCopyButton());
       const copy = document.createElement("button");
       copy.className = "st-btn-sub";
       copy.innerHTML = '<svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>本文をコピー';
       copy.onclick = () => $("#copy-caption").click();
-      actions.appendChild(copy);
+      if (!isStory()) actions.appendChild(copy);
       const note = document.createElement("p");
       note.className = "st-note";
-      note.innerHTML = claudeDl
+      note.innerHTML = isStory() ? STORY_NOTE : claudeDl
         ? "保存の確認が1枚ずつ出ます。iPhoneのClaudeアプリでは、共有メニューの「画像を保存」で写真アプリに入ります。画像をタップすると、その1枚だけ保存できます。"
         : canShare
           ? "「写真に保存・Instagramで共有」から、写真アプリへまとめて保存できます。Instagramでは1枚目から順番に選んでください。"
@@ -962,8 +1018,20 @@
     }
   };
 
+  const STORY_NOTE = "Instagramでストーリーズを作り、この画像（動画）を選んだら、スタンプから<b>「リンク」</b>を選んでURLを貼り付け、矢印の下の空いている場所に置いてください。投稿後にハイライトへ追加すると、プロフィールにずっと残せます。";
+  function storyCopyButton() {
+    const b = document.createElement("button");
+    b.className = "st-btn-sub";
+    b.innerHTML = '<svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>リンクスタンプ用のURLをコピー';
+    b.onclick = () => copyText(cur.post.link || "", "URLをコピーしました");
+    return b;
+  }
+
   /* ---------- リール（動画） ---------- */
-  function isReel() { return !!(cur && cur.post.format === "reel"); }
+  function isReel() { return isVideo(); }   // 動画を書き出す投稿（リール・動画ストーリーズ）
+  function isVideo() { return !!(cur && cur.post.video); }
+  function isTall() { return !!(cur && T.isTallFormat(cur.post)); }
+  function isStory() { return !!(cur && cur.post.format === "story"); }
 
   // 画面録画はサイズが大きいので、下書き（localStorage）ではなく IndexedDB に保存する
   const videoMem = new Map();
@@ -1277,14 +1345,15 @@
         a.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>動画をダウンロード';
         actions.appendChild(a);
       }
+      if (isStory()) actions.appendChild(storyCopyButton());
       const copy = document.createElement("button");
       copy.className = "st-btn-sub";
       copy.innerHTML = '<svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>本文をコピー';
       copy.onclick = () => $("#copy-caption").click();
-      actions.appendChild(copy);
+      if (!isStory()) actions.appendChild(copy);
       const note = document.createElement("p");
       note.className = "st-note";
-      note.innerHTML = instaOk
+      note.innerHTML = isStory() && instaOk ? STORY_NOTE : instaOk
         ? "Instagramでは「リール」を選んで、この動画を投稿してください。BGMを足す場合は、Instagramの音源を小さめの音量で重ねるのがおすすめです。"
         : "<b>この端末では、Instagram向けの形式（H.264）で書き出せませんでした。</b>投稿できない場合は、iPhoneのClaudeアプリかSafariで書き出してください。";
       actions.appendChild(note);

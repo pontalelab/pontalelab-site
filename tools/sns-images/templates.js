@@ -13,7 +13,8 @@ const icon = IC.icon;
 const W = 1080;
 const H = 1350;
 const REEL_H = 1920;   // リール（縦9:16）の高さ
-function frameSize(post) { return { w: W, h: post && post.format === "reel" ? REEL_H : H }; }
+function isTallFormat(post) { return !!post && (post.format === "reel" || post.format === "story"); }
+function frameSize(post) { return { w: W, h: isTallFormat(post) ? REEL_H : H }; }
 
 /* ---------- テーマ（投稿ごとの色） ---------- */
 const THEMES = {
@@ -192,19 +193,21 @@ function renderFrame(slide, i, total, post, ctx) {
   if (!render) throw new Error("未対応のスライド種類: " + slide.type);
   const logo = ctx.asset("/icons/icon-512.png");
   const isLast = i === total - 1;
-  const reel = post.format === "reel";
+  const story = post.format === "story";
+  const reel = post.format === "reel" || story;
   const vars = `--bg:${t.bg};--ink:${t.ink};--ink-mid:${t.inkMid};--primary:${t.primary};--primary-lt:${t.primaryLt};` +
     `--accent:${t.accent};--accent-soft:${t.accentSoft};--card:${t.card};--line:${t.line};--mark:${t.mark};--fs:1;` +
     `background:radial-gradient(520px 520px at 92% 6%, ${t.blob1} 0%, transparent 70%),` +
     `radial-gradient(600px 600px at -6% 58%, ${t.blob2} 0%, transparent 70%),` +
     `radial-gradient(520px 520px at 100% 104%, ${t.blob3} 0%, transparent 70%), ${t.bg};`;
-  return `<div class="plf frame ${post.theme === "lab" ? "dark" : ""} ${reel ? "reel" : ""}" lang="ja" style="${vars}">
+  return `<div class="plf frame ${post.theme === "lab" ? "dark" : ""} ${reel ? "reel" : ""} ${story ? "story" : ""}" lang="ja" style="${vars}">
   <div class="dots"></div>
   <header>
     <div class="brand">${logo ? `<img src="${logo}">` : ""}<span>ぽんたーれらぼ</span></div>
     ${total > 1 && !reel ? `<div class="pager">${i + 1}<span>/</span>${total}</div>` : ""}
   </header>
   <main class="plf-main">${render(slide, ctx)}</main>
+  ${story && slide.link !== false ? `<div class="linkzone"><div class="lz-label">${fmt(post.linkLabel || "＼ タップしてあそぶ ／")}</div><div class="lz-arrow">${icon("arrow", 72)}</div><div class="lz-space"></div></div>` : ""}
   <footer>
     <span>pontalelab.com</span>
     ${reel ? `<span class="hint">無料・登録なし・広告なし</span>`
@@ -394,6 +397,15 @@ const CSS = `
 .plf.reel .dev.tablet{width:100%}
 .plf.reel .pcap{font-size:calc(42px*var(--fs))}
 .plf.reel .ctaslide{justify-content:center;height:100%}
+
+/* ストーリーズ（1080x1920）。上は名前とバー、下は返信欄がかぶるので広めにあける。
+   linkzone の空白部分に、Instagramでリンクスタンプを貼る */
+.plf.frame.story{padding:230px 80px 230px}
+.plf .linkzone{position:relative;z-index:1;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;padding-top:20px}
+.plf .lz-label{font-weight:800;font-size:44px;color:var(--primary);letter-spacing:.06em}
+.plf .lz-arrow{color:var(--accent);margin:6px 0 0;transform:rotate(90deg)}
+.plf .lz-arrow .ico{width:72px;height:72px;stroke-width:2.6}
+.plf .lz-space{width:620px;height:150px}
 `;
 
 
@@ -463,11 +475,30 @@ function reelPost(g) {
   };
 }
 
+/* ---------- ゲームデータ → ストーリーズ ----------
+   mode: "image"（画像1枚）または "video"（画面録画） */
+function storyPost(g, mode) {
+  const link = g ? `https://pontalelab.com/games/${g.id}/?utm_source=instagram&utm_medium=story` : "https://pontalelab.com/?utm_source=instagram&utm_medium=story";
+  const base = { format: "story", theme: g ? (gamePost(g).theme) : "forest", link, linkLabel: "＼ タップしてあそぶ ／", caption: "" };
+  if (mode === "video") {
+    const r = reelPost(g);
+    return Object.assign(base, {
+      video: { start: 0, end: null, endCard: false, endSec: 2.5 },
+      slides: [Object.assign({}, r.slides[0]), Object.assign({}, r.slides[1], { link: true })]
+    });
+  }
+  return Object.assign(base, {
+    slides: [g
+      ? { type: "cover", eyebrow: "無料で遊べるゲーム", title: g.catch, sub: `${g.name}（${g.age}）`, image: { src: g.thumb, style: "card" } }
+      : { type: "cover", eyebrow: "ラベル", title: "タイトルを\n**入力**", sub: "" }]
+  });
+}
+
 // 投稿内に残っている【要記入】の数
 function countTodos(post) {
   const m = JSON.stringify(post).match(/【[^】]*】/g);
   return m ? m.length : 0;
 }
 
-return { W, H, REEL_H, frameSize, reelPost, THEMES, CSS, esc, fmt, renderFrame, fitFrame, zukanPost, gamePost, countTodos, icon, ICON_NAMES: IC.ICON_NAMES };
+return { W, H, REEL_H, frameSize, isTallFormat, reelPost, storyPost, THEMES, CSS, esc, fmt, renderFrame, fitFrame, zukanPost, gamePost, countTodos, icon, ICON_NAMES: IC.ICON_NAMES };
 });
