@@ -151,6 +151,23 @@ const RENDER = {
       ${s.caption ? `<p class="pcap">${fmt(s.caption)}</p>` : ""}
     </div>`;
   },
+  // ゲーム画面（スマホのスクリーンショットを端末の枠に入れて表示）
+  screen(s, ctx) {
+    const url = ctx.asset(s.photo);
+    const land = s.device === "tablet";
+    const inner = url
+      ? `<img src="${url}">`
+      : `<div class="dev-empty">${icon("camera", 90)}<div>ゲーム画面の<br>スクショを入れてください</div></div>`;
+    return `<div class="screenslide">
+      ${eyebrow(s.eyebrow)}
+      <h2 class="heading">${fmt(s.heading)}</h2>
+      <div class="dev-stage">
+        <div class="dev-glow"></div>
+        <div class="dev ${land ? "tablet" : "phone"}">${land ? "" : '<span class="dev-notch"></span>'}<div class="dev-screen">${inner}</div></div>
+      </div>
+      ${s.caption ? `<p class="pcap center">${fmt(s.caption)}</p>` : ""}
+    </div>`;
+  },
   // 最後の案内
   cta(s) {
     return `<div class="ctaslide">
@@ -351,8 +368,58 @@ const CSS = `
   box-shadow:0 16px 36px color-mix(in srgb,var(--accent) 45%,transparent),inset 0 -6px 0 rgba(0,0,0,.12)}
 .plf .textslide .btn,.plf .listslide .btn{align-self:flex-start}
 .plf .url{margin-top:calc(34px*var(--fs));font-size:30px;font-weight:700;color:var(--ink-mid);letter-spacing:.05em}
+
+/* screen（端末の枠） */
+.plf .screenslide{display:flex;flex-direction:column;height:100%}
+.plf .dev-stage{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.plf .dev-glow{position:absolute;width:78%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--primary-lt) 45%,transparent) 0%,transparent 68%)}
+.plf .dev{position:relative;background:#14181a;box-shadow:0 40px 80px rgba(10,30,20,.35),inset 0 0 0 3px #2c3236;padding:18px}
+.plf .dev.phone{height:calc(760px*var(--fs));aspect-ratio:9/19;border-radius:72px}
+.plf .dev.tablet{width:96%;aspect-ratio:4/3;border-radius:52px;padding:26px}
+.plf .dev-notch{position:absolute;top:34px;left:50%;transform:translateX(-50%);width:120px;height:34px;border-radius:20px;background:#14181a;z-index:2}
+.plf .dev-screen{width:100%;height:100%;border-radius:56px;overflow:hidden;background:#e9efe9}
+.plf .dev.tablet .dev-screen{border-radius:30px}
+.plf .dev-screen img{width:100%;height:100%;object-fit:cover;display:block}
+.plf .dev-empty{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#5d7368;font-weight:800;font-size:30px;text-align:center;line-height:1.5}
+.plf .pcap.center{text-align:center}
 `;
 
+
+/* ---------- ゲームデータ → 紹介投稿 ---------- */
+const GAME_THEME = { pokopokosea: "winter", fishinggame: "winter", kenkenchizu: "sunset", otonoehon: "sunset", osarunotaiko: "sunset" };
+function gamePost(g) {
+  const plain = (t) => String(t || "").replace(/\*\*/g, "").replace(/\n/g, "");
+  const slides = [
+    { type: "cover", eyebrow: "無料で遊べるゲーム", title: g.catch || g.name, sub: `${g.name}（${g.age}）\n${g.desc}`, image: { src: g.thumb, style: "card" } },
+    { type: "list", eyebrow: "あそびかた", heading: "3ステップで\nすぐ遊べる", items: g.steps || [] },
+    { type: "screen", eyebrow: "ゲーム画面", heading: "こんな画面で\n遊べます", photo: null, ...(g.device ? { device: g.device } : {}), caption: "【画面の説明を一言で】" },
+    { type: "list", eyebrow: "ここがおすすめ", heading: "おうちの人にも\nうれしいポイント", items: [
+      ...(g.points || []),
+      { icon: "check", title: "無料・登録なし・広告なし", desc: "アプリのインストールもいりません" }
+    ] },
+    { type: "cta", icon: "game", eyebrow: "スマホですぐ遊べる", heading: `${g.name}で\n遊んでみよう`,
+      badges: ["無料", "登録なし", "広告なし"], button: "プロフィールのリンクから", url: `pontalelab.com/games/${g.id}/` }
+  ];
+  const caption = [
+    `${plain(g.catch)}！「${g.name}」を紹介します🎮`,
+    "",
+    g.desc,
+    "",
+    "＼あそびかた／",
+    ...(g.steps || []).map((st, i) => `${i + 1}. ${st.title}`),
+    "",
+    "＼ここがおすすめ／",
+    ...(g.points || []).map((p) => "・" + p.title),
+    "・無料・登録なし・広告なし",
+    "",
+    `🎮 対象年齢の目安：${g.age}`,
+    "▶ プロフィールのリンクから、スマホですぐ遊べます",
+    ...(g.credit ? ["", g.credit] : []),
+    "",
+    ["#知育ゲーム", ...(g.tags || []).slice(0, 3), "#おうち遊び"].join(" ")
+  ].join("\n");
+  return { id: `game-${g.id}`, theme: GAME_THEME[g.id] || "forest", slides, caption };
+}
 
 // 投稿内に残っている【要記入】の数
 function countTodos(post) {
@@ -360,5 +427,5 @@ function countTodos(post) {
   return m ? m.length : 0;
 }
 
-return { W, H, THEMES, CSS, esc, fmt, renderFrame, fitFrame, zukanPost, countTodos, icon, ICON_NAMES: IC.ICON_NAMES };
+return { W, H, THEMES, CSS, esc, fmt, renderFrame, fitFrame, zukanPost, gamePost, countTodos, icon, ICON_NAMES: IC.ICON_NAMES };
 });

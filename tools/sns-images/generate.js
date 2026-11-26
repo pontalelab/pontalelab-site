@@ -9,6 +9,7 @@
      node generate.js                      posts/ の全投稿を生成
      node generate.js 05                   ファイル名が「05」で始まる投稿だけ生成
      node generate.js --zukan kabutomushi  図鑑データから豆知識投稿を自動生成
+     node generate.js --game mushimushi    ゲームデータ（games.json）から紹介投稿を自動生成
 
    出力: out/<投稿ID>/01.png, 02.png … と caption.txt（本文）
    詳しくは README.md を参照。
@@ -83,7 +84,13 @@ async function main() {
   const args = process.argv.slice(2);
   let posts;
   const zi = args.indexOf("--zukan");
-  if (zi >= 0) {
+  const gi = args.indexOf("--game");
+  if (gi >= 0) {
+    const games = JSON.parse(fs.readFileSync(path.join(TOOL_DIR, "games.json"), "utf8"));
+    const g = games.find((x) => x.id === args[gi + 1]);
+    if (!g) throw new Error(`--game のあとにゲームのIDを指定してください（${games.map((x) => x.id).join(", ")}）`);
+    posts = [Object.assign(T.gamePost(g), { _baseDir: TOOL_DIR })];
+  } else if (zi >= 0) {
     if (!args[zi + 1]) throw new Error("--zukan のあとに図鑑のID（例: kabutomushi）を指定してください");
     posts = [postFromZukan(args[zi + 1])];
   } else {

@@ -1,0 +1,299 @@
+[
+  {
+    "id": "mushimushi",
+    "name": "むしたん",
+    "age": "3〜6歳",
+    "thumb": "/games/thumbs/mushimushi.webp",
+    "hero": "/games/mushimushi/bugs/nanahoshi_tentou.png",
+    "catch": "タップで\n**虫が見つかる**",
+    "desc": "草むらや木にかくれた虫を探して、図鑑を集めるゲームです。",
+    "steps": [
+      {
+        "icon": "search",
+        "title": "草むらや木をさがす",
+        "desc": "画面をタップするだけ。文字が読めなくてもOK"
+      },
+      {
+        "icon": "bug",
+        "title": "かくれた虫を見つける",
+        "desc": "カブトムシ、てんとう虫、ホタル…"
+      },
+      {
+        "icon": "book",
+        "title": "図鑑に集める",
+        "desc": "見つけた虫の名前やくらしがわかる"
+      }
+    ],
+    "points": [
+      {
+        "icon": "leaf",
+        "title": "本物の虫を探したくなる",
+        "desc": "ゲームで覚えた虫を、公園で探してみよう"
+      },
+      {
+        "icon": "book",
+        "title": "昆虫図鑑とつながっている",
+        "desc": "サイトの図鑑で、もっとくわしく読める"
+      }
+    ],
+    "tags": [
+      "#虫好きキッズ",
+      "#昆虫好き",
+      "#3歳"
+    ]
+  },
+  {
+    "id": "pokopokosea",
+    "name": "おさかなひらがな",
+    "age": "4〜7歳",
+    "thumb": "/games/thumbs/pokopokosea.webp",
+    "catch": "海の生き物と\n**ひらがな**",
+    "desc": "海の生き物といっしょに、ひらがなを学べるゲームです。",
+    "steps": [
+      {
+        "icon": "search",
+        "title": "海の生き物を見る",
+        "desc": "アジ、フグ、タイ、ヒラメ…"
+      },
+      {
+        "icon": "pencil",
+        "title": "名前のひらがなをえらぶ",
+        "desc": "「なんというさかな？」に答える"
+      },
+      {
+        "icon": "sparkle",
+        "title": "レベルをえらべる",
+        "desc": "3〜4歳から5歳以上まで"
+      }
+    ],
+    "points": [
+      {
+        "icon": "sparkle",
+        "title": "遊びながら文字に親しめる",
+        "desc": "ひらがなを覚えはじめた子に"
+      },
+      {
+        "icon": "heart",
+        "title": "海の生き物が好きになる",
+        "desc": "水族館に行く前の予習にも"
+      }
+    ],
+    "tags": [
+      "#ひらがな",
+      "#海の生き物",
+      "#4歳"
+    ]
+  },
+  {
+    "id": "fishinggame",
+    "name": "あみあみうみ",
+    "age": "3〜6歳",
+    "thumb": "/games/thumbs/fishinggame.webp",
+    "catch": "あみで\n**魚をすくおう**",
+    "desc": "あみで魚をすくって、図鑑を集めるゲームです。",
+    "steps": [
+      {
+        "icon": "search",
+        "title": "あみを動かす",
+        "desc": "泳いでいる魚をねらってすくう"
+      },
+      {
+        "icon": "book",
+        "title": "図鑑に集める",
+        "desc": "クマノミ、マグロ、ウミガメ…"
+      },
+      {
+        "icon": "leaf",
+        "title": "うみをそうじする",
+        "desc": "ゴミをすくうと、海がきれいになる"
+      }
+    ],
+    "points": [
+      {
+        "icon": "heart",
+        "title": "海をきれいにする体験",
+        "desc": "うみがきれいになるほど、魚が増える"
+      },
+      {
+        "icon": "sparkle",
+        "title": "小さい子でも遊べる",
+        "desc": "なぞるだけのシンプルな操作"
+      }
+    ],
+    "tags": [
+      "#海の生き物",
+      "#おさかな",
+      "#3歳"
+    ],
+    "device": "tablet"
+  },
+  {
+    "id": "kenkenchizu",
+    "name": "けんけんちず",
+    "age": "4〜8歳",
+    "thumb": "/games/thumbs/kenkenchizu.webp",
+    "catch": "シルエットで\n**都道府県クイズ**",
+    "desc": "都道府県の形を見て、どこの県か当てるクイズゲームです。",
+    "steps": [
+      {
+        "icon": "map",
+        "title": "シルエットを見る",
+        "desc": "県の形だけが出てくる"
+      },
+      {
+        "icon": "search",
+        "title": "どこの県か当てる",
+        "desc": "大人も意外と悩みます"
+      },
+      {
+        "icon": "sparkle",
+        "title": "3つのモードで挑戦",
+        "desc": "ふつう・むずかしい・えんどれす（47都道府県）"
+      }
+    ],
+    "points": [
+      {
+        "icon": "pencil",
+        "title": "表示はひらがな・カタカナ",
+        "desc": "漢字が読めない子でも遊べる"
+      },
+      {
+        "icon": "heart",
+        "title": "親子で競争できる",
+        "desc": "旅行や帰省の前に遊ぶのもおすすめ"
+      }
+    ],
+    "tags": [
+      "#都道府県",
+      "#小学生",
+      "#親子クイズ"
+    ],
+    "credit": "地図データ：Geolonia「都道府県データ」／国土交通省「国土数値情報」を加工して作成"
+  },
+  {
+    "id": "otonoehon",
+    "name": "おとのえほん",
+    "age": "3〜8歳",
+    "thumb": "/games/thumbs/otonoehon.webp",
+    "catch": "ふりこや笛で\n**音楽をつくろう**",
+    "desc": "ふりこや笛を置いて、自分だけの音楽を鳴らせる音の絵本です。",
+    "steps": [
+      {
+        "icon": "pencil",
+        "title": "ふりこや笛を置く",
+        "desc": "画面の好きな場所に置いてみよう"
+      },
+      {
+        "icon": "music",
+        "title": "音が鳴る",
+        "desc": "動かすと、音が重なっていく"
+      },
+      {
+        "icon": "sparkle",
+        "title": "自分だけの音楽に",
+        "desc": "知っている曲にも挑戦できる"
+      }
+    ],
+    "points": [
+      {
+        "icon": "flask",
+        "title": "ためして発見する",
+        "desc": "置き方で音が変わるふしぎ"
+      },
+      {
+        "icon": "heart",
+        "title": "正解のない遊び",
+        "desc": "自由につくる楽しさを味わえる"
+      }
+    ],
+    "tags": [
+      "#音あそび",
+      "#リズム遊び",
+      "#3歳"
+    ]
+  },
+  {
+    "id": "osarunotaiko",
+    "name": "おさるのたいこ",
+    "age": "2〜6歳",
+    "thumb": "/games/thumbs/osarunotaiko.webp",
+    "catch": "おさると\n**たいこをたたこう**",
+    "desc": "おさるといっしょにたいこをたたいて、リズム遊びを楽しめるゲームです。",
+    "steps": [
+      {
+        "icon": "user",
+        "title": "モードをえらぶ",
+        "desc": "「やさしい」と「リズム」の2つ"
+      },
+      {
+        "icon": "music",
+        "title": "画面をたたく",
+        "desc": "おさるといっしょにたいこが鳴る"
+      },
+      {
+        "icon": "sparkle",
+        "title": "リズムに合わせる",
+        "desc": "つづけてたたけると、うれしい演出が"
+      }
+    ],
+    "points": [
+      {
+        "icon": "heart",
+        "title": "2歳から遊べる",
+        "desc": "はじめてのゲームにも"
+      },
+      {
+        "icon": "music",
+        "title": "音とリズムに親しめる",
+        "desc": "音量に気をつけて遊んでね"
+      }
+    ],
+    "tags": [
+      "#2歳",
+      "#リズム遊び",
+      "#音あそび"
+    ]
+  },
+  {
+    "id": "agehanosora",
+    "name": "アゲハのそら",
+    "age": "4〜8歳",
+    "thumb": "/games/thumbs/agehanosora.webp",
+    "catch": "アゲハチョウで\n**空のレース**",
+    "desc": "アゲハチョウになって、空のレースで1位をめざすゲームです。",
+    "steps": [
+      {
+        "icon": "sparkle",
+        "title": "はばたいて加速",
+        "desc": "タイミングよくはばたこう"
+      },
+      {
+        "icon": "arrow",
+        "title": "ライバルを追いこす",
+        "desc": "ほかのちょうとのレース"
+      },
+      {
+        "icon": "sun",
+        "title": "ひっさつわざで1位に",
+        "desc": "ちゅうがえり、かげぶんしん…"
+      }
+    ],
+    "points": [
+      {
+        "icon": "bug",
+        "title": "チョウが好きになる",
+        "desc": "アゲハチョウのはばたきを体験"
+      },
+      {
+        "icon": "heart",
+        "title": "いっきうちで盛り上がる",
+        "desc": "最後まで目がはなせない"
+      }
+    ],
+    "tags": [
+      "#アゲハチョウ",
+      "#虫好きキッズ",
+      "#5歳"
+    ]
+  }
+]

@@ -53,12 +53,13 @@ for (const cat of fs.readdirSync(zdir)) {
   }
 }
 fs.writeFileSync(path.join(OUT, "data/zukan/index.json"), JSON.stringify(zukan));
+copy("tools/sns-images/games.json", "data/games.json");
 files.push("data/zukan/index.json");
 
 // ページ本体（CSSとJSはすべて埋め込む）
 const html = read("tools/sns-studio/index.html");
 const body = html.slice(html.indexOf("<body>") + 6, html.indexOf("<script src=")).replace(/\/icons\/icon-192\.png/g, "a/icons/icon-512.png");
-const config = { assetBase: "a", postsBase: "data/posts/", zukanList: "data/zukan/index.json", fonts, useHistory: false };
+const config = { assetBase: "a", postsBase: "data/posts/", zukanList: "data/zukan/index.json", gamesUrl: "data/games.json", fonts, useHistory: false };
 const page = `<title>SNSスタジオ</title>
 <style>
 :root { color-scheme: light; }

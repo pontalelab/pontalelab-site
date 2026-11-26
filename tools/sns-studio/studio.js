@@ -14,6 +14,7 @@
     postsBase: "../sns-images/posts/",
     zukanList: null,                       // 図鑑JSONのURL一覧を返すURL（null ならサイトの図鑑ページから探す）
     zukanData: "/tools/zukan-build/data/",
+    gamesUrl: "../sns-images/games.json",
     fonts: null,                           // [{weight, url, range}] を指定すると同梱フォントを使う
     fontCssUrl: "https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap",
     useHistory: true
@@ -50,6 +51,7 @@
     list: ["箇条書き", "アイコン付きのリスト", "check"],
     game: ["ゲーム紹介", "ゲーム画面を大きく", "game"],
     photo: ["写真", "スマホの写真を大きく", "camera"],
+    screen: ["ゲーム画面", "スクショを端末の枠に入れる", "game"],
     cta: ["最後の案内", "リンクへの誘導", "arrow"]
   };
   const NEW_SLIDE = {
@@ -58,6 +60,7 @@
     list: () => ({ type: "list", eyebrow: "ラベル", heading: "見出し", items: [{ icon: "sparkle", title: "項目1", desc: "説明" }, { icon: "leaf", title: "項目2", desc: "説明" }] }),
     game: () => ({ type: "game", index: "", thumb: "/games/thumbs/mushimushi.webp", name: "むしたん", age: "3〜6歳", desc: "説明" }),
     photo: () => ({ type: "photo", eyebrow: "ラベル", heading: "見出し", photo: null, caption: "" }),
+    screen: () => ({ type: "screen", eyebrow: "ゲーム画面", heading: "こんな画面で\n遊べます", photo: null, caption: "" }),
     cta: () => ({ type: "cta", icon: "game", eyebrow: "", heading: "プロフィールのリンクから\n遊べます", badges: ["無料", "登録なし", "広告なし"], button: "プロフィールのリンクから" })
   };
 
@@ -138,7 +141,28 @@
       requestAnimationFrame(() => { const m = mini(p.post, 0, th.clientWidth); th.appendChild(m); fitLater(m); });
       b.onclick = () => openDraft(newDraft(p.title, clone(p.post)));
     });
+    loadGames();
     loadZukan();
+  }
+
+  async function loadGames() {
+    const box = $("#games");
+    try {
+      const games = await (await fetch(CFG.gamesUrl)).json();
+      box.innerHTML = "";
+      games.forEach((g) => {
+        const b = document.createElement("button");
+        b.className = "st-game";
+        b.innerHTML = `<div class="st-game-img"><img src="${esc(ctx.asset(g.thumb))}" alt=""></div><b>${esc(g.name)}</b><small>${esc(g.age)}</small>`;
+        b.onclick = () => {
+          const post = T.gamePost(g);
+          openDraft(newDraft(`ゲーム紹介：${g.name}`, { theme: post.theme, slides: post.slides, caption: post.caption }));
+        };
+        box.appendChild(b);
+      });
+    } catch (e) {
+      box.innerHTML = `<p class="st-hint">ゲームの一覧を読み込めませんでした</p>`;
+    }
   }
 
   async function loadZukan() {
@@ -398,6 +422,8 @@
     image: ["画像（任意）", "image"],
     thumb: ["ゲーム画像", "thumb"],
     photo: ["写真", "photo"],
+    shot: ["ゲーム画面のスクリーンショット", "photo"],
+    device: ["端末の形", "device"],
     items: ["項目", "items"],
     cross: ["「ないもの」表示（×印をつける）", "toggle"]
   };
@@ -407,6 +433,7 @@
     list: ["eyebrow", "heading", "items", "cross", "note", "button"],
     game: ["index", "thumb", "name", "age", "desc"],
     photo: ["eyebrow", "heading", "photo", "caption"],
+    screen: ["eyebrow", "heading", "shot", "device", "caption"],
     cta: ["icon", "eyebrow", "heading", "body", "badges", "button", "url"]
   };
 
@@ -507,6 +534,23 @@
     }
     else if (kind === "photo") {
       wrap.appendChild(imagePicker(s.photo ? { src: s.photo, style: "card" } : null, (v) => { s.photo = v ? v.src : null; changed(true); }, true, null, true));
+      if (key === "shot") {
+        const h = document.createElement("p");
+        h.className = "st-hint";
+        h.textContent = "ゲームで一番楽しい場面をスマホでスクリーンショットして選んでください。";
+        wrap.appendChild(h);
+      }
+    }
+    else if (kind === "device") {
+      const seg = document.createElement("div");
+      seg.className = "st-seg";
+      [["phone", "スマホ（縦）"], ["tablet", "タブレット（横）"]].forEach(([m, n]) => {
+        const b = document.createElement("button");
+        b.textContent = n; b.className = (s.device || "phone") === m ? "on" : "";
+        b.onclick = () => { if (m === "phone") delete s.device; else s.device = m; changed(true); };
+        seg.appendChild(b);
+      });
+      wrap.appendChild(seg);
     }
     else if (kind === "items") {
       const list = document.createElement("div");
