@@ -158,15 +158,16 @@ const RENDER = {
   screen(s, ctx) {
     const url = ctx.asset(s.photo);
     const land = s.device === "tablet";
+    const big = s.device === "big";
     const inner = url
       ? `<img src="${url}">`
       : `<div class="dev-empty">${icon("camera", 90)}<div>ゲーム画面の<br>スクショを入れてください</div></div>`;
-    return `<div class="screenslide">
+    return `<div class="screenslide ${big ? "big" : ""}">
       ${eyebrow(s.eyebrow)}
       <h2 class="heading">${fmt(s.heading)}</h2>
       <div class="dev-stage">
         <div class="dev-glow"></div>
-        <div class="dev ${land ? "tablet" : "phone"}">${land ? "" : '<span class="dev-notch"></span>'}<div class="dev-screen">${inner}</div></div>
+        <div class="dev ${big ? "bare" : land ? "tablet" : "phone"}">${land || big ? "" : '<span class="dev-notch"></span>'}<div class="dev-screen">${inner}</div></div>
       </div>
       ${s.caption ? `<p class="pcap center">${fmt(s.caption)}</p>` : ""}
     </div>`;
@@ -406,6 +407,14 @@ const CSS = `
 .plf .lz-arrow{color:var(--accent);margin:6px 0 0;transform:rotate(90deg)}
 .plf .lz-arrow .ico{width:72px;height:72px;stroke-width:2.6}
 .plf .lz-space{width:620px;height:150px}
+
+/* 「大きく（枠なし）」：ゲーム画面を表示領域いっぱいに */
+.plf .dev.bare{position:absolute;inset:0;padding:0;border-radius:48px;background:#000;box-shadow:0 30px 70px rgba(10,30,20,.3)}
+.plf .dev.bare .dev-screen{border-radius:48px}
+.plf .screenslide.big .eyebrow{margin-bottom:calc(18px*var(--fs))}
+.plf .screenslide.big .heading{font-size:calc(64px*var(--fs));margin-bottom:calc(24px*var(--fs))}
+.plf .screenslide.big .pcap{margin-top:calc(22px*var(--fs));font-size:calc(36px*var(--fs))}
+.plf .screenslide.big .dev-glow{display:none}
 `;
 
 
@@ -453,10 +462,10 @@ function reelPost(g) {
   return {
     format: "reel",
     theme: base ? base.theme : "forest",
-    video: { start: 0, end: null, endCard: true, endSec: 2.5 },
+    video: { start: 0, end: null, endCard: true, endSec: 2.5, hook: g && g.hook ? g.hook : "", hookSec: 2 },
     slides: [
       { type: "screen", eyebrow: g ? "無料で遊べるゲーム" : "ゲーム紹介", heading: g ? g.catch : "見出しを\n**入力**",
-        photo: null, ...(g && g.device ? { device: g.device } : {}), caption: g ? `${g.name}（${g.age}）` : "" },
+        photo: null, device: g && g.device ? g.device : "big", caption: g ? `${g.name}（${g.age}）` : "" },
       { type: "cta", icon: "game", eyebrow: "スマホですぐ遊べる", heading: g ? `${g.name}で\n遊んでみよう` : "プロフィールのリンクから\n遊べます",
         badges: ["無料", "登録なし", "広告なし"], button: "プロフィールのリンクから", url: g ? `pontalelab.com/games/${g.id}/` : "pontalelab.com" }
     ],
@@ -483,7 +492,7 @@ function storyPost(g, mode) {
   if (mode === "video") {
     const r = reelPost(g);
     return Object.assign(base, {
-      video: { start: 0, end: null, endCard: false, endSec: 2.5 },
+      video: { start: 0, end: null, endCard: false, endSec: 2.5, hook: g && g.hook ? g.hook : "", hookSec: 2 },
       slides: [Object.assign({}, r.slides[0]), Object.assign({}, r.slides[1], { link: true })]
     });
   }

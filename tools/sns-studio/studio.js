@@ -315,6 +315,7 @@
     const m = mini(cur.post, i, w);
     el.appendChild(m);
     if (isStory()) markLinkZone(el, m, w);
+    if (isVideo() && i === 0) markHook(el, m);
     fitLater(m, (r) => {
       const old = el.querySelector(".st-warn"); if (old) old.remove();
       if (r.overflow) {
@@ -338,6 +339,34 @@
       g.textContent = "リンクスタンプの位置";
       el.appendChild(g);
       void k;
+    };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => requestAnimationFrame(() => requestAnimationFrame(place))); else place();
+  }
+
+  // 冒頭テロップのプレビュー（書き出しでは最初の2秒だけ表示される）
+  function markHook(el, m) {
+    const text = (cur.post.video.hook || "").trim();
+    if (!text) return;
+    const place = () => {
+      const old = el.querySelector(".st-hook"); if (old) old.remove();
+      const frame = m.firstElementChild, sc = frame && frame.querySelector(".dev-screen");
+      if (!sc) return;
+      const fr = frame.getBoundingClientRect(), r = sc.getBoundingClientRect();
+      const g = document.createElement("div");
+      g.className = "st-hook";
+      g.style.left = (r.left - fr.left) + "px"; g.style.top = (r.top - fr.top) + "px";
+      g.style.width = r.width + "px"; g.style.height = r.height + "px";
+      const card = document.createElement("div");
+      card.className = "st-hook-card";
+      card.textContent = text.replace(/\*\*/g, "");
+      const k = el.clientWidth / T.W;
+      card.style.fontSize = Math.max(9, 92 * k) + "px";
+      card.style.padding = `${36 * k}px ${44 * k}px`;
+      card.style.borderRadius = `${36 * k}px`;
+      const tag = document.createElement("span");
+      tag.className = "st-hook-tag"; tag.textContent = "最初の2秒";
+      g.appendChild(card); g.appendChild(tag);
+      el.appendChild(g);
     };
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => requestAnimationFrame(() => requestAnimationFrame(place))); else place();
   }
@@ -482,6 +511,7 @@
     items: ["項目", "items"],
     cross: ["「ないもの」表示（×印をつける）", "toggle"],
     video: ["ゲームの画面録画", "video"],
+    hook: ["冒頭テロップ（最初の2秒だけ大きく表示）", "hook"],
     endcard: ["動画のあとに、この案内を2.5秒表示する", "endcard"]
   };
   const SCHEMA = {
@@ -513,7 +543,7 @@
       ? `<span class="st-type-badge">${T.icon(idx === 0 ? "music" : "arrow", 16)}${idx === 0 ? (isStory() ? "ストーリーズの画面" : "リールの画面") : "最後に表示する案内"}</span>`
       : `<span class="st-type-badge">${T.icon(tic, 16)}${idx + 1}枚目 ・ ${tname}</span>`;
     panel.appendChild(head);
-    const keys = isReel() ? (idx === 0 ? ["video", "eyebrow", "heading", "device", "caption"] : ["endcard", "eyebrow", "heading", "body", "badges", "button", "url"]) : (SCHEMA[s.type] || []);
+    const keys = isReel() ? (idx === 0 ? ["video", "hook", "device", "eyebrow", "heading", "caption"] : ["endcard", "eyebrow", "heading", "body", "badges", "button", "url"]) : (SCHEMA[s.type] || []);
     if (isStory()) panel.appendChild(storyLinkField());
     keys.forEach((key) => panel.appendChild(field(s, key)));
     const hint = document.createElement("p");
@@ -605,6 +635,18 @@
     else if (kind === "video") {
       wrap.appendChild(videoField());
     }
+    else if (kind === "hook") {
+      const el = document.createElement("textarea");
+      el.rows = 2;
+      el.value = cur.post.video.hook || "";
+      el.placeholder = "例：虫、何匹\n見つけられる？";
+      el.oninput = () => { cur.post.video.hook = el.value; changed(); };
+      wrap.appendChild(el);
+      const h = document.createElement("p");
+      h.className = "st-hint";
+      h.textContent = "流し見している人の指を止めるための問いかけです。2行・10文字前後がおすすめ。空にすると表示しません。";
+      wrap.appendChild(h);
+    }
     else if (kind === "endcard") {
       const row = document.createElement("button");
       row.className = "st-toggle";
@@ -616,7 +658,7 @@
     else if (kind === "device") {
       const seg = document.createElement("div");
       seg.className = "st-seg";
-      [["phone", "スマホ（縦）"], ["tablet", "タブレット（横）"]].forEach(([m, n]) => {
+      [["big", "大きく"], ["phone", "スマホ枠"], ["tablet", "横長"]].forEach(([m, n]) => {
         const b = document.createElement("button");
         b.textContent = n; b.className = (s.device || "phone") === m ? "on" : "";
         b.onclick = () => { if (m === "phone") delete s.device; else s.device = m; changed(true); };
@@ -1111,12 +1153,13 @@
       if (!duration) { toast("この動画は読み込めませんでした"); return; }
       curVideo = { blob: f, url, duration };
       cur.post.video.start = 0;
-      cur.post.video.end = Math.min(duration, 30);
+      cur.post.video.end = Math.min(duration, 15);
       cur.post.slides[0].photo = await makePoster(url, 0.2);
       // 横長の動画ならタブレットの枠にする
       const v = document.createElement("video"); v.src = url; v.muted = true;
       await new Promise((ok) => { v.onloadedmetadata = ok; v.onerror = ok; });
-      if (v.videoWidth > v.videoHeight) cur.post.slides[0].device = "tablet"; else delete cur.post.slides[0].device;
+      if (v.videoWidth > v.videoHeight) cur.post.slides[0].device = "tablet";
+      else if (cur.post.slides[0].device === "tablet" || !cur.post.slides[0].device) cur.post.slides[0].device = "big";
       saveSoon(); renderPreview(false); renderPanel(); updateTodo();
     };
     input.click();
@@ -1133,12 +1176,12 @@
       box.appendChild(b);
       const h = document.createElement("p");
       h.className = "st-hint";
-      h.innerHTML = "ゲームを遊びながら、スマホの「画面収録」で録画した動画を選んでください。<b>15〜30秒</b>がおすすめです。ゲームの音もそのまま入ります。";
+      h.innerHTML = "ゲームを遊びながら、スマホの「画面収録」で録画した動画を選んでください。<b>10〜15秒</b>がおすすめです。ゲームの音もそのまま入ります。";
       box.appendChild(h);
       return box;
     }
     const d = curVideo.duration;
-    const end = Math.min(vid.end == null ? Math.min(d, 30) : vid.end, d);
+    const end = Math.min(vid.end == null ? Math.min(d, 15) : vid.end, d);
     const info = document.createElement("div");
     info.className = "st-vinfo";
     info.innerHTML = `<b>使う長さ：<span class="st-vlen">${fmtSec(end - vid.start)}</span></b><small>動画全体 ${fmtSec(d)}</small>`;
@@ -1164,6 +1207,10 @@
     box.appendChild(mk("おわり", end, (v, r) => {
       vid.end = Math.max(v, vid.start + 1); r.querySelector(".st-rv").textContent = fmtSec(vid.end); update(); saveSoon();
     }));
+    const tip = document.createElement("p");
+    tip.className = "st-hint";
+    tip.innerHTML = "<b>「はじめ」は、虫が見つかる・正解するなど一番盛り上がる場面に。</b>リールは最初の1秒で見るかどうかが決まります。";
+    box.appendChild(tip);
     const warn = document.createElement("p");
     warn.className = "st-hint st-vwarn"; warn.hidden = true;
     warn.innerHTML = "<b>60秒より長いと書き出しに時間がかかります。15〜30秒がおすすめです。</b>";
@@ -1229,7 +1276,7 @@
       await new Promise((ok, ng) => { if (v.readyState >= 1) ok(); else { v.onloadedmetadata = ok; v.onerror = ng; } });
       const d = v.duration || curVideo.duration;
       const start = Math.min(vid.start || 0, Math.max(0, d - 0.5));
-      const endT = Math.min(vid.end == null ? Math.min(d, 30) : vid.end, d);
+      const endT = Math.min(vid.end == null ? Math.min(d, 15) : vid.end, d);
       const endSec = vid.endCard ? (vid.endSec || 2.5) : 0;
       const total = (endT - start) + endSec;
 
@@ -1248,7 +1295,42 @@
           cx.restore();
         }
         if (base.notch) { cx.fillStyle = "#14181a"; roundRectPath(cx, base.notch.x, base.notch.y, base.notch.w, base.notch.h, base.notch.h / 2); cx.fill(); }
+        const t = v.currentTime - start;
+        if (hookLines.length && t < hookSec) drawHook(t);
       };
+      // 冒頭テロップ：ぽんと出て、最後にふわっと消える
+      const hookText = String(vid.hook || "").replace(/\*\*/g, "").trim();
+      const hookLines = hookText ? hookText.split("\n").map((x) => x.trim()).filter(Boolean).slice(0, 3) : [];
+      const hookSec = vid.hookSec || 2;
+      const theme = T.THEMES[post.theme] || T.THEMES.forest;
+      if (hookLines.length && document.fonts) await document.fonts.load('800 80px "M PLUS Rounded 1c"').catch(() => {});
+      function drawHook(t) {
+        const inT = Math.min(1, t / 0.22), outT = Math.min(1, Math.max(0, (hookSec - t) / 0.3));
+        const pop = 1 - Math.pow(1 - inT, 3);
+        const scale = 0.85 + 0.15 * pop + (inT < 1 ? 0 : 0);
+        const alpha = Math.min(pop, outT);
+        const maxW = sr.w * 0.86;
+        let fs = 104;
+        cx.font = `800 ${fs}px "M PLUS Rounded 1c", sans-serif`;
+        const widest = () => Math.max(...hookLines.map((l) => cx.measureText(l).width));
+        while (widest() > maxW - 80 && fs > 48) { fs -= 4; cx.font = `800 ${fs}px "M PLUS Rounded 1c", sans-serif`; }
+        const lh = fs * 1.3, padX = 48, padY = 40;
+        const bw = Math.min(maxW, widest() + padX * 2), bh = lh * hookLines.length + padY * 2 - (lh - fs);
+        const cxm = sr.x + sr.w / 2, cym = sr.y + sr.h * 0.42;
+        cx.save();
+        cx.globalAlpha = alpha;
+        cx.translate(cxm, cym); cx.scale(scale, scale);
+        cx.shadowColor = "rgba(0,0,0,.28)"; cx.shadowBlur = 40; cx.shadowOffsetY = 14;
+        cx.fillStyle = "rgba(255,255,255,.96)";
+        roundRectPath(cx, -bw / 2, -bh / 2, bw, bh, 40); cx.fill();
+        cx.shadowColor = "transparent";
+        cx.fillStyle = theme.accent;
+        roundRectPath(cx, -bw / 2, -bh / 2, bw, 14, 7); cx.fill();
+        cx.fillStyle = theme.ink === "#f2f8f4" ? "#17392b" : theme.ink;
+        cx.textAlign = "center"; cx.textBaseline = "middle";
+        hookLines.forEach((l, k) => cx.fillText(l, 0, -bh / 2 + padY + fs / 2 + k * lh));
+        cx.restore();
+      }
 
       let rec = null, chunks = [];
       if (record) {
